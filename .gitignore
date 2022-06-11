@@ -131,3 +131,11 @@ dmypy.json
 # Database files
 *.json
 *.xlsx
+
+# venv files
+bin/
+
+# Other useless files
+lib64
+pyvenv.cfg
+
