@@ -14,5 +14,5 @@ def print_shopping_list(shopping_list: List[Dict[str, Any]]):
     logger.debug("==== Shopping list ====")
     for shopping_element in shopping_list:
         logger.debug(
-            f" - {shopping_element['name']} - {shopping_element['shelf']} - {shopping_element['quantity']}({shopping_element['unite']}) - {shopping_element['price']}"
+            f" - {shopping_element['name']} - {shopping_element['shelf']} - {shopping_element['quantity']}({shopping_element['unite']}) - {shopping_element['price']} euros"
         )

@@ -10,6 +10,8 @@ from src.constants import (
     RECIPE_TYPE,
     RECIPES_CATEGORIES,
     SHELF_LIST,
+    SHOPPING_LIST_CATEGORIES,
+    SHOPPING_LIST_TYPE,
     TABLE_TYPE_LIST,
 )
 from src.excel_factory import ExcelFactory
@@ -74,11 +76,41 @@ def create_list(recipes: List[str], log: bool):
             logger.debug(
                 f"Ingredient informations : {shopping_element['name']} - {shopping_element['shelf']} - {shopping_element['quantity']} - {shopping_element['unite']} - {shopping_element['price']}"
             )
-            shopping_list.append(shopping_element)
+            if shopping_element["name"] in [
+                ingredient_element["name"]
+                for ingredient_element in shopping_list
+            ]:
+                # Get ingredient
+                ingredient_index = [
+                    index
+                    for index, ingredient_element in enumerate(shopping_list)
+                    if ingredient_element["name"] == shopping_element["name"]
+                ][0]
+                shopping_list[ingredient_index][
+                    "quantity"
+                ] += shopping_element["quantity"]
+                shopping_list[ingredient_index]["price"] += shopping_element[
+                    "price"
+                ]
+                logger.debug(
+                    f"Ingredient already in the shopping list : updating its quantity to {shopping_list[ingredient_index]['quantity']} and its price to {shopping_list[ingredient_index]['price']}"
+                )
+            else:
+                shopping_list.append(shopping_element)
     logger.debug(
         f"Total of {len(shopping_list)} ingredients added to shopping list"
     )
     print_shopping_list(shopping_list)
+
+    # Save shopping list result in a excel spreadsheet
+    excel_factory = create_excel_table(
+        "shopping_list.xlsx", SHOPPING_LIST_TYPE, log
+    )
+    for index, shopping_element in enumerate(shopping_list):
+        excel_factory.add_ingredient(
+            list(shopping_element.values()), 4 + index
+        )
+
     return shopping_list
 
 
@@ -170,6 +202,10 @@ def add_recipe(excel_filename: str, log: bool):
 @click.option("-t", "--table_type", type=click.Choice(TABLE_TYPE_LIST))
 @click.option("-l", "--log", type=bool, required=False, default=False)
 def create_table(name: str, table_type: str, log: bool):
+    create_excel_table(name, table_type, log)
+
+
+def create_excel_table(name: str, table_type: str, log: bool):
     logger.set_log_activation(log)
 
     excel_factory = ExcelFactory(name)
@@ -181,7 +217,11 @@ def create_table(name: str, table_type: str, log: bool):
         categories = INGREDIENTS_CATEGORIES
     elif table_type == RECIPE_TYPE:
         categories = RECIPES_CATEGORIES
+    elif table_type == SHOPPING_LIST_TYPE:
+        categories = SHOPPING_LIST_CATEGORIES
 
     excel_factory.create_header_row(categories)
 
     excel_factory.workbook.save(filename=name)
+
+    return excel_factory

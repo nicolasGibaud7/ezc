@@ -1,3 +1,4 @@
+import enum
 from typing import List
 
 from openpyxl import Workbook, load_workbook
@@ -27,6 +28,16 @@ class ExcelFactory:
     def add_element(self, element_information: List[str]):
         for index, information in enumerate(element_information):
             cell = self.current_sheet[f"{EXCEL_COLUMNS[index]}1"]
+            cell.value = information
+        self.workbook.save(self.name)
+
+    def add_ingredient(
+        self, ingredient_information: List[str], row_index: int
+    ):
+        for column_index, information in enumerate(ingredient_information):
+            cell = self.current_sheet[
+                f"{EXCEL_COLUMNS[column_index]}{row_index}"
+            ]
             cell.value = information
         self.workbook.save(self.name)
 
