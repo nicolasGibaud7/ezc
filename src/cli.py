@@ -2,7 +2,7 @@ from typing import List
 
 import click
 
-from src.constants import (
+from constants import (
     INGREDIENT_TYPE,
     INGREDIENTS_CATEGORIES,
     INGREDIENTS_DATABASE_FILENAME,
@@ -14,9 +14,9 @@ from src.constants import (
     SHOPPING_LIST_TYPE,
     TABLE_TYPE_LIST,
 )
-from src.excel_factory import ExcelFactory
-from src.globals import logger
-from src.json_utility import (
+from excel_factory import ExcelFactory
+from globals import logger
+from json_utility import (
     add_ingredient_to_json_file,
     add_ingredients_to_json_file,
     add_recipe_to_json_file,
@@ -26,7 +26,7 @@ from src.json_utility import (
     update_ingredient_in_json_file,
     update_ingredients_in_json_file,
 )
-from src.utility import format_option, print_shopping_list
+from utility import format_option, print_shopping_list
 
 
 @click.group()
@@ -129,7 +129,9 @@ def add_ingredient(name: str, shelf: str, price: float, unite: str, log: bool):
     )
 
     if check_ingredient_presence(name):
-        update_ingredient_in_json_file(name, shelf, price, unite)
+        update_ingredient_in_json_file(
+            INGREDIENTS_DATABASE_FILENAME, name, shelf, price, unite
+        )
 
     # Write ingredients information in json database file
     add_ingredient_to_json_file(
@@ -163,7 +165,9 @@ def add_ingredients(excel_filename: str, log: bool):
 
     logger.debug(f"New ingredients list : {new_ingredients_list}")
     logger.debug(f"Updated ingredients list : {updated_ingredients_list}")
-    update_ingredients_in_json_file(updated_ingredients_list)
+    update_ingredients_in_json_file(
+        INGREDIENTS_DATABASE_FILENAME, updated_ingredients_list
+    )
     add_ingredients_to_json_file(
         INGREDIENTS_DATABASE_FILENAME, new_ingredients_list
     )
