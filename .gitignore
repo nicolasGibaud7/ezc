@@ -129,7 +129,6 @@ dmypy.json
 .pyre/
 
 # Database files
-*.json
 *.xlsx
 
 # venv files
