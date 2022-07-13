@@ -56,12 +56,7 @@ data_update_ingredients_in_json_file = [
     (
         "json_files/update_ingredients_in_json_file.json",
         [
-            [
-                "pate",
-                "epicerie salee",
-                1.1,
-                "kg",
-            ],
+            ["pate", "epicerie salee", 1.1, "kg"],
             ["concombre", "legumes", 0.95, "kg"],
             ["raclette", "fromage", 5.27, "unite"],
         ],
@@ -89,12 +84,7 @@ data_update_ingredients_in_json_file = [
     (
         "json_files/update_ingredients_in_json_file.json",
         [
-            [
-                "pate",
-                "epicerie salee",
-                1.1,
-                "kg",
-            ],
+            ["pate", "epicerie salee", 1.1, "kg"],
             ["concombre", "legumes", 0.92, "kg"],
             ["raclette", "fromage", 15.27, "kg"],
         ],
@@ -135,7 +125,7 @@ data_update_ingredient_in_json_file = [
                 "shelf": "epicerie salee",
                 "price": 0.9,
                 "unite": "kg",
-            },
+            }
         ],
     ),
     (
@@ -144,14 +134,7 @@ data_update_ingredient_in_json_file = [
         "epicerie",
         1.3,
         "kg",
-        [
-            {
-                "name": "pate",
-                "shelf": "epicerie",
-                "price": 1.3,
-                "unite": "kg",
-            },
-        ],
+        [{"name": "pate", "shelf": "epicerie", "price": 1.3, "unite": "kg"}],
     ),
     (
         "json_files/update_ingredient_in_json_file.json",
@@ -165,7 +148,7 @@ data_update_ingredient_in_json_file = [
                 "shelf": "epicerie salee",
                 "price": 1.1,
                 "unite": "kg",
-            },
+            }
         ],
     ),
 ]
@@ -226,10 +209,40 @@ data_get_json_recipe = [
     ),
 ]
 
+data_check_recipe_presence = [
+    ("Pates pesto", True),
+    ("pates pesto", False),
+    ("pates raclettes", True),
+    ("PATES RACLETTES", False),
+    ("Gratin dauphinois", False),
+]
+
 data_check_ingredient_presence = [
     ("eau", True),
     ("gruyere", True),
     ("Eau", False),
     ("raclette", False),
     ("", False),
+]
+
+data_get_json_ingredient = [
+    ("eau", {"name": "eau", "shelf": "boissons", "price": 0.35, "unite": "l"}),
+    (
+        "pate",
+        {
+            "name": "pate",
+            "shelf": "epicerie salee",
+            "price": 1.1,
+            "unite": "kg",
+        },
+    ),
+    (
+        "pesto",
+        {
+            "name": "pesto",
+            "shelf": "epicerie salee",
+            "price": 2,
+            "unite": "kg",
+        },
+    ),
 ]

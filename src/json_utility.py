@@ -7,11 +7,24 @@ from utility import format_option
 
 
 def get_json_ingredient(ingredient_name: str) -> Dict[str, Any]:
+    """Find and return specified ingredient description in json database
+
+    Args:
+        ingredient_name (str): Ingredient name to search
+
+    Raises:
+        Exception: _description_
+
+    Returns:
+        Dict[str, Any]: _description_
+    """
     ingredients = []
     with open(INGREDIENTS_DATABASE_FILENAME, "r") as ingredients_file:
         ingredients = json.load(ingredients_file)
     for ingredient in ingredients:
-        if ingredient["name"] == ingredient_name:
+        if (
+            ingredient["name"] == ingredient_name
+        ):  # TODO Create a private method which will search elements in json files
             return ingredient
     raise Exception(
         f"Ingredient {ingredient_name} not found"
@@ -19,13 +32,21 @@ def get_json_ingredient(ingredient_name: str) -> Dict[str, Any]:
 
 
 def check_ingredient_presence(ingredient_name: str) -> bool:
+    """Check an ingredient presence in ingredients json database
+
+    Args:
+        ingredient_name (str): Name of the ingredient to check the presence
+
+    Returns:
+        bool: True if searched recipe is in recipes json database else False
+    """
     return _check_json_element_presence(
         ingredient_name, "name", INGREDIENTS_DATABASE_FILENAME
     )
 
 
 def check_recipe_presence(recipe_name: str) -> bool:
-    """Check the recipe presence in recipes json database
+    """Check a recipe presence in recipes json database
 
     Args:
         recipe_name (str): Name of the recipe to check the presence
@@ -54,7 +75,9 @@ def get_json_recipe(recipe_name: str) -> Dict[str, Any]:
     with open(RECIPE_DATABASE_FILENAME, "r") as recipes_file:
         recipes = json.load(recipes_file)
     for recipe in recipes:
-        if recipe["name"] == recipe_name:
+        if (
+            recipe["name"] == recipe_name
+        ):  # TODO Create a private method which will search elements in json files
             return recipe
     raise Exception(
         f"Recipe {recipe_name} not found"
@@ -103,8 +126,7 @@ def update_ingredient_in_json_file(
 
 
 def update_ingredients_in_json_file(
-    json_filename: str,
-    ingredients_attributes_values: List[List[Any]],
+    json_filename: str, ingredients_attributes_values: List[List[Any]]
 ):
     """Update ingredients attributes in json file
 
@@ -120,9 +142,7 @@ def update_ingredients_in_json_file(
             "unite": unite,
         }
         _update_element_in_json_file(
-            json_filename,
-            json_ingredient_representation,
-            "name",
+            json_filename, json_ingredient_representation, "name"
         )
 
 
@@ -147,11 +167,7 @@ def add_ingredients_to_json_file(
 
 
 def add_ingredient_to_json_file(
-    json_filename: str,
-    name: str,
-    shelf: str,
-    price: float,
-    unite: str,
+    json_filename: str, name: str, shelf: str, price: float, unite: str
 ):
     """Add ingredient json representation to a json file
 
