@@ -14,7 +14,7 @@ from json_utility import (
     _update_element_in_json_file,
 )
 
-from data_test_private_json import (
+from data.data_test_private_json import (
     data_add_json_element_to_json_file,
     data_add_json_elements_to_json_file,
     data_check_json_element_presence,

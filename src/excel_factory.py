@@ -1,4 +1,3 @@
-import enum
 from typing import List
 
 from openpyxl import Workbook, load_workbook
@@ -14,6 +13,11 @@ from src.constants import (
 
 
 class ExcelFactory:
+    """
+    Represent a Excel files with one or several sheets and 
+    provide a set of tools to interact with Excel Sheets.
+    """
+
     def __init__(self, name: str) -> None:
         self.name = name
         try:
