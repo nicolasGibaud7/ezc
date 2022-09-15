@@ -1,27 +1,27 @@
 data_check_json_element_presence = [
-    ("pate", "name", "json_files/json_database.json", True),
-    ("courgette", "name", "json_files/json_database.json", True),
-    (1.1, "price", "json_files/json_database.json", True),
-    ("legumes", "shelf", "json_files/json_database.json", True),
-    (0.25, "price", "json_files/json_database.json", True),
-    ("Pate", "name", "json_files/json_database.json", False),
-    ("COURGETTE", "name", "json_files/json_database.json", False),
-    ("courgettE", "name", "json_files/json_database.json", False),
-    ("courgette", "shelf", "json_files/json_database.json", False),
-    ("0.25", "price", "json_files/json_database.json", False),
-    ("bztrck", "name", "json_files/json_database.json", False),
-    (15185613, "price", "json_files/json_database.json", False),
-    (0, "price", "json_files/json_database.json", False),
+    ("pate", "name", "tests/json_files/json_database.json", True),
+    ("courgette", "name", "tests/json_files/json_database.json", True),
+    (1.1, "price", "tests/json_files/json_database.json", True),
+    ("legumes", "shelf", "tests/json_files/json_database.json", True),
+    (0.25, "price", "tests/json_files/json_database.json", True),
+    ("Pate", "name", "tests/json_files/json_database.json", False),
+    ("COURGETTE", "name", "tests/json_files/json_database.json", False),
+    ("courgettE", "name", "tests/json_files/json_database.json", False),
+    ("courgette", "shelf", "tests/json_files/json_database.json", False),
+    ("0.25", "price", "tests/json_files/json_database.json", False),
+    ("bztrck", "name", "tests/json_files/json_database.json", False),
+    (15185613, "price", "tests/json_files/json_database.json", False),
+    (0, "price", "tests/json_files/json_database.json", False),
 ]
 
 data_get_json_content_file_with_added_element = [
     (
-        "json_files/short_database.json",
+        "tests/test_json_utility/json_files/short_database.json",
         {"name": "poulet", "unite": "kg"},
         [{"name": "pate", "unite": "kg"}, {"name": "poulet", "unite": "kg"}],
     ),
     (
-        "json_files/short_database.json",
+        "tests/test_json_utility/json_files/short_database.json",
         {"name": "poulet", "unite": "kg"},
         [{"name": "pate", "unite": "kg"}, {"name": "poulet", "unite": "kg"}],
     ),
@@ -29,7 +29,7 @@ data_get_json_content_file_with_added_element = [
 
 data_update_element_in_json_file = [
     (
-        "json_files/update_element_database.json",
+        "tests/test_json_utility/json_files/update_element_database.json",
         {
             "name": "pate",
             "shelf": "epicerie salee",
@@ -67,7 +67,7 @@ data_update_element_in_json_file = [
         ],
     ),
     (
-        "json_files/update_element_database.json",
+        "tests/test_json_utility/json_files/update_element_database.json",
         {
             "name": "pate",
             "shelf": "epicerie salee",
@@ -108,7 +108,7 @@ data_update_element_in_json_file = [
 
 data_get_json_content_file_with_added_elements = [
     (
-        "json_files/get_json_content_with_added_elements.json",
+        "tests/test_json_utility/json_files/get_json_content_with_added_elements.json",
         [
             {"name": "courgette", "unite": "kg"},
             {"name": "pomme", "unite": "kg"},
@@ -125,7 +125,7 @@ data_get_json_content_file_with_added_elements = [
 
 data_add_json_elements_to_json_file = [
     (
-        "json_files/add_json_elements_to_json_file.json",
+        "tests/test_json_utility/json_files/add_json_elements_to_json_file.json",
         [
             {"name": "courgette", "unite": "kg"},
             {"name": "pomme", "unite": "kg"},
@@ -142,7 +142,7 @@ data_add_json_elements_to_json_file = [
 
 data_add_json_element_to_json_file = [
     (
-        "json_files/add_json_element_to_json_file.json",
+        "tests/test_json_utility/json_files/add_json_element_to_json_file.json",
         {"name": "concombre", "unite": "kg"},
         [
             {"name": "pate", "unite": "kg"},

@@ -1,11 +1,7 @@
 import json
-import sys
 
 import pytest
-
-sys.path.insert(1, "../src")
-
-from json_utility import (
+from ezc.json_utility import (
     _add_json_element_to_json_file,
     _add_json_elements_to_json_file,
     _check_json_element_presence,
@@ -14,7 +10,7 @@ from json_utility import (
     _update_element_in_json_file,
 )
 
-from data.data_test_private_json import (
+from test_json_utility.data.data_test_private_json import (
     data_add_json_element_to_json_file,
     data_add_json_elements_to_json_file,
     data_check_json_element_presence,

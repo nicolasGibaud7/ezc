@@ -1,9 +1,12 @@
 import json
 from typing import Any, Dict, List
 
-from constants import INGREDIENTS_DATABASE_FILENAME, RECIPE_DATABASE_FILENAME
-from globals import logger
-from utility import format_option
+from ezc.constants import (
+    INGREDIENTS_DATABASE_FILENAME,
+    RECIPE_DATABASE_FILENAME,
+)
+from ezc.globals import logger
+from ezc.utility import format_option
 
 
 def get_json_ingredient(ingredient_name: str) -> Dict[str, Any]:

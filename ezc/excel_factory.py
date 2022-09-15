@@ -4,7 +4,7 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.cell import Cell
 from openpyxl.styles import Alignment, Border, Font, Side
 
-from src.constants import (
+from ezc.constants import (
     EXCEL_COLUMNS,
     FIRST_INGREDIENT_ROW,
     RECIPE_NAME_EXCEL_CASE,
@@ -14,7 +14,7 @@ from src.constants import (
 
 class ExcelFactory:
     """
-    Represent a Excel files with one or several sheets and 
+    Represent a Excel files with one or several sheets and
     provide a set of tools to interact with Excel Sheets.
     """
 

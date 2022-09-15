@@ -2,7 +2,7 @@ from typing import List
 
 import click
 
-from constants import (
+from ezc.constants import (
     INGREDIENT_TYPE,
     INGREDIENTS_CATEGORIES,
     INGREDIENTS_DATABASE_FILENAME,
@@ -14,9 +14,9 @@ from constants import (
     SHOPPING_LIST_TYPE,
     TABLE_TYPE_LIST,
 )
-from excel_factory import ExcelFactory
-from globals import logger
-from json_utility import (
+from ezc.excel_factory import ExcelFactory
+from ezc.globals import logger
+from ezc.json_utility import (
     add_ingredient_to_json_file,
     add_ingredients_to_json_file,
     add_recipe_to_json_file,
@@ -26,7 +26,7 @@ from json_utility import (
     update_ingredient_in_json_file,
     update_ingredients_in_json_file,
 )
-from utility import format_option, print_shopping_list
+from ezc.utility import format_option, print_shopping_list
 
 
 @click.group()
@@ -121,8 +121,16 @@ def create_list(recipes: List[str], log: bool):
 @click.option("-u", "--unite", type=str, required=False, default="kg")
 @click.option("-l", "--log", type=bool, required=False, default=False)
 def add_ingredient(name: str, shelf: str, price: float, unite: str, log: bool):
+    """Add an individual ingredient to the json database by passing all ingredient info
+
+    Args:
+        name (str): Ingredient name
+        shelf (str): Ingredient shelf
+        price (float): Ingredient price
+        unite (str): Ingredient unite
+        log (bool): Is log activated or not
+    """
     logger.set_log_activation(log)
-    # TODO Check if ingredient is existing and update it if it exists
 
     logger.debug(
         f"Adding ingredient {name} from {shelf} shelf at the price of {price}/{unite}."

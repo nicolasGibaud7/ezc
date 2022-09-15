@@ -1,12 +1,7 @@
 import json
-import sys
-from typing import Any, Dict
 
 import pytest
-
-sys.path.insert(1, "../src")
-
-from json_utility import (
+from ezc.json_utility import (
     add_ingredient_to_json_file,
     add_ingredients_to_json_file,
     add_recipe_to_json_file,
@@ -18,7 +13,7 @@ from json_utility import (
     update_ingredients_in_json_file,
 )
 
-from data.data_test_public_json import (
+from tests.test_json_utility.data.data_test_public_json import (
     data_add_ingredient_to_json_file,
     data_add_ingredients_to_json_file,
     data_add_recipe_to_json_file,

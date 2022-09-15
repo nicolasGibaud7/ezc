@@ -1,6 +1,6 @@
 data_add_ingredient_to_json_file = [
     (
-        "json_files/add_ingredient_to_json_file.json",
+        "tests/test_json_utility/json_files/add_ingredient_to_json_file.json",
         "concombre",
         "legumes",
         0.92,
@@ -24,7 +24,7 @@ data_add_ingredient_to_json_file = [
 
 data_add_ingredients_to_json_file = [
     (
-        "json_files/add_ingredients_to_json_file.json",
+        "tests/test_json_utility/json_files/add_ingredients_to_json_file.json",
         [
             ["concombre", "legumes", 0.92, "kg"],
             ["raclette", "fromage", 5.27, "unite"],
@@ -54,7 +54,7 @@ data_add_ingredients_to_json_file = [
 
 data_update_ingredients_in_json_file = [
     (
-        "json_files/update_ingredients_in_json_file.json",
+        "tests/test_json_utility/json_files/update_ingredients_in_json_file.json",
         [
             ["pate", "epicerie salee", 1.1, "kg"],
             ["concombre", "legumes", 0.95, "kg"],
@@ -82,7 +82,7 @@ data_update_ingredients_in_json_file = [
         ],
     ),
     (
-        "json_files/update_ingredients_in_json_file.json",
+        "tests/test_json_utility/json_files/update_ingredients_in_json_file.json",
         [
             ["pate", "epicerie salee", 1.1, "kg"],
             ["concombre", "legumes", 0.92, "kg"],
@@ -114,7 +114,7 @@ data_update_ingredients_in_json_file = [
 
 data_update_ingredient_in_json_file = [
     (
-        "json_files/update_ingredient_in_json_file.json",
+        "tests/test_json_utility/json_files/update_ingredient_in_json_file.json",
         "pate",
         "epicerie salee",
         0.9,
@@ -129,7 +129,7 @@ data_update_ingredient_in_json_file = [
         ],
     ),
     (
-        "json_files/update_ingredient_in_json_file.json",
+        "tests/test_json_utility/json_files/update_ingredient_in_json_file.json",
         "pate",
         "epicerie",
         1.3,
@@ -137,7 +137,7 @@ data_update_ingredient_in_json_file = [
         [{"name": "pate", "shelf": "epicerie", "price": 1.3, "unite": "kg"}],
     ),
     (
-        "json_files/update_ingredient_in_json_file.json",
+        "tests/test_json_utility/json_files/update_ingredient_in_json_file.json",
         "pate",
         "epicerie salee",
         1.1,
@@ -155,7 +155,7 @@ data_update_ingredient_in_json_file = [
 
 data_add_recipe_to_json_file = [
     (
-        "json_files/add_recipe_to_json_file.json",
+        "tests/test_json_utility/json_files/add_recipe_to_json_file.json",
         "pates raclettes",
         [
             {"ingredient_name": "pate", "quantity": 1},
