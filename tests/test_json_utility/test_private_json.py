@@ -9,8 +9,7 @@ from ezc.json_utility import (
     _get_json_content_file_with_added_elements,
     _update_element_in_json_file,
 )
-
-from test_json_utility.data.data_test_private_json import (
+from tests.test_json_utility.data.data_test_private_json import (
     data_add_json_element_to_json_file,
     data_add_json_elements_to_json_file,
     data_check_json_element_presence,

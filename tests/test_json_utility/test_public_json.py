@@ -12,7 +12,6 @@ from ezc.json_utility import (
     update_ingredient_in_json_file,
     update_ingredients_in_json_file,
 )
-
 from tests.test_json_utility.data.data_test_public_json import (
     data_add_ingredient_to_json_file,
     data_add_ingredients_to_json_file,

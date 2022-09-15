@@ -1,6 +1,6 @@
-INGREDIENTS_DATABASE_FILENAME = "tests/ingredients.json"
+INGREDIENTS_DATABASE_FILENAME = "tests/json_files/ingredients.json"
 
-RECIPE_DATABASE_FILENAME = "tests/recipes.json"
+RECIPE_DATABASE_FILENAME = "tests/json_files/recipes.json"
 
 SHELF_LIST = [
     "FRUITS",
