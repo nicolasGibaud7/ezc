@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 
-from src.globals import logger
+from ezc.globals import logger
 
 
 def format_option(option: Any):

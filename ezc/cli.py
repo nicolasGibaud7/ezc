@@ -1,8 +1,8 @@
-from typing import List
+from typing import Any, List
 
 import click
 
-from src.constants import (
+from ezc.constants import (
     INGREDIENT_TYPE,
     INGREDIENTS_CATEGORIES,
     INGREDIENTS_DATABASE_FILENAME,
@@ -14,9 +14,9 @@ from src.constants import (
     SHOPPING_LIST_TYPE,
     TABLE_TYPE_LIST,
 )
-from src.excel_factory import ExcelFactory
-from src.globals import logger
-from src.json_utility import (
+from ezc.excel_factory import ExcelFactory
+from ezc.globals import logger
+from ezc.json_utility import (
     add_ingredient_to_json_file,
     add_ingredients_to_json_file,
     add_recipe_to_json_file,
@@ -26,7 +26,7 @@ from src.json_utility import (
     update_ingredient_in_json_file,
     update_ingredients_in_json_file,
 )
-from src.utility import format_option, print_shopping_list
+from ezc.utility import format_option, print_shopping_list
 
 
 @click.group()
@@ -39,6 +39,76 @@ def cli():
 @click.option("-l", "--log", type=bool, required=False, default=False)
 def create_list(recipes: List[str], log: bool):
     logger.set_log_activation(log)
+    return _create_list(recipes, log)
+
+
+@cli.command()
+@click.option("-n", "--name", type=str, required=True)
+@click.option("-s", "--shelf", type=click.Choice(SHELF_LIST), required=True)
+@click.option("-p", "--price", type=float, required=True)
+@click.option("-u", "--unite", type=str, required=False, default="kg")
+@click.option("-l", "--log", type=bool, required=False, default=False)
+def add_ingredient(name: str, shelf: str, price: float, unite: str, log: bool):
+    """Add an individual ingredient to the json database by passing all ingredient info
+
+    Args:
+        name (str): Ingredient name
+        shelf (str): Ingredient shelf
+        price (float): Ingredient price
+        unite (str): Ingredient unite
+        log (bool): Is log activated or not
+    """
+    logger.set_log_activation(log)
+    _add_ingredient(name, shelf, price, unite)
+
+
+@cli.command()
+@click.argument("excel_filename", type=click.Path(exists=True))
+@click.option("--log / --no-log", required=False, default=False)
+def add_ingredients(excel_filename: str, log: bool):
+    """Add a group of ingredients described in a dedicated excel file
+    to json ingredient database
+
+    Args:
+        excel_filename (str): Ingredients description
+        log (bool): Is log activated or not
+    """
+    logger.set_log_activation(log)
+    _add_ingredients(excel_filename)
+
+
+@cli.command()
+@click.argument("excel_filename", type=click.Path(exists=True))
+@click.option("-l", "--log", type=bool, required=False, default=False)
+def add_recipe(excel_filename: str, log: bool):
+    """Add a recipe to json recipe database based on a recipe description
+    in an excel file
+
+    Args:
+        excel_filename (str): Recipe description
+        log (bool): Is log activated or not
+    """
+    logger.set_log_activation(log)
+    _add_recipe(excel_filename)
+
+
+@cli.command()
+@click.option("-n", "--name", type=str, default="table.xlsx")
+@click.option("-t", "--table_type", type=click.Choice(TABLE_TYPE_LIST))
+@click.option("-l", "--log", type=bool, required=False, default=False)
+def create_table(name: str, table_type: str, log: bool):
+    create_excel_table(name, table_type, log)
+
+
+def _create_list(recipes: List[str], log: bool) -> List[Any]:
+    """Create a shopping list based on recipes list
+
+    Args:
+        recipes (List[str]): Recipes list to follow to create shopping list
+
+    Returns:
+        _type_: _description_
+    """
     shopping_list = []
     logger.debug(
         f"Creating shopping list for {len(recipes)} recipes : {' - '.join(recipes)}"
@@ -114,22 +184,16 @@ def create_list(recipes: List[str], log: bool):
     return shopping_list
 
 
-@cli.command()
-@click.option("-n", "--name", type=str, required=True)
-@click.option("-s", "--shelf", type=click.Choice(SHELF_LIST), required=True)
-@click.option("-p", "--price", type=float, required=True)
-@click.option("-u", "--unite", type=str, required=False, default="kg")
-@click.option("-l", "--log", type=bool, required=False, default=False)
-def add_ingredient(name: str, shelf: str, price: float, unite: str, log: bool):
-    logger.set_log_activation(log)
-    # TODO Check if ingredient is existing and update it if it exists
+def _add_ingredient(name: str, shelf: str, price: float, unite: str):
 
     logger.debug(
         f"Adding ingredient {name} from {shelf} shelf at the price of {price}/{unite}."
     )
 
     if check_ingredient_presence(name):
-        update_ingredient_in_json_file(name, shelf, price, unite)
+        update_ingredient_in_json_file(
+            INGREDIENTS_DATABASE_FILENAME, name, shelf, price, unite
+        )
 
     # Write ingredients information in json database file
     add_ingredient_to_json_file(
@@ -137,19 +201,13 @@ def add_ingredient(name: str, shelf: str, price: float, unite: str, log: bool):
     )
 
 
-@cli.command()
-@click.argument("excel_filename", type=click.Path(exists=True))
-@click.option("--log / --no-log", required=False, default=False)
-def add_ingredients(excel_filename: str, log: bool):
-    logger.set_log_activation(log)
-
+def _add_ingredients(excel_filename: str):
     # Open excel file
     excel_factory = ExcelFactory(click.format_filename(excel_filename))
     new_ingredients_list = []
     updated_ingredients_list = []
     # Iter on rows
     for ingredient in excel_factory.iterate_ingredients():
-        # TODO Check if ingredient is existing and update it if it exists
         ingredient = list(
             map(
                 format_option,
@@ -163,18 +221,15 @@ def add_ingredients(excel_filename: str, log: bool):
 
     logger.debug(f"New ingredients list : {new_ingredients_list}")
     logger.debug(f"Updated ingredients list : {updated_ingredients_list}")
-    update_ingredients_in_json_file(updated_ingredients_list)
+    update_ingredients_in_json_file(
+        INGREDIENTS_DATABASE_FILENAME, updated_ingredients_list
+    )
     add_ingredients_to_json_file(
         INGREDIENTS_DATABASE_FILENAME, new_ingredients_list
     )
 
 
-@cli.command()
-@click.argument("excel_filename", type=click.Path(exists=True))
-@click.option("-l", "--log", type=bool, required=False, default=False)
-def add_recipe(excel_filename: str, log: bool):
-    logger.set_log_activation(log)
-
+def _add_recipe(excel_filename: str):
     # Open Excel File
     excel_factory = ExcelFactory(click.format_filename(excel_filename))
     ingredients_list = []
@@ -195,14 +250,6 @@ def add_recipe(excel_filename: str, log: bool):
     add_recipe_to_json_file(
         RECIPE_DATABASE_FILENAME, recipe_name, ingredients_list
     )
-
-
-@cli.command()
-@click.option("-n", "--name", type=str, default="table.xlsx")
-@click.option("-t", "--table_type", type=click.Choice(TABLE_TYPE_LIST))
-@click.option("-l", "--log", type=bool, required=False, default=False)
-def create_table(name: str, table_type: str, log: bool):
-    create_excel_table(name, table_type, log)
 
 
 def create_excel_table(name: str, table_type: str, log: bool):
