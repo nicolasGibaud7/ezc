@@ -30,6 +30,11 @@ class ExcelFactory:
         self.current_sheet = self.workbook.active
 
     def add_element(self, element_information: List[str]):
+        """Add an element information to excel spreadsheet at the first row
+
+        Args:
+            element_information (List[str]): List of element information
+        """
         for index, information in enumerate(element_information):
             cell = self.current_sheet[f"{EXCEL_COLUMNS[index]}1"]
             cell.value = information
@@ -38,6 +43,12 @@ class ExcelFactory:
     def add_ingredient(
         self, ingredient_information: List[str], row_index: int
     ):
+        """Add ingredient information at a given row to excel spreadsheet
+
+        Args:
+            ingredient_information (List[str]): List of all ingredient information
+            row_index (int): Row index where all ingredient information will be added
+        """
         for column_index, information in enumerate(ingredient_information):
             cell = self.current_sheet[
                 f"{EXCEL_COLUMNS[column_index]}{row_index}"
@@ -46,11 +57,23 @@ class ExcelFactory:
         self.workbook.save(self.name)
 
     def add_title(self):
+        """Formatize the cell at the TITLE_CELL position to a title style:
+        - Thin borders
+        - Center alignment
+        - Bold font
+        And add the name of the file as the title value.
+        """
         title_cell = self.current_sheet[TITLE_CELL]
         self._add_title_style(title_cell)
         title_cell.value = self.name.split(".")[0].capitalize()
 
     def create_header_row(self, categories: List[str]):
+        """Formatize a row to a specific header style and add the several
+        categories as header titles
+
+        Args:
+            categories (List[str]): Header titles
+        """
         for index, header_column in enumerate(
             EXCEL_COLUMNS[0 : len(categories)]
         ):
@@ -58,10 +81,20 @@ class ExcelFactory:
             self._add_header_style(header_cell)
             header_cell.value = categories[index]
 
-    def get_recipe_name(self):
+    def get_recipe_name(self) -> str:
+        """Get the recipe name on recipe description spreadsheet
+
+        Returns:
+            str: Recipe name
+        """
         return self.current_sheet[RECIPE_NAME_EXCEL_CASE].value
 
     def iterate_ingredients(self):
+        """Iterate on ingredients row on recipe and ingredients file
+
+        Returns:
+            Generator: Generator on the current ingredient row
+        """
         return self.current_sheet.iter_rows(min_row=FIRST_INGREDIENT_ROW)
 
     def _add_title_style(self, cell: Cell):
