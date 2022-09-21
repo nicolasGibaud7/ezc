@@ -221,7 +221,7 @@ data_check_ingredient_presence = [
     ("eau", True),
     ("gruyere", True),
     ("Eau", False),
-    ("raclette", False),
+    ("raclette", True),
     ("", False),
 ]
 
