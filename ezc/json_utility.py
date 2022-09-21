@@ -5,6 +5,7 @@ from ezc.constants import (
     INGREDIENTS_DATABASE_FILENAME,
     RECIPE_DATABASE_FILENAME,
 )
+from ezc.exceptions import IngredientNotFoundException, RecipeNotFoundException
 from ezc.globals import logger
 from ezc.utility import format_option
 
@@ -29,9 +30,9 @@ def get_json_ingredient(ingredient_name: str) -> Dict[str, Any]:
             ingredient["name"] == ingredient_name
         ):  # TODO Create a private method which will search elements in json files
             return ingredient
-    raise Exception(
+    raise IngredientNotFoundException(
         f"Ingredient {ingredient_name} not found"
-    )  # TODO Raise IngredientNotFoundException instead
+    )
 
 
 def check_ingredient_presence(ingredient_name: str) -> bool:
@@ -82,9 +83,7 @@ def get_json_recipe(recipe_name: str) -> Dict[str, Any]:
             recipe["name"] == recipe_name
         ):  # TODO Create a private method which will search elements in json files
             return recipe
-    raise Exception(
-        f"Recipe {recipe_name} not found"
-    )  # TODO Raise RecipeNotFoundException instead
+    raise RecipeNotFoundException(f"Recipe {recipe_name} not found")
 
 
 def add_recipe_to_json_file(
