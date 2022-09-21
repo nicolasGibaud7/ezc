@@ -207,6 +207,7 @@ data_get_json_recipe = [
             ],
         },
     ),
+    ("fgdskfgdsklgf", None),
 ]
 
 data_check_recipe_presence = [
@@ -245,4 +246,5 @@ data_get_json_ingredient = [
             "unite": "kg",
         },
     ),
+    ("fgdskgfslg", None),
 ]
