@@ -1,6 +1,8 @@
 import json
+from typing import Any, Dict
 
 import pytest
+from ezc.exceptions import IngredientNotFoundException, RecipeNotFoundException
 from ezc.json_utility import (
     add_ingredient_to_json_file,
     add_ingredients_to_json_file,
@@ -125,7 +127,10 @@ def test_add_recipe_to_json_file(
 
 @pytest.mark.parametrize("recipe_name, expected_result", data_get_json_recipe)
 def test_get_json_recipe(recipe_name: str, expected_result):
-    assert get_json_recipe(recipe_name) == expected_result
+    try:
+        assert get_json_recipe(recipe_name) == expected_result
+    except RecipeNotFoundException:
+        assert expected_result is None
 
 
 @pytest.mark.parametrize(
@@ -145,5 +150,10 @@ def test_check_ingredient_presence(recipe_name: str, expected_result):
 @pytest.mark.parametrize(
     "ingredient_name, expected_result", data_get_json_ingredient
 )
-def test_get_json_ingredient(ingredient_name: str, expected_result):
-    assert get_json_ingredient(ingredient_name) == expected_result
+def test_get_json_ingredient(
+    ingredient_name: str, expected_result: Dict[str, Any]
+):
+    try:
+        assert get_json_ingredient(ingredient_name) == expected_result
+    except IngredientNotFoundException:
+        assert expected_result is None

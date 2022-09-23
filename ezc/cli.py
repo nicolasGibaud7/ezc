@@ -15,6 +15,7 @@ from ezc.constants import (
     TABLE_TYPE_LIST,
 )
 from ezc.excel_factory import ExcelFactory
+from ezc.exceptions import IngredientNotFoundException, RecipeNotFoundException
 from ezc.globals import logger
 from ezc.json_utility import (
     add_ingredient_to_json_file,
@@ -117,7 +118,7 @@ def _create_list(recipes: List[str], log: bool) -> List[Any]:
         logger.debug(f"Adding {recipe_name} recipe ingredients")
         try:
             recipe_element = get_json_recipe(recipe_name)
-        except Exception:  # TODO Use RecipeNotFoundException instead
+        except RecipeNotFoundException:
             logger.error(
                 f"Recipe {recipe_name} is not in the recipes database. Please add it."
             )
@@ -130,7 +131,7 @@ def _create_list(recipes: List[str], log: bool) -> List[Any]:
             logger.debug(f"Adding {quantity} {ingredient_name} ingredient")
             try:
                 ingredient_element = get_json_ingredient(ingredient_name)
-            except Exception:  # TODO Use IngredientNotFoundException instead
+            except IngredientNotFoundException:
                 logger.error(
                     f"Ingredient {ingredient_name} is not in the ingredients database"
                 )
