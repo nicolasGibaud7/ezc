@@ -1,10 +1,9 @@
+from ezc.recipes import Ingredient
+
 data_add_ingredient_to_json_file = [
     (
         "tests/test_json_utility/json_files/add_ingredient_to_json_file.json",
-        "concombre",
-        "legumes",
-        0.92,
-        "kg",
+        Ingredient("concombre", "legumes", 0.92, "kg").to_json(),
         [
             {
                 "name": "pate",
@@ -115,10 +114,7 @@ data_update_ingredients_in_json_file = [
 data_update_ingredient_in_json_file = [
     (
         "tests/test_json_utility/json_files/update_ingredient_in_json_file.json",
-        "pate",
-        "epicerie salee",
-        0.9,
-        "kg",
+        Ingredient("pate", "epicerie salee", 0.9, "kg").to_json(),
         [
             {
                 "name": "pate",
@@ -130,18 +126,12 @@ data_update_ingredient_in_json_file = [
     ),
     (
         "tests/test_json_utility/json_files/update_ingredient_in_json_file.json",
-        "pate",
-        "epicerie",
-        1.3,
-        "kg",
+        Ingredient("pate", "epicerie", 1.3, "kg").to_json(),
         [{"name": "pate", "shelf": "epicerie", "price": 1.3, "unite": "kg"}],
     ),
     (
         "tests/test_json_utility/json_files/update_ingredient_in_json_file.json",
-        "pate",
-        "epicerie salee",
-        1.1,
-        "kg",
+        Ingredient("pate", "epicerie salee", 1.1, "kg").to_json(),
         [
             {
                 "name": "pate",

@@ -27,6 +27,7 @@ from ezc.json_utility import (
     update_ingredient_in_json_file,
     update_ingredients_in_json_file,
 )
+from ezc.recipes import Ingredient, Recipe, RecipeElement
 from ezc.utility import format_option, print_shopping_list
 
 
@@ -186,20 +187,14 @@ def _create_list(recipes: List[str], log: bool) -> List[Any]:
 
 
 def _add_ingredient(name: str, shelf: str, price: float, unite: str):
+    ingredient = Ingredient(name, shelf, price, unite)
+    logger.debug(f"cli:_add_ingredient : {ingredient}")
 
-    logger.debug(
-        f"Adding ingredient {name} from {shelf} shelf at the price of {price}/{unite}."
-    )
-
-    if check_ingredient_presence(name):
-        update_ingredient_in_json_file(
-            INGREDIENTS_DATABASE_FILENAME, name, shelf, price, unite
-        )
-
+    if ingredient.check_presence():
+        ingredient.update(INGREDIENTS_DATABASE_FILENAME)
+    # TODO Why no else here ? -> it's update OR adding, not both I think ???
     # Write ingredients information in json database file
-    add_ingredient_to_json_file(
-        INGREDIENTS_DATABASE_FILENAME, name, shelf, price, unite
-    )
+    ingredient.add_to_json_file(INGREDIENTS_DATABASE_FILENAME)
 
 
 def _add_ingredients(excel_filename: str):

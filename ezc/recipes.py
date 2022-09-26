@@ -1,6 +1,11 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List
 
+from ezc.json_utility import (
+    add_ingredient_to_json_file,
+    check_ingredient_presence,
+    update_ingredient_in_json_file,
+)
 from ezc.utility import format_option
 
 
@@ -18,6 +23,15 @@ class Ingredient:
             "price": self.price,
             "unite": self.unite,
         }
+
+    def check_presence(self) -> bool:
+        return check_ingredient_presence(self.name)
+
+    def update(self, database: str):
+        update_ingredient_in_json_file(database, self.to_json())
+
+    def add_to_json_file(self, database: str):
+        add_ingredient_to_json_file(database, self.to_json())
 
     def __post_init__(self):
         self.name = format_option(self.name)

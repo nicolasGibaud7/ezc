@@ -96,7 +96,8 @@ def add_recipe_to_json_file(
     Args:
         json_filename (str): Json file name
         recipe_name (str): Recipe name
-        ingredients_list (List[Dict[str, Any]]): List of recipe ingredients and their quantity
+        ingredients_list (List[Dict[str, Any]]): List of recipe ingredients
+        and their quantity
     """
     recipe_element = {
         "name": recipe_name,
@@ -107,24 +108,14 @@ def add_recipe_to_json_file(
 
 
 def update_ingredient_in_json_file(
-    json_filename: str, name: str, shelf: str, price: float, unite: str
+    json_filename: str, ingredient_attributes: Dict[str, Any]
 ):
     """Update ingredient attributes in json file
 
     Args:
-        name (str): Ingredient name
-        shelf (str): Ingredient shelf
-        price (float): Ingredient price
-        unite (str): Ingredient unite
+        ingredient_attributes (Dict[str, Any]): Ingredient attributes
     """
-    name, shelf, price, unite = map(format_option, [name, shelf, price, unite])
-    ingredient_element = {
-        "name": name,
-        "shelf": shelf,
-        "price": price,
-        "unite": unite,
-    }
-    _update_element_in_json_file(json_filename, ingredient_element, "name")
+    _update_element_in_json_file(json_filename, ingredient_attributes, "name")
 
 
 def update_ingredients_in_json_file(
@@ -169,25 +160,15 @@ def add_ingredients_to_json_file(
 
 
 def add_ingredient_to_json_file(
-    json_filename: str, name: str, shelf: str, price: float, unite: str
+    json_filename: str, ingredient_attributes: Dict[str, Any]
 ):
     """Add ingredient json representation to a json file
 
     Args:
         json_filename (str): Json file name
-        name (str): Ingredient name
-        shelf (str): Ingredient shelf
-        price (float): Ingredient price
-        unite (str): Ingredient unite
+        ingredient_attributes (Dict[str, Any]): Ingredient info dictionary
     """
-    name, shelf, price, unite = map(format_option, [name, shelf, price, unite])
-    ingredient_element = {
-        "name": name,
-        "shelf": shelf,
-        "price": price,
-        "unite": unite,
-    }
-    _add_json_element_to_json_file(json_filename, ingredient_element)
+    _add_json_element_to_json_file(json_filename, ingredient_attributes)
 
 
 def _add_json_element_to_json_file(
