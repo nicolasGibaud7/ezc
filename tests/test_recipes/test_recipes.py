@@ -29,34 +29,33 @@ def test_ingredient(
 
 
 @pytest.mark.parametrize(
-    "ingredient, quantity, expected_result", data_test_recipe_element
+    "ingredient_name, quantity, expected_result", data_test_recipe_element
 )
 def test_recipe_element(
-    ingredient: Ingredient,
+    ingredient_name: str,
     quantity: int,
     expected_result: Dict[str, Any],
 ):
 
-    recipe_element = RecipeElement(ingredient, quantity)
-    assert recipe_element.ingredient.name == format_option(ingredient.name)
-    assert recipe_element.ingredient.shelf == format_option(ingredient.shelf)
-    assert recipe_element.ingredient.price == format_option(ingredient.price)
-    assert recipe_element.ingredient.unite == format_option(ingredient.unite)
+    recipe_element = RecipeElement(ingredient_name, quantity)
+    assert recipe_element.ingredient_name == format_option(ingredient_name)
     assert recipe_element.quantity == format_option(quantity)
     assert recipe_element.to_json() == expected_result
 
 
 @pytest.mark.parametrize(
-    "name, ingredients, expected_result", data_test_recipe
+    "name, recipe_elements, expected_result", data_test_recipe
 )
 def test_recipe(
     name: str,
-    ingredients: List[RecipeElement],
+    recipe_elements: List[RecipeElement],
     expected_result: Dict[str, Any],
 ):
 
-    recipe = Recipe(name, ingredients)
+    recipe = Recipe(name, recipe_elements)
     assert recipe.name == format_option(name)
-    for recipe_ingredient, ingredient in zip(recipe.ingredients, ingredients):
-        assert recipe_ingredient == ingredient
+    for recipe_ingredient, recipe_element in zip(
+        recipe.ingredients, recipe_elements
+    ):
+        assert recipe_ingredient == recipe_element
     assert recipe.to_json() == expected_result

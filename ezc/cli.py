@@ -200,52 +200,21 @@ def _add_ingredient(name: str, shelf: str, price: float, unite: str):
 def _add_ingredients(excel_filename: str):
     # Open excel file
     excel_factory = ExcelFactory(click.format_filename(excel_filename))
-    new_ingredients_list = []
-    updated_ingredients_list = []
-    # Iter on rows
-    for ingredient in excel_factory.iterate_ingredients():
-        ingredient = list(
-            map(
-                format_option,
-                [element.value for element in ingredient],
-            )
-        )
-        if check_ingredient_presence(ingredient[0]):
-            updated_ingredients_list.append(ingredient)
-        else:
-            new_ingredients_list.append(ingredient)
 
-    logger.debug(f"New ingredients list : {new_ingredients_list}")
-    logger.debug(f"Updated ingredients list : {updated_ingredients_list}")
-    update_ingredients_in_json_file(
-        INGREDIENTS_DATABASE_FILENAME, updated_ingredients_list
-    )
-    add_ingredients_to_json_file(
-        INGREDIENTS_DATABASE_FILENAME, new_ingredients_list
-    )
+    # Iter on rows
+    for ingredient in excel_factory.iterate_ingredient():
+        ingredient.add_or_update(INGREDIENTS_DATABASE_FILENAME)
 
 
 def _add_recipe(excel_filename: str):
     # Open Excel File
     excel_factory = ExcelFactory(click.format_filename(excel_filename))
-    ingredients_list = []
-    recipe_name = excel_factory.get_recipe_name()
 
-    for ingredient in excel_factory.iterate_ingredients():
-        ingredient_name, ingredient_quantity = map(
-            format_option, [element.value for element in ingredient]
-        )
-        ingredients_list.append(
-            {
-                "ingredient_name": ingredient_name,
-                "quantity": ingredient_quantity,
-            }
-        )
-
-    # Add recipe to database
-    add_recipe_to_json_file(
-        RECIPE_DATABASE_FILENAME, recipe_name, ingredients_list
+    recipe = Recipe(
+        excel_factory.get_recipe_name(),
+        [r_e for r_e in excel_factory.iterate_recipe_element()],
     )
+    recipe.add_to_json_file(RECIPE_DATABASE_FILENAME)
 
 
 def create_excel_table(name: str, table_type: str, log: bool):
