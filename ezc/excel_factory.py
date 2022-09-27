@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, List
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.cell import Cell
@@ -10,6 +10,7 @@ from ezc.constants import (
     RECIPE_NAME_EXCEL_CASE,
     TITLE_CELL,
 )
+from ezc.recipes import Ingredient, RecipeElement
 
 
 class ExcelFactory:
@@ -89,7 +90,22 @@ class ExcelFactory:
         """
         return self.current_sheet[RECIPE_NAME_EXCEL_CASE].value
 
-    def iterate_ingredients(self):
+    def iterate_ingredient(self):
+        for ingredient_attr in self._iterate_ingredients():
+            yield Ingredient(
+                ingredient_attr[0].value,
+                ingredient_attr[1].value,
+                ingredient_attr[2].value,
+                ingredient_attr[3].value,
+            )
+
+    def iterate_recipe_element(self):
+        for recipe_element_attr in self._iterate_ingredients():
+            yield RecipeElement(
+                recipe_element_attr[0].value, recipe_element_attr[1].value
+            )
+
+    def _iterate_ingredients(self):
         """Iterate on ingredients row on recipe and ingredients file
 
         Returns:
