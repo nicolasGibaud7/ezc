@@ -41,17 +41,17 @@ data_test_ingredient = [
 
 data_test_recipe_element = [
     (
-        Ingredient("courgette", "legumes", 0.78, "kg"),
+        "courgette",
         3,
         {"ingredient_name": "courgette", "quantity": 3},
     ),
     (
-        Ingredient("caroTte", "legumes", 1.2, "kg"),
+        "caroTte",
         1,
         {"ingredient_name": "carotte", "quantity": 1},
     ),
     (
-        Ingredient("YaOuRt", "FRAIs", 3.5, "kg"),
+        "YaOuRt",
         0,
         {"ingredient_name": "yaourt", "quantity": 0},
     ),
@@ -61,12 +61,8 @@ data_test_recipe = [
     (
         "pates raclette",
         [
-            RecipeElement(
-                Ingredient("pates", "epicerie salee", 0.8, "kg"), quantity=1
-            ),
-            RecipeElement(
-                Ingredient("raclette", "fromage", 4.6, "kg"), quantity=1
-            ),
+            RecipeElement("pates", quantity=1),
+            RecipeElement("raclette", quantity=1),
         ],
         {
             "name": "pates raclette",
@@ -79,21 +75,11 @@ data_test_recipe = [
     (
         "riZ Curry",
         [
-            RecipeElement(
-                Ingredient("RIZ", "epicerie salee", 0.8, "kg"), quantity=1
-            ),
-            RecipeElement(
-                Ingredient("courgetTes", "legumes", 0.78, "kg"), quantity=2
-            ),
-            RecipeElement(
-                Ingredient("champignons", "leGumes", 0.55, "kg"), quantity=1
-            ),
-            RecipeElement(
-                Ingredient("curry", "epicerie salee", 0.06, "g"), quantity=10
-            ),
-            RecipeElement(
-                Ingredient("creme fraiche", "frais", 2.5, "kg"), quantity=1
-            ),
+            RecipeElement("RIZ", quantity=1),
+            RecipeElement("courgetTes", quantity=2),
+            RecipeElement("champignons", quantity=1),
+            RecipeElement("curry", quantity=10),
+            RecipeElement("creme fraiche", quantity=1),
         ],
         {
             "name": "riz curry",

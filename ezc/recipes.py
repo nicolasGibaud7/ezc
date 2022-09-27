@@ -3,6 +3,7 @@ from typing import Any, Dict, List
 
 from ezc.json_utility import (
     add_ingredient_to_json_file,
+    add_recipe_to_json_file,
     check_ingredient_presence,
     update_ingredient_in_json_file,
 )
@@ -33,6 +34,12 @@ class Ingredient:
     def add_to_json_file(self, database: str):
         add_ingredient_to_json_file(database, self.to_json())
 
+    def add_or_update(self, database: str):
+        if self.check_presence():
+            self.update(database)
+        else:
+            self.add_to_json_file(database)
+
     def __post_init__(self):
         self.name = format_option(self.name)
         self.shelf = format_option(self.shelf)
@@ -42,16 +49,17 @@ class Ingredient:
 
 @dataclass
 class RecipeElement:
-    ingredient: Ingredient
-    quantity: int
+    ingredient_name: str
+    quantity: float
 
     def to_json(self) -> Dict[str, Any]:
         return {
-            "ingredient_name": self.ingredient.name,
+            "ingredient_name": self.ingredient_name,
             "quantity": self.quantity,
         }
 
     def __post_init__(self):
+        self.ingredient_name = format_option(self.ingredient_name)
         self.quantity = format_option(self.quantity)
 
 
@@ -67,6 +75,11 @@ class Recipe:
                 ingredient.to_json() for ingredient in self.ingredients
             ],
         }
+
+    def add_to_json_file(self, database: str):
+        add_recipe_to_json_file(
+            database, self.name, [r_e.to_json() for r_e in self.ingredients]
+        )
 
     def __post_init__(self):
         self.name = format_option(self.name)
