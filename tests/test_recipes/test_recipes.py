@@ -44,18 +44,18 @@ def test_recipe_element(
 
 
 @pytest.mark.parametrize(
-    "name, recipe_elements, expected_result", data_test_recipe
+    "name, expected_recipe_elements, expected_result", data_test_recipe
 )
 def test_recipe(
     name: str,
-    recipe_elements: List[RecipeElement],
+    expected_recipe_elements: List[RecipeElement],
     expected_result: Dict[str, Any],
 ):
 
-    recipe = Recipe(name, recipe_elements)
+    recipe = Recipe(name, expected_recipe_elements)
     assert recipe.name == format_option(name)
-    for recipe_ingredient, recipe_element in zip(
-        recipe.ingredients, recipe_elements
+    for recipe_element, recipe_element in zip(
+        recipe.recipe_elements, expected_recipe_elements
     ):
-        assert recipe_ingredient == recipe_element
+        assert recipe_element == recipe_element
     assert recipe.to_json() == expected_result
