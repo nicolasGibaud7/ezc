@@ -84,7 +84,7 @@ def test_create_list(
     try:
         shopping_list = _create_list(recipes, False)
         for ingredient in expected_result:
-            assert ingredient in shopping_list
+            assert ingredient in shopping_list.to_json()
     finally:
         try:
             os.remove("shopping_list.xlsx")

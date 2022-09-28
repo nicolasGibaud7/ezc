@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import List
 
 import click
 
@@ -17,18 +17,14 @@ from ezc.constants import (
 from ezc.excel_factory import ExcelFactory
 from ezc.exceptions import IngredientNotFoundException, RecipeNotFoundException
 from ezc.globals import logger
-from ezc.json_utility import (
-    add_ingredient_to_json_file,
-    add_ingredients_to_json_file,
-    add_recipe_to_json_file,
-    check_ingredient_presence,
-    get_json_ingredient,
-    get_json_recipe,
-    update_ingredient_in_json_file,
-    update_ingredients_in_json_file,
+from ezc.json_utility import get_json_ingredient, get_json_recipe
+from ezc.recipes import (
+    Ingredient,
+    Recipe,
+    RecipeElement,
+    ShoppingElement,
+    ShoppingList,
 )
-from ezc.recipes import Ingredient, Recipe, RecipeElement
-from ezc.utility import format_option, print_shopping_list
 
 
 @click.group()
@@ -102,7 +98,7 @@ def create_table(name: str, table_type: str, log: bool):
     create_excel_table(name, table_type, log)
 
 
-def _create_list(recipes: List[str], log: bool) -> List[Any]:
+def _create_list(recipes: List[str], log: bool) -> ShoppingList:
     """Create a shopping list based on recipes list
 
     Args:
@@ -111,7 +107,7 @@ def _create_list(recipes: List[str], log: bool) -> List[Any]:
     Returns:
         _type_: _description_
     """
-    shopping_list = []
+    shopping_list = ShoppingList([])
     logger.debug(
         f"Creating shopping list for {len(recipes)} recipes : {' - '.join(recipes)}"
     )
@@ -124,64 +120,51 @@ def _create_list(recipes: List[str], log: bool) -> List[Any]:
                 f"Recipe {recipe_name} is not in the recipes database. Please add it."
             )
             continue
+        recipe = Recipe(
+            recipe_name,
+            [
+                RecipeElement(r_e["ingredient_name"], r_e["quantity"])
+                for r_e in recipe_element["ingredients_list"]
+            ],
+        )
 
-        ingredients = recipe_element["ingredients_list"]
-        for ingredient in ingredients:
-            ingredient_name = ingredient["ingredient_name"]
-            quantity = ingredient["quantity"]
-            logger.debug(f"Adding {quantity} {ingredient_name} ingredient")
+        for ingredient in recipe.ingredients:
+
+            logger.debug(
+                f"Adding {ingredient.quantity} {ingredient.ingredient_name} ingredient"
+            )
             try:
-                ingredient_element = get_json_ingredient(ingredient_name)
+                ingredient_element = get_json_ingredient(
+                    ingredient.ingredient_name
+                )
             except IngredientNotFoundException:
                 logger.error(
-                    f"Ingredient {ingredient_name} is not in the ingredients database"
+                    f"Ingredient {ingredient.ingredient_name} is not in the ingredients database"
                 )
                 continue
 
-            shopping_element = {
-                "name": ingredient_element["name"],
-                "shelf": ingredient_element["shelf"],
-                "quantity": quantity,
-                "unite": ingredient_element["unite"],
-                "price": quantity * ingredient_element["price"],
-            }
-            logger.debug(
-                f"Ingredient informations : {shopping_element['name']} - {shopping_element['shelf']} - {shopping_element['quantity']} - {shopping_element['unite']} - {shopping_element['price']}"
+            ingredient_object = Ingredient(
+                ingredient_element["name"],
+                ingredient_element["shelf"],
+                ingredient_element["price"],
+                ingredient_element["unite"],
             )
-            if shopping_element["name"] in [
-                ingredient_element["name"]
-                for ingredient_element in shopping_list
-            ]:
-                # Get ingredient
-                ingredient_index = [
-                    index
-                    for index, ingredient_element in enumerate(shopping_list)
-                    if ingredient_element["name"] == shopping_element["name"]
-                ][0]
-                shopping_list[ingredient_index][
-                    "quantity"
-                ] += shopping_element["quantity"]
-                shopping_list[ingredient_index]["price"] += shopping_element[
-                    "price"
-                ]
-                logger.debug(
-                    f"Ingredient already in the shopping list : updating its quantity to {shopping_list[ingredient_index]['quantity']} and its price to {shopping_list[ingredient_index]['price']}"
-                )
-            else:
-                shopping_list.append(shopping_element)
+
+            shopping_element = ShoppingElement(ingredient_object, ingredient)
+            shopping_list.add_or_update_element(shopping_element)
+
     logger.debug(
-        f"Total of {len(shopping_list)} ingredients added to shopping list"
+        f"Total of {shopping_list.length()} ingredients added to shopping list"
     )
-    print_shopping_list(shopping_list)
+    logger.debug(f"{shopping_list}")
+    # print_shopping_list(shopping_list)
 
     # Save shopping list result in a excel spreadsheet
     excel_factory = create_excel_table(
         "shopping_list.xlsx", SHOPPING_LIST_TYPE, log
     )
-    for index, shopping_element in enumerate(shopping_list):
-        excel_factory.add_ingredient(
-            list(shopping_element.values()), 4 + index
-        )
+
+    excel_factory.add_shopping_list(shopping_list)
 
     return shopping_list
 
@@ -190,11 +173,7 @@ def _add_ingredient(name: str, shelf: str, price: float, unite: str):
     ingredient = Ingredient(name, shelf, price, unite)
     logger.debug(f"cli:_add_ingredient : {ingredient}")
 
-    if ingredient.check_presence():
-        ingredient.update(INGREDIENTS_DATABASE_FILENAME)
-    # TODO Why no else here ? -> it's update OR adding, not both I think ???
-    # Write ingredients information in json database file
-    ingredient.add_to_json_file(INGREDIENTS_DATABASE_FILENAME)
+    ingredient.add_or_update(INGREDIENTS_DATABASE_FILENAME)
 
 
 def _add_ingredients(excel_filename: str):
