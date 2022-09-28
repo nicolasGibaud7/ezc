@@ -10,7 +10,7 @@ from ezc.constants import (
     RECIPE_NAME_EXCEL_CASE,
     TITLE_CELL,
 )
-from ezc.recipes import Ingredient, RecipeElement
+from ezc.recipes import Ingredient, RecipeElement, ShoppingList
 
 
 class ExcelFactory:
@@ -40,6 +40,19 @@ class ExcelFactory:
             cell = self.current_sheet[f"{EXCEL_COLUMNS[index]}1"]
             cell.value = information
         self.workbook.save(self.name)
+
+    def add_shopping_list(self, shopping_list: ShoppingList):
+        for index, element in enumerate(shopping_list.elements):
+            self.add_ingredient(
+                [
+                    element.ingredient.name,
+                    element.ingredient.shelf,
+                    str(element.recipe_element.quantity),
+                    element.ingredient.unite,
+                    str(element.price),
+                ],
+                4 + index,
+            )
 
     def add_ingredient(
         self, ingredient_information: List[str], row_index: int

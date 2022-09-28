@@ -66,20 +66,85 @@ class RecipeElement:
 @dataclass
 class Recipe:
     name: str
-    ingredients: List[RecipeElement]
+    recipe_elements: List[
+        RecipeElement
+    ]  # TODO change ingredients attribute name to recipe_elements
 
     def to_json(self) -> Dict[str, Any]:
         return {
             "name": self.name,
             "ingredients_list": [
-                ingredient.to_json() for ingredient in self.ingredients
+                ingredient.to_json() for ingredient in self.recipe_elements
             ],
         }
 
     def add_to_json_file(self, database: str):
         add_recipe_to_json_file(
-            database, self.name, [r_e.to_json() for r_e in self.ingredients]
+            database, self.name, self.to_json()["ingredients_list"]
         )
 
     def __post_init__(self):
         self.name = format_option(self.name)
+
+
+@dataclass
+class ShoppingElement:
+    ingredient: Ingredient
+    recipe_element: RecipeElement
+
+    @property
+    def price(self):
+        return self.recipe_element.quantity * self.ingredient.price
+
+    def to_json(self) -> Dict[str, Any]:
+        return {
+            "name": self.ingredient.name,
+            "shelf": self.ingredient.shelf,
+            "quantity": self.recipe_element.quantity,
+            "unite": self.ingredient.unite,
+            "price": self.price,
+        }
+
+    def __repr__(self) -> str:
+        return f"{self.ingredient.name} : {self.ingredient.shelf} - {self.recipe_element.quantity} {self.ingredient.unite} - {self.price} euros"
+
+
+@dataclass
+class ShoppingList:  # TODO Add inheritance to List instead of having a list as attribute
+    elements: List[ShoppingElement]
+
+    def to_json(self) -> List[Dict[str, Any]]:
+        return [element.to_json() for element in self.elements]
+
+    def add_or_update_element(self, shopping_element: ShoppingElement):
+        if self.check_element_presence(shopping_element):
+            self.update_element(shopping_element)
+        else:
+            self.elements.append(shopping_element)
+
+    def check_element_presence(self, element: ShoppingElement):
+        return any(
+            [
+                element
+                for shopping_element in self.elements
+                if element.ingredient == shopping_element.ingredient
+            ]
+        )
+
+    def update_element(self, shopping_element: ShoppingElement):
+        for index, element in enumerate(self.elements):
+            if element.ingredient == shopping_element.ingredient:
+                self.elements[
+                    index
+                ].recipe_element.quantity += (
+                    shopping_element.recipe_element.quantity
+                )
+
+    def length(self):
+        return len(self.elements)
+
+    def __repr__(self) -> str:
+        str_list = ["==== Shopping list ===="]
+        for element in self.elements:
+            str_list.append(f"{element}")
+        return "\n".join(str_list)
