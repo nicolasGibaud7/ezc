@@ -12,6 +12,12 @@ from ezc.utility import format_option
 
 @dataclass
 class Ingredient:
+    """
+    Represent an ingredient with name, shelf, price, unite info.
+    And provide tools to interact with json database to add or update
+    an ingredient for example.
+    """
+
     name: str
     shelf: str
     price: float
@@ -35,6 +41,12 @@ class Ingredient:
         add_ingredient_to_json_file(database, self.to_json())
 
     def add_or_update(self, database: str):
+        """Add an ingredient to a json database if it's not in it, else
+        update ingredient info.
+
+        Args:
+            database (str): json database name
+        """
         if self.check_presence():
             self.update(database)
         else:
@@ -49,6 +61,10 @@ class Ingredient:
 
 @dataclass
 class RecipeElement:
+    """
+    Represent an element of a recipe.
+    """
+
     ingredient_name: str
     quantity: float
 
@@ -65,6 +81,11 @@ class RecipeElement:
 
 @dataclass
 class Recipe:
+    """
+    Recipe object which contains a group of recipe elements and provide tool to
+    add the recipe to a json database.
+    """
+
     name: str
     recipe_elements: List[
         RecipeElement
