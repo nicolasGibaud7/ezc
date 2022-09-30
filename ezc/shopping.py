@@ -7,6 +7,16 @@ from ezc.recipes import Ingredient, RecipeElement
 
 @dataclass
 class ShoppingElement:
+    """
+    Represent a shopping element of a shopping list. It contains information
+    about the ingredient and it's quantity o buy
+
+    Raises:
+        NotMatchingException: When the recipe element and the ingredient
+        don't match
+
+    """
+
     ingredient: Ingredient
     recipe_element: RecipeElement
 
@@ -35,12 +45,25 @@ class ShoppingElement:
 
 @dataclass
 class ShoppingList:  # TODO Add inheritance to List instead of having a list as attribute
+    """
+    Contains a list of shopping element to buy. And provide tools to interact
+    with by adding or updating elements.
+
+    """
+
     elements: List[ShoppingElement]
 
     def to_json(self) -> List[Dict[str, Any]]:
         return [element.to_json() for element in self.elements]
 
     def add_or_update_element(self, shopping_element: ShoppingElement):
+        """Add an element in the shopping list if it's not already in the
+        list, else, update the element quantity.
+
+        Args:
+            shopping_element (ShoppingElement): shopping element object to add
+            or update.
+        """
         if self.check_element_presence(shopping_element):
             self.update_element(shopping_element)
         else:
