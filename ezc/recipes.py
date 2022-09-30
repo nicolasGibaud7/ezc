@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
+from ezc.exceptions import NotMatchingException
 from ezc.json_utility import (
     add_ingredient_to_json_file,
     add_recipe_to_json_file,
@@ -108,6 +109,12 @@ class ShoppingElement:
     def __repr__(self) -> str:
         return f"{self.ingredient.name} : {self.ingredient.shelf} - {self.recipe_element.quantity} {self.ingredient.unite} - {self.price} euros"
 
+    def __post_init__(self):
+        if self.ingredient.name != self.recipe_element.ingredient_name:
+            raise NotMatchingException(
+                f"Ingredient {self.ingredient.name} different of {self.recipe_element.ingredient_name}"
+            )
+
 
 @dataclass
 class ShoppingList:  # TODO Add inheritance to List instead of having a list as attribute
@@ -144,7 +151,4 @@ class ShoppingList:  # TODO Add inheritance to List instead of having a list as 
         return len(self.elements)
 
     def __repr__(self) -> str:
-        str_list = ["==== Shopping list ===="]
-        for element in self.elements:
-            str_list.append(f"{element}")
-        return "\n".join(str_list)
+        return "\n".join([f"{element}" for element in self.elements])
