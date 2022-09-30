@@ -1,4 +1,4 @@
-from ezc.recipes import Ingredient, RecipeElement
+from ezc.recipes import Ingredient, RecipeElement, ShoppingElement
 
 data_test_ingredient = [
     (
@@ -91,5 +91,106 @@ data_test_recipe = [
                 {"ingredient_name": "creme fraiche", "quantity": 1},
             ],
         },
+    ),
+]
+
+data_test_shopping_element = [
+    (
+        Ingredient("courgette", "legumes", 1.1, "kg"),
+        RecipeElement("courgette", 3.7),
+        4.07,
+        {
+            "name": "courgette",
+            "shelf": "legumes",
+            "quantity": 3.7,
+            "unite": "kg",
+            "price": 4.07,
+        },
+    ),
+    (
+        Ingredient("lait", "frais", 0.95, "l"),
+        RecipeElement("lait", 1.2),
+        1.14,
+        {
+            "name": "lait",
+            "shelf": "frais",
+            "quantity": 1.2,
+            "unite": "l",
+            "price": 1.14,
+        },
+    ),
+    (
+        Ingredient("courgettes", "frais", 1.1, "kg"),
+        RecipeElement("carottes", 2),
+        0,
+        {},
+    ),
+]
+
+data_test_shopping_list = [
+    (
+        [
+            ShoppingElement(
+                Ingredient("courgette", "legumes", 1.1, "kg"),
+                RecipeElement("courgette", 3.7),
+            ),
+            ShoppingElement(
+                Ingredient("lait", "frais", 0.95, "l"),
+                RecipeElement("lait", 1.2),
+            ),
+        ],
+        [
+            {
+                "name": "courgette",
+                "shelf": "legumes",
+                "quantity": 3.7,
+                "unite": "kg",
+                "price": 4.07,
+            },
+            {
+                "name": "lait",
+                "shelf": "frais",
+                "quantity": 1.2,
+                "unite": "l",
+                "price": 1.14,
+            },
+        ],
+    )
+]
+
+data_test_shopping_list_add_or_update_element = [
+    (
+        [
+            ShoppingElement(
+                Ingredient("courgette", "legumes", 1.1, "kg"),
+                RecipeElement("courgette", 3.7),
+            ),
+            ShoppingElement(
+                Ingredient("lait", "frais", 0.95, "l"),
+                RecipeElement("lait", 1.2),
+            ),
+        ],
+        ShoppingElement(
+            Ingredient("carotte", "legumes", 1.2, "kg"),
+            RecipeElement("carotte", 1),
+        ),
+        1,
+    ),
+    (
+        [
+            ShoppingElement(
+                Ingredient("courgette", "legumes", 1.1, "kg"),
+                RecipeElement("courgette", 3.5),
+            ),
+            ShoppingElement(
+                Ingredient("lait", "frais", 0.95, "l"),
+                RecipeElement("lait", 1.2),
+            ),
+        ],
+        ShoppingElement(
+            Ingredient("courgette", "legumes", 1.1, "kg"),
+            RecipeElement("courgette", 3),
+        ),
+        6.5,
     ),
 ]

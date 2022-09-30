@@ -1,12 +1,22 @@
 from typing import Any, Dict, List
 
 import pytest
-from ezc.recipes import Ingredient, Recipe, RecipeElement
+from ezc.exceptions import NotMatchingException
+from ezc.recipes import (
+    Ingredient,
+    Recipe,
+    RecipeElement,
+    ShoppingElement,
+    ShoppingList,
+)
 from ezc.utility import format_option
 from tests.test_recipes.data.data_test_recipes import (
     data_test_ingredient,
     data_test_recipe,
     data_test_recipe_element,
+    data_test_shopping_element,
+    data_test_shopping_list,
+    data_test_shopping_list_add_or_update_element,
 )
 
 
@@ -59,3 +69,53 @@ def test_recipe(
     ):
         assert recipe_element == recipe_element
     assert recipe.to_json() == expected_result
+
+
+@pytest.mark.parametrize(
+    "ingredient, recipe_element, expected_price, expected_result",
+    data_test_shopping_element,
+)
+def test_shopping_element(
+    ingredient: Ingredient,
+    recipe_element: RecipeElement,
+    expected_price: float,
+    expected_result: Dict[str, Any],
+):
+    try:
+        shopping_element = ShoppingElement(ingredient, recipe_element)
+        assert shopping_element.price == expected_price
+        assert shopping_element.to_json() == expected_result
+
+    except NotMatchingException:
+        assert ingredient.name != recipe_element.ingredient_name
+
+
+@pytest.mark.parametrize(
+    "elements, expected_result",
+    data_test_shopping_list,
+)
+def test_shopping_list_(elements: List[ShoppingElement], expected_result: Any):
+    shopping_list = ShoppingList(elements)
+    assert shopping_list.to_json() == expected_result
+
+
+@pytest.mark.parametrize(
+    "elements, shopping_element, expected_result",
+    data_test_shopping_list_add_or_update_element,
+)
+def test_shopping_list_add_or_update_element(
+    elements: List[ShoppingElement],
+    shopping_element: ShoppingElement,
+    expected_result: Any,
+):
+    shopping_list = ShoppingList(elements)
+    shopping_list.add_or_update_element(shopping_element)
+    index = [
+        i
+        for i, e in enumerate(shopping_list.elements)
+        if e.ingredient == shopping_element.ingredient
+    ][0]
+    assert (
+        shopping_list.elements[index].recipe_element.quantity
+        == expected_result
+    )
