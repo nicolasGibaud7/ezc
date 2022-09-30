@@ -1,4 +1,5 @@
-from ezc.recipes import Ingredient, RecipeElement, ShoppingElement
+from ezc.recipes import Ingredient, RecipeElement
+from ezc.shopping import ShoppingElement
 
 data_test_ingredient = [
     (
