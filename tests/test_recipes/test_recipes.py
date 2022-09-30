@@ -2,13 +2,8 @@ from typing import Any, Dict, List
 
 import pytest
 from ezc.exceptions import NotMatchingException
-from ezc.recipes import (
-    Ingredient,
-    Recipe,
-    RecipeElement,
-    ShoppingElement,
-    ShoppingList,
-)
+from ezc.recipes import Ingredient, Recipe, RecipeElement
+from ezc.shopping import ShoppingElement, ShoppingList
 from ezc.utility import format_option
 from tests.test_recipes.data.data_test_recipes import (
     data_test_ingredient,

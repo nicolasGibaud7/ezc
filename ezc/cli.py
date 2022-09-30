@@ -18,13 +18,8 @@ from ezc.excel_factory import ExcelFactory
 from ezc.exceptions import IngredientNotFoundException, RecipeNotFoundException
 from ezc.globals import logger
 from ezc.json_utility import get_json_ingredient, get_json_recipe
-from ezc.recipes import (
-    Ingredient,
-    Recipe,
-    RecipeElement,
-    ShoppingElement,
-    ShoppingList,
-)
+from ezc.recipes import Ingredient, Recipe, RecipeElement
+from ezc.shopping import ShoppingElement, ShoppingList
 
 
 @click.group()

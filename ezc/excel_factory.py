@@ -10,7 +10,8 @@ from ezc.constants import (
     RECIPE_NAME_EXCEL_CASE,
     TITLE_CELL,
 )
-from ezc.recipes import Ingredient, RecipeElement, ShoppingList
+from ezc.recipes import Ingredient, RecipeElement
+from ezc.shopping import ShoppingList
 
 
 class ExcelFactory:
