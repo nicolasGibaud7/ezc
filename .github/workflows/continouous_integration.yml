@@ -37,5 +37,5 @@ jobs:
       run: |
         pwd
         ls -l
-        cd $GITHUB_WORKSPACE/..
+        export PYTHON_PATH=$PYTHONPATH:tests
         pytest
