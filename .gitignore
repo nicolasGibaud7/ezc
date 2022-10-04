@@ -74,7 +74,7 @@ docs/_build/
 # PyBuilder
 target/
 
-# Jupyter Notebook
+ Jupyter Notebook
 .ipynb_checkpoints
 
 # IPython
@@ -129,7 +129,6 @@ dmypy.json
 .pyre/
 
 # Database files
-*.xlsx
 
 # venv files
 bin/
