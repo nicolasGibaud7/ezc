@@ -98,7 +98,7 @@ data_test_recipe = [
 data_test_shopping_element = [
     (
         Ingredient("courgette", "legumes", 1.1, "kg"),
-        RecipeElement("courgette", 3.7),
+        3.7,
         4.07,
         {
             "name": "courgette",
@@ -110,7 +110,7 @@ data_test_shopping_element = [
     ),
     (
         Ingredient("lait", "frais", 0.95, "l"),
-        RecipeElement("lait", 1.2),
+        1.2,
         1.14,
         {
             "name": "lait",
@@ -120,12 +120,6 @@ data_test_shopping_element = [
             "price": 1.14,
         },
     ),
-    (
-        Ingredient("courgettes", "frais", 1.1, "kg"),
-        RecipeElement("carottes", 2),
-        0,
-        {},
-    ),
 ]
 
 data_test_shopping_list = [
@@ -133,11 +127,11 @@ data_test_shopping_list = [
         [
             ShoppingElement(
                 Ingredient("courgette", "legumes", 1.1, "kg"),
-                RecipeElement("courgette", 3.7),
+                3.7,
             ),
             ShoppingElement(
                 Ingredient("lait", "frais", 0.95, "l"),
-                RecipeElement("lait", 1.2),
+                1.2,
             ),
         ],
         [
@@ -164,16 +158,16 @@ data_test_shopping_list_add_or_update_element = [
         [
             ShoppingElement(
                 Ingredient("courgette", "legumes", 1.1, "kg"),
-                RecipeElement("courgette", 3.7),
+                3.7,
             ),
             ShoppingElement(
                 Ingredient("lait", "frais", 0.95, "l"),
-                RecipeElement("lait", 1.2),
+                1.2,
             ),
         ],
         ShoppingElement(
             Ingredient("carotte", "legumes", 1.2, "kg"),
-            RecipeElement("carotte", 1),
+            1,
         ),
         1,
     ),
@@ -181,16 +175,16 @@ data_test_shopping_list_add_or_update_element = [
         [
             ShoppingElement(
                 Ingredient("courgette", "legumes", 1.1, "kg"),
-                RecipeElement("courgette", 3.5),
+                3.5,
             ),
             ShoppingElement(
                 Ingredient("lait", "frais", 0.95, "l"),
-                RecipeElement("lait", 1.2),
+                1.2,
             ),
         ],
         ShoppingElement(
             Ingredient("courgette", "legumes", 1.1, "kg"),
-            RecipeElement("courgette", 3),
+            3,
         ),
         6.5,
     ),

@@ -145,7 +145,9 @@ def _create_list(recipes: List[str], log: bool) -> ShoppingList:
                 ingredient_element["unite"],
             )
 
-            shopping_element = ShoppingElement(ingredient, recipe_element)
+            shopping_element = ShoppingElement(
+                ingredient, recipe_element.quantity
+            )
             shopping_list.add_or_update_element(shopping_element)
 
     logger.debug(

@@ -67,22 +67,18 @@ def test_recipe(
 
 
 @pytest.mark.parametrize(
-    "ingredient, recipe_element, expected_price, expected_result",
+    "ingredient, quantity, expected_price, expected_result",
     data_test_shopping_element,
 )
 def test_shopping_element(
     ingredient: Ingredient,
-    recipe_element: RecipeElement,
+    quantity: float,
     expected_price: float,
     expected_result: Dict[str, Any],
 ):
-    try:
-        shopping_element = ShoppingElement(ingredient, recipe_element)
-        assert shopping_element.price == expected_price
-        assert shopping_element.to_json() == expected_result
-
-    except NotMatchingException:
-        assert ingredient.name != recipe_element.ingredient_name
+    shopping_element = ShoppingElement(ingredient, quantity)
+    assert shopping_element.price == expected_price
+    assert shopping_element.to_json() == expected_result
 
 
 @pytest.mark.parametrize(
@@ -110,7 +106,4 @@ def test_shopping_list_add_or_update_element(
         for i, e in enumerate(shopping_list.elements)
         if e.ingredient == shopping_element.ingredient
     ][0]
-    assert (
-        shopping_list.elements[index].recipe_element.quantity
-        == expected_result
-    )
+    assert shopping_list.elements[index].quantity == expected_result

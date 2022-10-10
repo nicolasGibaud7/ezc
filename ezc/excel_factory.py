@@ -48,7 +48,7 @@ class ExcelFactory:
                 [
                     element.ingredient.name,
                     element.ingredient.shelf,
-                    str(element.recipe_element.quantity),
+                    str(element.quantity),
                     element.ingredient.unite,
                     str(element.price),
                 ],

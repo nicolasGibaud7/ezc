@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
-from ezc.exceptions import NotMatchingException
-from ezc.recipes import Ingredient, RecipeElement
+from ezc.recipes import Ingredient
 
 
 @dataclass
@@ -11,36 +10,27 @@ class ShoppingElement:
     Represent a shopping element of a shopping list. It contains information
     about the ingredient and it's quantity o buy
 
-    Raises:
-        NotMatchingException: When the recipe element and the ingredient
-        don't match
 
     """
 
     ingredient: Ingredient
-    recipe_element: RecipeElement
+    quantity: float
 
     @property
     def price(self):
-        return self.recipe_element.quantity * self.ingredient.price
+        return self.quantity * self.ingredient.price
 
     def to_json(self) -> Dict[str, Any]:
         return {
             "name": self.ingredient.name,
             "shelf": self.ingredient.shelf,
-            "quantity": self.recipe_element.quantity,
+            "quantity": self.quantity,
             "unite": self.ingredient.unite,
             "price": self.price,
         }
 
     def __repr__(self) -> str:
-        return f"{self.ingredient.name} : {self.ingredient.shelf} - {self.recipe_element.quantity} {self.ingredient.unite} - {self.price} euros"
-
-    def __post_init__(self):
-        if self.ingredient.name != self.recipe_element.ingredient_name:
-            raise NotMatchingException(
-                f"Ingredient {self.ingredient.name} different of {self.recipe_element.ingredient_name}"
-            )
+        return f"{self.ingredient.name} : {self.ingredient.shelf} - {self.quantity} {self.ingredient.unite} - {self.price} euros"
 
 
 @dataclass
@@ -81,11 +71,7 @@ class ShoppingList:  # TODO Add inheritance to List instead of having a list as 
     def update_element(self, shopping_element: ShoppingElement):
         for index, element in enumerate(self.elements):
             if element.ingredient == shopping_element.ingredient:
-                self.elements[
-                    index
-                ].recipe_element.quantity += (
-                    shopping_element.recipe_element.quantity
-                )
+                self.elements[index].quantity += shopping_element.quantity
 
     def length(self):
         return len(self.elements)
