@@ -4,12 +4,14 @@ from typing import Any, List
 import pytest
 from ezc.constants import EXCEL_COLUMNS, TITLE_CELL
 from ezc.excel_factory import ExcelFactory
+from ezc.recipes import Ingredient, RecipeElement
 from tests.test_excel_factory.data.data_test_excel_factory import (
     data_add_element,
     data_add_ingredient,
     data_create_header_row,
     data_get_recipe_name,
-    data_iterate_ingredients,
+    data_iterate_ingredient,
+    data_iterate_recipe_element,
 )
 
 
@@ -108,12 +110,24 @@ def test_get_recipe_name(excel_file: str, expected_result: str):
 
 
 @pytest.mark.parametrize(
-    "excel_file, expected_result", data_iterate_ingredients
+    "excel_file, expected_result", data_iterate_recipe_element
 )
-def test_iterate_ingredients(
-    excel_file: str, expected_result: List[List[Any]]
+def test_iterate_recipe_element(
+    excel_file: str, expected_result: List[RecipeElement]
 ):
     excel_factory = ExcelFactory(excel_file)
-    for index, ingredient in enumerate(excel_factory.iterate_ingredients()):
-        for index2, ingredient_element in enumerate(ingredient):
-            assert ingredient_element.value == expected_result[index][index2]
+    for index, recipe_element in enumerate(
+        excel_factory.iterate_recipe_element()
+    ):
+        assert recipe_element == expected_result[index]
+
+
+@pytest.mark.parametrize(
+    "excel_file, expected_result", data_iterate_ingredient
+)
+def test_iterate_ingredient(
+    excel_file: str, expected_result: List[Ingredient]
+):
+    excel_factory = ExcelFactory(excel_file)
+    for index, ingredient in enumerate(excel_factory.iterate_ingredient()):
+        assert ingredient == expected_result[index]

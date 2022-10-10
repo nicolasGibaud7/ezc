@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import List
 
 import click
 
@@ -17,17 +17,9 @@ from ezc.constants import (
 from ezc.excel_factory import ExcelFactory
 from ezc.exceptions import IngredientNotFoundException, RecipeNotFoundException
 from ezc.globals import logger
-from ezc.json_utility import (
-    add_ingredient_to_json_file,
-    add_ingredients_to_json_file,
-    add_recipe_to_json_file,
-    check_ingredient_presence,
-    get_json_ingredient,
-    get_json_recipe,
-    update_ingredient_in_json_file,
-    update_ingredients_in_json_file,
-)
-from ezc.utility import format_option, print_shopping_list
+from ezc.json_utility import get_json_ingredient, get_json_recipe
+from ezc.recipes import Ingredient, Recipe, RecipeElement
+from ezc.shopping import ShoppingElement, ShoppingList
 
 
 @click.group()
@@ -101,16 +93,16 @@ def create_table(name: str, table_type: str, log: bool):
     create_excel_table(name, table_type, log)
 
 
-def _create_list(recipes: List[str], log: bool) -> List[Any]:
+def _create_list(recipes: List[str], log: bool) -> ShoppingList:
     """Create a shopping list based on recipes list
 
     Args:
         recipes (List[str]): Recipes list to follow to create shopping list
 
     Returns:
-        _type_: _description_
+        ShoppingList: Shopping list representation
     """
-    shopping_list = []
+    shopping_list = ShoppingList([])
     logger.debug(
         f"Creating shopping list for {len(recipes)} recipes : {' - '.join(recipes)}"
     )
@@ -123,134 +115,82 @@ def _create_list(recipes: List[str], log: bool) -> List[Any]:
                 f"Recipe {recipe_name} is not in the recipes database. Please add it."
             )
             continue
+        recipe = Recipe(
+            recipe_name,
+            [
+                RecipeElement(r_e["ingredient_name"], r_e["quantity"])
+                for r_e in recipe_element["ingredients_list"]
+            ],
+        )
 
-        ingredients = recipe_element["ingredients_list"]
-        for ingredient in ingredients:
-            ingredient_name = ingredient["ingredient_name"]
-            quantity = ingredient["quantity"]
-            logger.debug(f"Adding {quantity} {ingredient_name} ingredient")
+        for recipe_element in recipe.recipe_elements:
+
+            logger.debug(
+                f"Adding {recipe_element.quantity} {recipe_element.ingredient_name} ingredient"
+            )
             try:
-                ingredient_element = get_json_ingredient(ingredient_name)
+                ingredient_element = get_json_ingredient(
+                    recipe_element.ingredient_name
+                )
             except IngredientNotFoundException:
                 logger.error(
-                    f"Ingredient {ingredient_name} is not in the ingredients database"
+                    f"Ingredient {recipe_element.ingredient_name} is not in the ingredients database"
                 )
                 continue
 
-            shopping_element = {
-                "name": ingredient_element["name"],
-                "shelf": ingredient_element["shelf"],
-                "quantity": quantity,
-                "unite": ingredient_element["unite"],
-                "price": quantity * ingredient_element["price"],
-            }
-            logger.debug(
-                f"Ingredient informations : {shopping_element['name']} - {shopping_element['shelf']} - {shopping_element['quantity']} - {shopping_element['unite']} - {shopping_element['price']}"
+            ingredient = Ingredient(
+                ingredient_element["name"],
+                ingredient_element["shelf"],
+                ingredient_element["price"],
+                ingredient_element["unite"],
             )
-            if shopping_element["name"] in [
-                ingredient_element["name"]
-                for ingredient_element in shopping_list
-            ]:
-                # Get ingredient
-                ingredient_index = [
-                    index
-                    for index, ingredient_element in enumerate(shopping_list)
-                    if ingredient_element["name"] == shopping_element["name"]
-                ][0]
-                shopping_list[ingredient_index][
-                    "quantity"
-                ] += shopping_element["quantity"]
-                shopping_list[ingredient_index]["price"] += shopping_element[
-                    "price"
-                ]
-                logger.debug(
-                    f"Ingredient already in the shopping list : updating its quantity to {shopping_list[ingredient_index]['quantity']} and its price to {shopping_list[ingredient_index]['price']}"
-                )
-            else:
-                shopping_list.append(shopping_element)
+
+            shopping_element = ShoppingElement(
+                ingredient, recipe_element.quantity
+            )
+            shopping_list.add_or_update_element(shopping_element)
+
     logger.debug(
-        f"Total of {len(shopping_list)} ingredients added to shopping list"
+        f"Total of {shopping_list.length()} ingredients added to shopping list"
     )
-    print_shopping_list(shopping_list)
+    logger.debug(f"{shopping_list}")
+    # print_shopping_list(shopping_list)
 
     # Save shopping list result in a excel spreadsheet
     excel_factory = create_excel_table(
         "shopping_list.xlsx", SHOPPING_LIST_TYPE, log
     )
-    for index, shopping_element in enumerate(shopping_list):
-        excel_factory.add_ingredient(
-            list(shopping_element.values()), 4 + index
-        )
+
+    excel_factory.add_shopping_list(shopping_list)
 
     return shopping_list
 
 
 def _add_ingredient(name: str, shelf: str, price: float, unite: str):
+    ingredient = Ingredient(name, shelf, price, unite)
+    logger.debug(f"cli:_add_ingredient : {ingredient}")
 
-    logger.debug(
-        f"Adding ingredient {name} from {shelf} shelf at the price of {price}/{unite}."
-    )
-
-    if check_ingredient_presence(name):
-        update_ingredient_in_json_file(
-            INGREDIENTS_DATABASE_FILENAME, name, shelf, price, unite
-        )
-
-    # Write ingredients information in json database file
-    add_ingredient_to_json_file(
-        INGREDIENTS_DATABASE_FILENAME, name, shelf, price, unite
-    )
+    ingredient.add_or_update(INGREDIENTS_DATABASE_FILENAME)
 
 
 def _add_ingredients(excel_filename: str):
     # Open excel file
     excel_factory = ExcelFactory(click.format_filename(excel_filename))
-    new_ingredients_list = []
-    updated_ingredients_list = []
-    # Iter on rows
-    for ingredient in excel_factory.iterate_ingredients():
-        ingredient = list(
-            map(
-                format_option,
-                [element.value for element in ingredient],
-            )
-        )
-        if check_ingredient_presence(ingredient[0]):
-            updated_ingredients_list.append(ingredient)
-        else:
-            new_ingredients_list.append(ingredient)
 
-    logger.debug(f"New ingredients list : {new_ingredients_list}")
-    logger.debug(f"Updated ingredients list : {updated_ingredients_list}")
-    update_ingredients_in_json_file(
-        INGREDIENTS_DATABASE_FILENAME, updated_ingredients_list
-    )
-    add_ingredients_to_json_file(
-        INGREDIENTS_DATABASE_FILENAME, new_ingredients_list
-    )
+    # Iter on rows
+    for ingredient in excel_factory.iterate_ingredient():
+        ingredient.add_or_update(INGREDIENTS_DATABASE_FILENAME)
 
 
 def _add_recipe(excel_filename: str):
     # Open Excel File
     excel_factory = ExcelFactory(click.format_filename(excel_filename))
-    ingredients_list = []
-    recipe_name = excel_factory.get_recipe_name()
 
-    for ingredient in excel_factory.iterate_ingredients():
-        ingredient_name, ingredient_quantity = map(
-            format_option, [element.value for element in ingredient]
-        )
-        ingredients_list.append(
-            {
-                "ingredient_name": ingredient_name,
-                "quantity": ingredient_quantity,
-            }
-        )
-
-    # Add recipe to database
-    add_recipe_to_json_file(
-        RECIPE_DATABASE_FILENAME, recipe_name, ingredients_list
+    recipe = Recipe(
+        excel_factory.get_recipe_name(),
+        [r_e for r_e in excel_factory.iterate_recipe_element()],
     )
+    recipe.add_to_json_file(RECIPE_DATABASE_FILENAME)
 
 
 def create_excel_table(name: str, table_type: str, log: bool):

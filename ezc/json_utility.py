@@ -7,7 +7,6 @@ from ezc.constants import (
 )
 from ezc.exceptions import IngredientNotFoundException, RecipeNotFoundException
 from ezc.globals import logger
-from ezc.utility import format_option
 
 
 def get_json_ingredient(ingredient_name: str) -> Dict[str, Any]:
@@ -35,7 +34,9 @@ def get_json_ingredient(ingredient_name: str) -> Dict[str, Any]:
     )
 
 
-def check_ingredient_presence(ingredient_name: str) -> bool:
+def check_ingredient_presence(
+    ingredient_name: str, json_database: str
+) -> bool:
     """Check an ingredient presence in ingredients json database
 
     Args:
@@ -44,9 +45,7 @@ def check_ingredient_presence(ingredient_name: str) -> bool:
     Returns:
         bool: True if searched recipe is in recipes json database else False
     """
-    return _check_json_element_presence(
-        ingredient_name, "name", INGREDIENTS_DATABASE_FILENAME
-    )
+    return _check_json_element_presence(ingredient_name, "name", json_database)
 
 
 def check_recipe_presence(recipe_name: str) -> bool:
@@ -96,7 +95,8 @@ def add_recipe_to_json_file(
     Args:
         json_filename (str): Json file name
         recipe_name (str): Recipe name
-        ingredients_list (List[Dict[str, Any]]): List of recipe ingredients and their quantity
+        ingredients_list (List[Dict[str, Any]]): List of recipe ingredients
+        and their quantity
     """
     recipe_element = {
         "name": recipe_name,
@@ -107,24 +107,14 @@ def add_recipe_to_json_file(
 
 
 def update_ingredient_in_json_file(
-    json_filename: str, name: str, shelf: str, price: float, unite: str
+    json_filename: str, ingredient_attributes: Dict[str, Any]
 ):
     """Update ingredient attributes in json file
 
     Args:
-        name (str): Ingredient name
-        shelf (str): Ingredient shelf
-        price (float): Ingredient price
-        unite (str): Ingredient unite
+        ingredient_attributes (Dict[str, Any]): Ingredient attributes
     """
-    name, shelf, price, unite = map(format_option, [name, shelf, price, unite])
-    ingredient_element = {
-        "name": name,
-        "shelf": shelf,
-        "price": price,
-        "unite": unite,
-    }
-    _update_element_in_json_file(json_filename, ingredient_element, "name")
+    _update_element_in_json_file(json_filename, ingredient_attributes, "name")
 
 
 def update_ingredients_in_json_file(
@@ -169,25 +159,15 @@ def add_ingredients_to_json_file(
 
 
 def add_ingredient_to_json_file(
-    json_filename: str, name: str, shelf: str, price: float, unite: str
+    json_filename: str, ingredient_attributes: Dict[str, Any]
 ):
     """Add ingredient json representation to a json file
 
     Args:
         json_filename (str): Json file name
-        name (str): Ingredient name
-        shelf (str): Ingredient shelf
-        price (float): Ingredient price
-        unite (str): Ingredient unite
+        ingredient_attributes (Dict[str, Any]): Ingredient info dictionary
     """
-    name, shelf, price, unite = map(format_option, [name, shelf, price, unite])
-    ingredient_element = {
-        "name": name,
-        "shelf": shelf,
-        "price": price,
-        "unite": unite,
-    }
-    _add_json_element_to_json_file(json_filename, ingredient_element)
+    _add_json_element_to_json_file(json_filename, ingredient_attributes)
 
 
 def _add_json_element_to_json_file(

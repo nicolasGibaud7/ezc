@@ -4,3 +4,7 @@ class IngredientNotFoundException(Exception):
 
 class RecipeNotFoundException(Exception):
     pass
+
+
+class NotMatchingException(Exception):
+    pass
