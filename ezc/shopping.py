@@ -62,7 +62,7 @@ class ShoppingList:  # TODO Add inheritance to List instead of having a list as 
     def check_element_presence(self, element: ShoppingElement):
         return any(
             [
-                element
+                True
                 for shopping_element in self.elements
                 if element.ingredient == shopping_element.ingredient
             ]
