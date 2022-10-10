@@ -209,11 +209,11 @@ data_check_recipe_presence = [
 ]
 
 data_check_ingredient_presence = [
-    ("eau", True),
-    ("gruyere", True),
-    ("Eau", False),
-    ("raclette", True),
-    ("", False),
+    ("eau", "tests/json_files/ingredients.json", True),
+    ("gruyere", "tests/json_files/ingredients.json", True),
+    ("Eau", "tests/json_files/ingredients.json", False),
+    ("raclette", "tests/json_files/ingredients.json", True),
+    ("", "tests/json_files/ingredients.json", False),
 ]
 
 data_get_json_ingredient = [

@@ -141,10 +141,16 @@ def test_check_recipe_presence(recipe_name: str, expected_result):
 
 
 @pytest.mark.parametrize(
-    "recipe_name, expected_result", data_check_ingredient_presence
+    "ingredient_name, ingredient_database, expected_result",
+    data_check_ingredient_presence,
 )
-def test_check_ingredient_presence(recipe_name: str, expected_result):
-    assert check_ingredient_presence(recipe_name) == expected_result
+def test_check_ingredient_presence(
+    ingredient_name: str, ingredient_database: str, expected_result
+):
+    assert (
+        check_ingredient_presence(ingredient_name, ingredient_database)
+        == expected_result
+    )
 
 
 @pytest.mark.parametrize(

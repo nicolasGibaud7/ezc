@@ -31,8 +31,8 @@ class Ingredient:
             "unite": self.unite,
         }
 
-    def check_presence(self) -> bool:
-        return check_ingredient_presence(self.name)
+    def check_presence(self, database: str) -> bool:
+        return check_ingredient_presence(self.name, database)
 
     def update(self, database: str):
         update_ingredient_in_json_file(database, self.to_json())
@@ -47,7 +47,7 @@ class Ingredient:
         Args:
             database (str): json database name
         """
-        if self.check_presence():
+        if self.check_presence(database):
             self.update(database)
         else:
             self.add_to_json_file(database)
