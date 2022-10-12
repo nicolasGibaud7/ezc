@@ -3,11 +3,13 @@ data_add_ingredient = [
         "concombre",
         "legumes",
         0.8,
+        "market",
         "kg",
         {
             "name": "concombre",
             "shelf": "legumes",
             "price": 0.8,
+            "category": "market",
             "unite": "kg",
         },
     )
@@ -21,15 +23,23 @@ data_add_ingredients = [
                 "name": "chips",
                 "shelf": "epicerie salee",
                 "price": 12,
+                "category": "supermarket",
                 "unite": "kg",
             },
             {
                 "name": "creme fraiche",
                 "shelf": "frais",
                 "price": 5,
+                "category": "supermarket",
                 "unite": "kg",
             },
-            {"name": "lait", "shelf": "frais", "price": 0.8, "unite": "kg"},
+            {
+                "name": "lait",
+                "shelf": "frais",
+                "price": 0.8,
+                "category": "supermarket",
+                "unite": "kg",
+            },
         ],
     )
 ]
@@ -52,7 +62,7 @@ data_add_recipe = [
 
 data_create_list = [
     (
-        ["Pates pesto"],
+        ["pates pesto"],
         [
             {
                 "name": "pate",
@@ -92,7 +102,7 @@ data_create_list = [
         ],
     ),
     (
-        ["Pates pesto", "pates raclettes"],
+        ["pates pesto", "pates raclettes"],
         [
             {
                 "name": "pate",

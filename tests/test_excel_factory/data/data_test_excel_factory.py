@@ -36,9 +36,9 @@ data_iterate_ingredient = [
     (
         "tests/test_excel_factory/excel_files/add_ingredients.xlsx",
         [
-            Ingredient("Chips", "epicerie salee", 12, "kg"),
-            Ingredient("Creme fraiche", "frais", 5, "kg"),
-            Ingredient("Lait", "frais", 0.8, "kg"),
+            Ingredient("Chips", "epicerie salee", 12, "supermarket", "kg"),
+            Ingredient("Creme fraiche", "frais", 5, "supermarket", "kg"),
+            Ingredient("Lait", "frais", 0.8, "supermarket", "kg"),
         ],
     )
 ]

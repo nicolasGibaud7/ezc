@@ -1,1 +1,38 @@
-[{"name": "pate", "shelf": "epicerie salee", "price": 1.1, "unite": "kg"}, {"name": "pesto", "shelf": "epicerie salee", "price": 2, "unite": "kg"}, {"name": "champignon", "shelf": "legumes", "price": 1.2, "unite": "kg"}, {"name": "courgette", "shelf": "legumes", "price": 0.25, "unite": "unite"}, {"name": "gruyere", "shelf": "frais", "price": 2.5, "unite": "kg"}, {"name": "eau", "shelf": "boissons", "price": 0.35, "unite": "l"}]
+[
+    {
+        "name": "pate",
+        "shelf": "epicerie salee",
+        "price": 1.1,
+        "unite": "kg"
+    },
+    {
+        "name": "pesto",
+        "shelf": "epicerie salee",
+        "price": 2,
+        "unite": "kg"
+    },
+    {
+        "name": "champignon",
+        "shelf": "legumes",
+        "price": 1.2,
+        "unite": "kg"
+    },
+    {
+        "name": "courgette",
+        "shelf": "legumes",
+        "price": 0.25,
+        "unite": "unite"
+    },
+    {
+        "name": "gruyere",
+        "shelf": "frais",
+        "price": 2.5,
+        "unite": "kg"
+    },
+    {
+        "name": "eau",
+        "shelf": "boissons",
+        "price": 0.35,
+        "unite": "l"
+    }
+]

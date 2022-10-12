@@ -23,19 +23,20 @@ from data.data_test_public_api import (
 
 
 @pytest.mark.parametrize(
-    "name, shelf, price, unite, expected_result", data_add_ingredient
+    "name, shelf, price, category, unite, expected_result", data_add_ingredient
 )
 def test_add_ingredient(
     name: str,
     shelf: str,
     price: float,
+    category: str,
     unite: str,
     expected_result: Dict[str, Any],
 ):
     with open(INGREDIENTS_DATABASE_FILENAME, "r") as json_file:
         original_json_content = json.load(json_file)
     try:
-        _add_ingredient(name, shelf, price, unite)
+        _add_ingredient(name, shelf, price, category, unite)
         with open(INGREDIENTS_DATABASE_FILENAME, "r") as json_file:
             json_content = json.load(json_file)
         assert expected_result in json_content
