@@ -1,7 +1,6 @@
 from typing import List
 
 import click
-from typing_extensions import Required
 
 from ezc.constants import (
     CATEGORIES,
