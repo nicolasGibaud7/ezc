@@ -1,6 +1,11 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
+from ezc.constants import (
+    FROZEN_FOOD_CATEGORY,
+    MARKET_CATEGORY,
+    SUPERMARKET_CATEGORY,
+)
 from ezc.recipes import Ingredient
 
 
@@ -42,6 +47,36 @@ class ShoppingList:  # TODO Add inheritance to List instead of having a list as 
     """
 
     elements: List[ShoppingElement]
+
+    @property
+    def frozen_food(self):
+        return ShoppingList(
+            [
+                shopping_element
+                for shopping_element in self.elements
+                if shopping_element.ingredient.category == FROZEN_FOOD_CATEGORY
+            ]
+        )
+
+    @property
+    def market(self):
+        return ShoppingList(
+            [
+                shopping_element
+                for shopping_element in self.elements
+                if shopping_element.ingredient.category == MARKET_CATEGORY
+            ]
+        )
+
+    @property
+    def supermarket(self):
+        return ShoppingList(
+            [
+                shopping_element
+                for shopping_element in self.elements
+                if shopping_element.ingredient.category == SUPERMARKET_CATEGORY
+            ]
+        )
 
     def to_json(self) -> List[Dict[str, Any]]:
         return [element.to_json() for element in self.elements]

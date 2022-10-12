@@ -111,6 +111,7 @@ class ExcelFactory:
                 ingredient_attr[1].value,
                 ingredient_attr[2].value,
                 ingredient_attr[3].value,
+                ingredient_attr[4].value,
             )
 
     def iterate_recipe_element(self):

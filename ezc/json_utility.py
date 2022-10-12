@@ -126,11 +126,12 @@ def update_ingredients_in_json_file(
         ingredients_attributes_values (List[List[Any]]): List of ingredient attributes list
     """
     for ingredient_attribute_value in ingredients_attributes_values:
-        name, shelf, price, unite = ingredient_attribute_value
+        name, shelf, price, category, unite = ingredient_attribute_value
         json_ingredient_representation = {
             "name": name,
             "shelf": shelf,
             "price": price,
+            "category": category,
             "unite": unite,
         }
         _update_element_in_json_file(
@@ -149,9 +150,15 @@ def add_ingredients_to_json_file(
     """
     json_ingredients_representation = []
     for ingredient in ingredients_attributes_value:
-        name, shelf, price, unite = ingredient
+        name, shelf, price, category, unite = ingredient
         json_ingredients_representation.append(
-            {"name": name, "shelf": shelf, "price": price, "unite": unite}
+            {
+                "name": name,
+                "shelf": shelf,
+                "price": price,
+                "category": category,
+                "unite": unite,
+            }
         )
     _add_json_elements_to_json_file(
         json_filename, json_ingredients_representation
@@ -186,7 +193,7 @@ def _add_json_element_to_json_file(
     print(json_content)
 
     with open(json_filename, "w") as json_file:
-        json.dump(json_content, json_file)
+        json.dump(json_content, json_file, indent=4)
 
 
 def _add_json_elements_to_json_file(
@@ -203,7 +210,7 @@ def _add_json_elements_to_json_file(
     )
 
     with open(json_filename, "w") as json_file:
-        json.dump(json_content, json_file)
+        json.dump(json_content, json_file, indent=4)
 
 
 def _get_json_content_file_with_added_element(
@@ -289,4 +296,4 @@ def _update_element_in_json_file(
         if element[identifier_attribute] == new_element[identifier_attribute]:
             json_content[index] = new_element
     with open(json_filename, "w") as json_file:
-        json.dump(json_content, json_file)
+        json.dump(json_content, json_file, indent=4)

@@ -8,3 +8,7 @@ class RecipeNotFoundException(Exception):
 
 class NotMatchingException(Exception):
     pass
+
+
+class BadCategoryException(Exception):
+    pass

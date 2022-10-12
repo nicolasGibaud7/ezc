@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List
+from unicodedata import category
 
+from ezc.constants import CATEGORIES
+from ezc.exceptions import BadCategoryException
 from ezc.json_utility import (
     add_ingredient_to_json_file,
     add_recipe_to_json_file,
@@ -21,6 +24,7 @@ class Ingredient:
     name: str
     shelf: str
     price: float
+    category: str
     unite: str = "kg"
 
     def to_json(self) -> Dict[str, Any]:
@@ -28,6 +32,7 @@ class Ingredient:
             "name": self.name,
             "shelf": self.shelf,
             "price": self.price,
+            "category": self.category,
             "unite": self.unite,
         }
 
@@ -53,6 +58,11 @@ class Ingredient:
             self.add_to_json_file(database)
 
     def __post_init__(self):
+        self.category = format_option(self.category)
+        if self.category.upper() not in CATEGORIES:
+            raise BadCategoryException(
+                f"Category {self.category} not in accepted categories."
+            )
         self.name = format_option(self.name)
         self.shelf = format_option(self.shelf)
         self.price = format_option(self.price)
@@ -87,9 +97,7 @@ class Recipe:
     """
 
     name: str
-    recipe_elements: List[
-        RecipeElement
-    ]  # TODO change ingredients attribute name to recipe_elements
+    recipe_elements: List[RecipeElement]
 
     def to_json(self) -> Dict[str, Any]:
         return {
