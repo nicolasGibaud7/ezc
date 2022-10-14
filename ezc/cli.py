@@ -163,20 +163,15 @@ def _create_list(recipes: List[str], log: bool) -> ShoppingList:
     # print_shopping_list(shopping_list)
 
     # Save shopping list result in a excel spreadsheet
-    excel_factory_frozen_food = create_excel_table(
-        "frozen_food_list.xlsx", SHOPPING_LIST_TYPE, log
-    )
-    excel_factory_frozen_food.add_shopping_list(shopping_list.frozen_food)
-
-    excel_factory_market = create_excel_table(
-        "market_list.xlsx", SHOPPING_LIST_TYPE, log
-    )
-    excel_factory_market.add_shopping_list(shopping_list.market)
-
-    excel_factory_supermarket = create_excel_table(
-        "supermarket_list.xlsx", SHOPPING_LIST_TYPE, log
-    )
-    excel_factory_supermarket.add_shopping_list(shopping_list.supermarket)
+    for category in CATEGORIES:
+        excel_factory = create_excel_table(
+            f"{category}_list.xlsx", SHOPPING_LIST_TYPE, log
+        )
+        excel_factory.add_shopping_list(
+            shopping_list.__getattribute__(
+                category
+            )  # Access to category attribute
+        )
 
     return shopping_list
 

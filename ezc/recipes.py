@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List
-from unicodedata import category
 
 from ezc.constants import CATEGORIES
 from ezc.exceptions import BadCategoryException
@@ -59,7 +58,7 @@ class Ingredient:
 
     def __post_init__(self):
         self.category = format_option(self.category)
-        if self.category.upper() not in CATEGORIES:
+        if self.category not in CATEGORIES:
             raise BadCategoryException(
                 f"Category {self.category} not in accepted categories."
             )

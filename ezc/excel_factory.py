@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import List
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.cell import Cell
