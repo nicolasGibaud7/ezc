@@ -16,19 +16,22 @@ from tests.test_recipes.data.data_test_recipes import (
 
 
 @pytest.mark.parametrize(
-    "name, shelf, price, unite, expected_result", data_test_ingredient
+    "name, shelf, price, category, unite, expected_result",
+    data_test_ingredient,
 )
 def test_ingredient(
     name: str,
     shelf: str,
     price: float,
+    category: str,
     unite: str,
     expected_result: Dict[str, Any],
 ):
-    ingredient = Ingredient(name, shelf, price, unite)
+    ingredient = Ingredient(name, shelf, price, category, unite)
     assert ingredient.name == format_option(name)
     assert ingredient.shelf == format_option(shelf)
     assert ingredient.price == format_option(price)
+    assert ingredient.category == format_option(category)
     assert ingredient.unite == format_option(unite)
     assert ingredient.to_json() == expected_result
 

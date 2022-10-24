@@ -6,11 +6,13 @@ data_test_ingredient = [
         "courgette",
         "legumes",
         0.78,
+        "market",
         "kg",
         {
             "name": "courgette",
             "shelf": "legumes",
             "price": 0.78,
+            "category": "market",
             "unite": "kg",
         },
     ),
@@ -18,11 +20,13 @@ data_test_ingredient = [
         "caroTte",
         "legumes",
         1.2,
+        "market",
         "kg",
         {
             "name": "carotte",
             "shelf": "legumes",
             "price": 1.2,
+            "category": "market",
             "unite": "kg",
         },
     ),
@@ -30,11 +34,13 @@ data_test_ingredient = [
         "YaOuRt",
         "FRAIs",
         3.5,
+        "supermarket",
         "Kg",
         {
             "name": "yaourt",
             "shelf": "frais",
             "price": 3.5,
+            "category": "supermarket",
             "unite": "kg",
         },
     ),
@@ -97,7 +103,7 @@ data_test_recipe = [
 
 data_test_shopping_element = [
     (
-        Ingredient("courgette", "legumes", 1.1, "kg"),
+        Ingredient("courgette", "legumes", 1.1, "market", "kg"),
         3.7,
         4.07,
         {
@@ -109,7 +115,7 @@ data_test_shopping_element = [
         },
     ),
     (
-        Ingredient("lait", "frais", 0.95, "l"),
+        Ingredient("lait", "frais", 0.95, "market", "l"),
         1.2,
         1.14,
         {
@@ -126,11 +132,11 @@ data_test_shopping_list = [
     (
         [
             ShoppingElement(
-                Ingredient("courgette", "legumes", 1.1, "kg"),
+                Ingredient("courgette", "legumes", 1.1, "market", "kg"),
                 3.7,
             ),
             ShoppingElement(
-                Ingredient("lait", "frais", 0.95, "l"),
+                Ingredient("lait", "frais", 0.95, "supermarket", "l"),
                 1.2,
             ),
         ],
@@ -157,16 +163,16 @@ data_test_shopping_list_add_or_update_element = [
     (
         [
             ShoppingElement(
-                Ingredient("courgette", "legumes", 1.1, "kg"),
+                Ingredient("courgette", "legumes", 1.1, "market", "kg"),
                 3.7,
             ),
             ShoppingElement(
-                Ingredient("lait", "frais", 0.95, "l"),
+                Ingredient("lait", "frais", 0.95, "supermarket", "l"),
                 1.2,
             ),
         ],
         ShoppingElement(
-            Ingredient("carotte", "legumes", 1.2, "kg"),
+            Ingredient("carotte", "legumes", 1.2, "market", "kg"),
             1,
         ),
         1,
@@ -174,16 +180,16 @@ data_test_shopping_list_add_or_update_element = [
     (
         [
             ShoppingElement(
-                Ingredient("courgette", "legumes", 1.1, "kg"),
+                Ingredient("courgette", "legumes", 1.1, "market", "kg"),
                 3.5,
             ),
             ShoppingElement(
-                Ingredient("lait", "frais", 0.95, "l"),
+                Ingredient("lait", "frais", 0.95, "supermarket", "l"),
                 1.2,
             ),
         ],
         ShoppingElement(
-            Ingredient("courgette", "legumes", 1.1, "kg"),
+            Ingredient("courgette", "legumes", 1.1, "market", "kg"),
             3,
         ),
         6.5,

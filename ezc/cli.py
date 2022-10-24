@@ -3,6 +3,7 @@ from typing import List
 import click
 
 from ezc.constants import (
+    CATEGORIES,
     INGREDIENT_TYPE,
     INGREDIENTS_CATEGORIES,
     INGREDIENTS_DATABASE_FILENAME,
@@ -32,27 +33,31 @@ def cli():
 @click.option("-l", "--log", type=bool, required=False, default=False)
 def create_list(recipes: List[str], log: bool):
     logger.set_log_activation(log)
-    return _create_list(recipes, log)
+    _create_list(recipes, log)
 
 
 @cli.command()
 @click.option("-n", "--name", type=str, required=True)
 @click.option("-s", "--shelf", type=click.Choice(SHELF_LIST), required=True)
 @click.option("-p", "--price", type=float, required=True)
+@click.option("-c", "--category", type=click.Choice(CATEGORIES), required=True)
 @click.option("-u", "--unite", type=str, required=False, default="kg")
 @click.option("-l", "--log", type=bool, required=False, default=False)
-def add_ingredient(name: str, shelf: str, price: float, unite: str, log: bool):
+def add_ingredient(
+    name: str, shelf: str, price: float, category: str, unite: str, log: bool
+):
     """Add an individual ingredient to the json database by passing all ingredient info
 
     Args:
         name (str): Ingredient name
         shelf (str): Ingredient shelf
         price (float): Ingredient price
+        category(str): Ingredient category
         unite (str): Ingredient unite
         log (bool): Is log activated or not
     """
     logger.set_log_activation(log)
-    _add_ingredient(name, shelf, price, unite)
+    _add_ingredient(name, shelf, price, category, unite)
 
 
 @cli.command()
@@ -142,6 +147,7 @@ def _create_list(recipes: List[str], log: bool) -> ShoppingList:
                 ingredient_element["name"],
                 ingredient_element["shelf"],
                 ingredient_element["price"],
+                ingredient_element["category"],
                 ingredient_element["unite"],
             )
 
@@ -157,17 +163,23 @@ def _create_list(recipes: List[str], log: bool) -> ShoppingList:
     # print_shopping_list(shopping_list)
 
     # Save shopping list result in a excel spreadsheet
-    excel_factory = create_excel_table(
-        "shopping_list.xlsx", SHOPPING_LIST_TYPE, log
-    )
-
-    excel_factory.add_shopping_list(shopping_list)
+    for category in CATEGORIES:
+        excel_factory = create_excel_table(
+            f"{category}_list.xlsx", SHOPPING_LIST_TYPE, log
+        )
+        excel_factory.add_shopping_list(
+            shopping_list.__getattribute__(
+                category
+            )  # Access to category attribute
+        )
 
     return shopping_list
 
 
-def _add_ingredient(name: str, shelf: str, price: float, unite: str):
-    ingredient = Ingredient(name, shelf, price, unite)
+def _add_ingredient(
+    name: str, shelf: str, price: float, category: str, unite: str
+):
+    ingredient = Ingredient(name, shelf, price, category, unite)
     logger.debug(f"cli:_add_ingredient : {ingredient}")
 
     ingredient.add_or_update(INGREDIENTS_DATABASE_FILENAME)
