@@ -1,9 +1,23 @@
-[build-system]
-requires = ["setuptools>=42.0", "wheel"]
-build-backend = "setuptools.build_meta"
+[tool.poetry]
+name = "ezc"
+version = "0.1.0"
+description = ""
+authors = ["nicolasGibaud7 <nicolas.gibaud7@gmail.com>"]
+readme = "README.md"
 
-[tool.pytest.ini_options]
-addopts = "--cov=ezc"
-testpaths = [
-    "tests",
-]
+[tool.poetry.dependencies]
+python = "^3.7"
+click = "8.1.2"
+openpyxl = "3.0.9"
+
+[tool.poetry.group.dev.dependencies]
+black = "22.3.0"
+coverage = "6.5.0"
+flake8 = "4.0.1"
+pytest = "7.1.2"
+pytest-cov = "4.0.0"
+tox = "3.26.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
