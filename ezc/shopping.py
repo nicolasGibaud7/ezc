@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
@@ -49,34 +51,16 @@ class ShoppingList:  # TODO Add inheritance to List instead of having a list as 
     elements: List[ShoppingElement]
 
     @property
-    def frozen_food(self):
-        return ShoppingList(
-            [
-                shopping_element
-                for shopping_element in self.elements
-                if shopping_element.ingredient.category == FROZEN_FOOD_CATEGORY
-            ]
-        )
+    def frozen_food(self) -> ShoppingList:
+        return self._create_list_for_category(FROZEN_FOOD_CATEGORY)
 
     @property
-    def market(self):
-        return ShoppingList(
-            [
-                shopping_element
-                for shopping_element in self.elements
-                if shopping_element.ingredient.category == MARKET_CATEGORY
-            ]
-        )
+    def market(self) -> ShoppingList:
+        return self._create_list_for_category(MARKET_CATEGORY)
 
     @property
-    def supermarket(self):
-        return ShoppingList(
-            [
-                shopping_element
-                for shopping_element in self.elements
-                if shopping_element.ingredient.category == SUPERMARKET_CATEGORY
-            ]
-        )
+    def supermarket(self) -> ShoppingList:
+        return self._create_list_for_category(SUPERMARKET_CATEGORY)
 
     def to_json(self) -> List[Dict[str, Any]]:
         return [element.to_json() for element in self.elements]
@@ -110,6 +94,15 @@ class ShoppingList:  # TODO Add inheritance to List instead of having a list as 
 
     def length(self):
         return len(self.elements)
+
+    def _create_list_for_category(self, category: str) -> ShoppingList:
+        return ShoppingList(
+            [
+                shopping_element
+                for shopping_element in self.elements
+                if shopping_element.ingredient.category == category
+            ]
+        )
 
     def __repr__(self) -> str:
         return "\n".join([f"{element}" for element in self.elements])
