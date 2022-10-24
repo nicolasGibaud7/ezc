@@ -5,10 +5,15 @@ from openpyxl.cell import Cell
 from openpyxl.styles import Alignment, Border, Font, Side
 
 from ezc.constants import (
+    CATEGORY_INDEX,
     EXCEL_COLUMNS,
     FIRST_INGREDIENT_ROW,
+    NAME_INDEX,
+    PRICE_INDEX,
     RECIPE_NAME_EXCEL_CASE,
+    SHELF_INDEX,
     TITLE_CELL,
+    UNITE_INDEX,
 )
 from ezc.recipes import Ingredient, RecipeElement
 from ezc.shopping import ShoppingList
@@ -107,11 +112,11 @@ class ExcelFactory:
     def iterate_ingredient(self):
         for ingredient_attr in self._iterate_ingredients():
             yield Ingredient(
-                ingredient_attr[0].value,
-                ingredient_attr[1].value,
-                ingredient_attr[2].value,
-                ingredient_attr[3].value,
-                ingredient_attr[4].value,
+                ingredient_attr[NAME_INDEX].value,
+                ingredient_attr[SHELF_INDEX].value,
+                ingredient_attr[PRICE_INDEX].value,
+                ingredient_attr[CATEGORY_INDEX].value,
+                ingredient_attr[UNITE_INDEX].value,
             )
 
     def iterate_recipe_element(self):
