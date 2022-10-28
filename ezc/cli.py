@@ -1,3 +1,4 @@
+from configparser import ConfigParser
 from typing import List
 
 import click
@@ -6,8 +7,6 @@ from ezc.constants import (
     CATEGORIES,
     INGREDIENT_TYPE,
     INGREDIENTS_CATEGORIES,
-    INGREDIENTS_DATABASE_FILENAME,
-    RECIPE_DATABASE_FILENAME,
     RECIPE_TYPE,
     RECIPES_CATEGORIES,
     SHELF_LIST,
@@ -30,10 +29,15 @@ def cli():
 
 @cli.command()
 @click.argument("recipes", nargs=-1)
+@click.option(
+    "--config", type=str, required=False, default="default_config.json"
+)
 @click.option("-l", "--log", type=bool, required=False, default=False)
-def create_list(recipes: List[str], log: bool):
+def create_list(recipes: List[str], config: str, log: bool):
     logger.set_log_activation(log)
-    _create_list(recipes, log)
+    configuration = ConfigParser()
+    configuration.read(config)
+    _create_list(recipes, configuration, log)
 
 
 @cli.command()
@@ -42,9 +46,18 @@ def create_list(recipes: List[str], log: bool):
 @click.option("-p", "--price", type=float, required=True)
 @click.option("-c", "--category", type=click.Choice(CATEGORIES), required=True)
 @click.option("-u", "--unite", type=str, required=False, default="kg")
+@click.option(
+    "--config", type=str, required=False, default="default_config.json"
+)
 @click.option("-l", "--log", type=bool, required=False, default=False)
 def add_ingredient(
-    name: str, shelf: str, price: float, category: str, unite: str, log: bool
+    name: str,
+    shelf: str,
+    price: float,
+    category: str,
+    unite: str,
+    config: str,
+    log: bool,
 ):
     """Add an individual ingredient to the json database by passing all ingredient info
 
@@ -56,14 +69,19 @@ def add_ingredient(
         unite (str): Ingredient unite
         log (bool): Is log activated or not
     """
+    configuration = ConfigParser()
+    configuration.read(config)
     logger.set_log_activation(log)
-    _add_ingredient(name, shelf, price, category, unite)
+    _add_ingredient(name, shelf, price, category, unite, configuration)
 
 
 @cli.command()
 @click.argument("excel_filename", type=click.Path(exists=True))
+@click.option(
+    "--config", type=str, required=False, default="default_config.json"
+)
 @click.option("--log / --no-log", required=False, default=False)
-def add_ingredients(excel_filename: str, log: bool):
+def add_ingredients(excel_filename: str, config: str, log: bool):
     """Add a group of ingredients described in a dedicated excel file
     to json ingredient database
 
@@ -72,13 +90,18 @@ def add_ingredients(excel_filename: str, log: bool):
         log (bool): Is log activated or not
     """
     logger.set_log_activation(log)
-    _add_ingredients(excel_filename)
+    configuration = ConfigParser()
+    configuration.read(config)
+    _add_ingredients(excel_filename, configuration)
 
 
 @cli.command()
 @click.argument("excel_filename", type=click.Path(exists=True))
+@click.option(
+    "--config", type=str, required=False, default="default_config.json"
+)
 @click.option("-l", "--log", type=bool, required=False, default=False)
-def add_recipe(excel_filename: str, log: bool):
+def add_recipe(excel_filename: str, config: str, log: bool):
     """Add a recipe to json recipe database based on a recipe description
     in an excel file
 
@@ -87,7 +110,9 @@ def add_recipe(excel_filename: str, log: bool):
         log (bool): Is log activated or not
     """
     logger.set_log_activation(log)
-    _add_recipe(excel_filename)
+    configuration = ConfigParser()
+    configuration.read(config)
+    _add_recipe(excel_filename, configuration)
 
 
 @cli.command()
@@ -98,7 +123,9 @@ def create_table(name: str, table_type: str, log: bool):
     create_excel_table(name, table_type, log)
 
 
-def _create_list(recipes: List[str], log: bool) -> ShoppingList:
+def _create_list(
+    recipes: List[str], configuration: ConfigParser, log: bool
+) -> ShoppingList:
     """Create a shopping list based on recipes list
 
     Args:
@@ -114,7 +141,10 @@ def _create_list(recipes: List[str], log: bool) -> ShoppingList:
     for recipe_name in recipes:
         logger.debug(f"Adding {recipe_name} recipe ingredients")
         try:
-            recipe_element = get_json_recipe(recipe_name)
+            recipe_element = get_json_recipe(
+                recipe_name,
+                configuration.get("CONFIG", "RECIPES_DATABASE"),
+            )
         except RecipeNotFoundException:
             logger.error(
                 f"Recipe {recipe_name} is not in the recipes database. Please add it."
@@ -135,7 +165,8 @@ def _create_list(recipes: List[str], log: bool) -> ShoppingList:
             )
             try:
                 ingredient_element = get_json_ingredient(
-                    recipe_element.ingredient_name
+                    recipe_element.ingredient_name,
+                    configuration.get("CONFIG", "INGREDIENTS_DATABASE"),
                 )
             except IngredientNotFoundException:
                 logger.error(
@@ -177,24 +208,33 @@ def _create_list(recipes: List[str], log: bool) -> ShoppingList:
 
 
 def _add_ingredient(
-    name: str, shelf: str, price: float, category: str, unite: str
+    name: str,
+    shelf: str,
+    price: float,
+    category: str,
+    unite: str,
+    configuration: ConfigParser,
 ):
     ingredient = Ingredient(name, shelf, price, category, unite)
     logger.debug(f"cli:_add_ingredient : {ingredient}")
 
-    ingredient.add_or_update(INGREDIENTS_DATABASE_FILENAME)
+    ingredient.add_or_update(
+        configuration.get("CONFIG", "INGREDIENTS_DATABASE")
+    )
 
 
-def _add_ingredients(excel_filename: str):
+def _add_ingredients(excel_filename: str, configuration: ConfigParser):
     # Open excel file
     excel_factory = ExcelFactory(click.format_filename(excel_filename))
 
     # Iter on rows
     for ingredient in excel_factory.iterate_ingredient():
-        ingredient.add_or_update(INGREDIENTS_DATABASE_FILENAME)
+        ingredient.add_or_update(
+            configuration.get("CONFIG", "INGREDIENTS_DATABASE")
+        )
 
 
-def _add_recipe(excel_filename: str):
+def _add_recipe(excel_filename: str, configuration: ConfigParser):
     # Open Excel File
     excel_factory = ExcelFactory(click.format_filename(excel_filename))
 
@@ -202,7 +242,7 @@ def _add_recipe(excel_filename: str):
         excel_factory.get_recipe_name(),
         [r_e for r_e in excel_factory.iterate_recipe_element()],
     )
-    recipe.add_to_json_file(RECIPE_DATABASE_FILENAME)
+    recipe.add_to_json_file(configuration.get("CONFIG", "RECIPES_DATABASE"))
 
 
 def create_excel_table(name: str, table_type: str, log: bool):

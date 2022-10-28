@@ -1,15 +1,11 @@
 import json
 from typing import Any, Dict, List
 
-from ezc.constants import (
-    INGREDIENTS_DATABASE_FILENAME,
-    RECIPE_DATABASE_FILENAME,
-)
 from ezc.exceptions import IngredientNotFoundException, RecipeNotFoundException
 from ezc.globals import logger
 
 
-def get_json_ingredient(ingredient_name: str) -> Dict[str, Any]:
+def get_json_ingredient(ingredient_name: str, database: str) -> Dict[str, Any]:
     """Find and return specified ingredient description in json database
 
     Args:
@@ -22,7 +18,7 @@ def get_json_ingredient(ingredient_name: str) -> Dict[str, Any]:
         Dict[str, Any]: _description_
     """
     ingredients = []
-    with open(INGREDIENTS_DATABASE_FILENAME, "r") as ingredients_file:
+    with open(database, "r") as ingredients_file:
         ingredients = json.load(ingredients_file)
     for ingredient in ingredients:
         if (
@@ -48,7 +44,7 @@ def check_ingredient_presence(
     return _check_json_element_presence(ingredient_name, "name", json_database)
 
 
-def check_recipe_presence(recipe_name: str) -> bool:
+def check_recipe_presence(recipe_name: str, json_database: str) -> bool:
     """Check a recipe presence in recipes json database
 
     Args:
@@ -57,12 +53,10 @@ def check_recipe_presence(recipe_name: str) -> bool:
     Returns:
         bool: True if searched recipe is in recipes json database else False
     """
-    return _check_json_element_presence(
-        recipe_name, "name", RECIPE_DATABASE_FILENAME
-    )
+    return _check_json_element_presence(recipe_name, "name", json_database)
 
 
-def get_json_recipe(recipe_name: str) -> Dict[str, Any]:
+def get_json_recipe(recipe_name: str, json_database: str) -> Dict[str, Any]:
     """Find and return json recipe representation with the recipe name in entry
 
     Args:
@@ -75,7 +69,7 @@ def get_json_recipe(recipe_name: str) -> Dict[str, Any]:
         Dict[str, Any]: Searched recipe json representation
     """
     recipes = []
-    with open(RECIPE_DATABASE_FILENAME, "r") as recipes_file:
+    with open(json_database, "r") as recipes_file:
         recipes = json.load(recipes_file)
     for recipe in recipes:
         if (
