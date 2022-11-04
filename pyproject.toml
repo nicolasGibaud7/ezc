@@ -24,6 +24,9 @@ testpaths = [
     "tests",
 ]
 
+[tool.coverage.run]
+omit = [".*", "*/site-packages/*"]
+
 [tool.coverage.report]
 fail_under = 90
 
