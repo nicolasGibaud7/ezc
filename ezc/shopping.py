@@ -37,7 +37,10 @@ class ShoppingElement:
         }
 
     def __repr__(self) -> str:
-        return f"{self.ingredient.name} : {self.ingredient.shelf} - {self.quantity} {self.ingredient.unite} - {self.price} euros"
+        return (
+            f"{self.ingredient.name} : {self.ingredient.shelf} -"
+            f"{self.quantity} {self.ingredient.unite} - {self.price} euros"
+        )
 
 
 @dataclass

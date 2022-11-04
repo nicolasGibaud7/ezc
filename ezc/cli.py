@@ -139,7 +139,7 @@ def _create_list(recipes: List[str], log: bool) -> ShoppingList:
                 )
             except IngredientNotFoundException:
                 logger.error(
-                    f"Ingredient {recipe_element.ingredient_name} is not in the ingredients database"
+                    f"{recipe_element.ingredient_name} not in ingredient database"
                 )
                 continue
 

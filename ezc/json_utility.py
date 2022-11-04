@@ -287,7 +287,7 @@ def _update_element_in_json_file(
     Args:
         json_filename (str): Json file
         new_element (Dict[str, Any]): New json element
-        identifier_attribute (str): Attribute which will permit to identify json element to update
+        identifier_attribute (str): Attribute to identify json element to update
     """
     json_content = []
     with open(json_filename, "r") as json_file:
