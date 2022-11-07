@@ -114,7 +114,7 @@ def _create_list(recipes: List[str], log: bool) -> ShoppingList:
     for recipe_name in recipes:
         logger.debug(f"Adding {recipe_name} recipe ingredients")
         try:
-            recipe_element = get_json_recipe(recipe_name)
+            recipe_ingredient = get_json_recipe(recipe_name)
         except RecipeNotFoundException:
             logger.error(
                 f"Recipe {recipe_name} is not in the recipes database. Please add it."
@@ -124,7 +124,7 @@ def _create_list(recipes: List[str], log: bool) -> ShoppingList:
             recipe_name,
             [
                 RecipeElement(r_e["ingredient_name"], r_e["quantity"])
-                for r_e in recipe_element["ingredients_list"]
+                for r_e in recipe_ingredient["ingredients_list"]
             ],
         )
 
@@ -139,7 +139,7 @@ def _create_list(recipes: List[str], log: bool) -> ShoppingList:
                 )
             except IngredientNotFoundException:
                 logger.error(
-                    f"Ingredient {recipe_element.ingredient_name} is not in the ingredients database"
+                    f"{recipe_element.ingredient_name} not in ingredient database"
                 )
                 continue
 
