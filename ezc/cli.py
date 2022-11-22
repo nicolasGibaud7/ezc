@@ -154,7 +154,7 @@ def _create_list(
             recipe_name,
             [
                 RecipeElement(r_e["ingredient_name"], r_e["quantity"])
-                for r_e in recipe_element["ingredients_list"]
+                for r_e in recipe_ingredient["ingredients_list"]
             ],
         )
 
@@ -170,7 +170,7 @@ def _create_list(
                 )
             except IngredientNotFoundException:
                 logger.error(
-                    f"Ingredient {recipe_element.ingredient_name} is not in the ingredients database"
+                    f"{recipe_element.ingredient_name} not in ingredient database"
                 )
                 continue
 

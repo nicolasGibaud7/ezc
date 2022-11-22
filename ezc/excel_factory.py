@@ -1,8 +1,8 @@
 from typing import List
 
-from openpyxl import Workbook, load_workbook
-from openpyxl.cell import Cell
-from openpyxl.styles import Alignment, Border, Font, Side
+from openpyxl import Workbook, load_workbook  # type: ignore
+from openpyxl.cell import Cell  # type: ignore
+from openpyxl.styles import Alignment, Border, Font, Side  # type: ignore
 
 from ezc.constants import (
     CATEGORY_INDEX,
