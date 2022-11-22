@@ -1,0 +1,16 @@
+[
+    {
+        "name": "carotte",
+        "shelf": "legumes",
+        "price": 1.1,
+        "category": "supermarket",
+        "unite": "kg"
+    },
+    {
+        "name": "concombre",
+        "shelf": "legumes",
+        "price": 0.8,
+        "category": "market",
+        "unite": "kg"
+    }
+]
