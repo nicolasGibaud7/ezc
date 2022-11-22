@@ -141,7 +141,7 @@ def _create_list(
     for recipe_name in recipes:
         logger.debug(f"Adding {recipe_name} recipe ingredients")
         try:
-            recipe_element = get_json_recipe(
+            recipe_ingredient = get_json_recipe(
                 recipe_name,
                 configuration.get("CONFIG", "RECIPES_DATABASE"),
             )
