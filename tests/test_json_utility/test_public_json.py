@@ -125,19 +125,30 @@ def test_add_recipe_to_json_file(
     assert json_content == expected_result
 
 
-@pytest.mark.parametrize("recipe_name, expected_result", data_get_json_recipe)
-def test_get_json_recipe(recipe_name: str, expected_result):
+@pytest.mark.parametrize(
+    "recipe_name, recipes_database, expected_result", data_get_json_recipe
+)
+def test_get_json_recipe(
+    recipe_name: str, recipes_database: str, expected_result
+):
     try:
-        assert get_json_recipe(recipe_name) == expected_result
+        assert (
+            get_json_recipe(recipe_name, recipes_database) == expected_result
+        )
     except RecipeNotFoundException:
         assert expected_result is None
 
 
 @pytest.mark.parametrize(
-    "recipe_name, expected_result", data_check_recipe_presence
+    "recipe_name, recipes_database, expected_result",
+    data_check_recipe_presence,
 )
-def test_check_recipe_presence(recipe_name: str, expected_result):
-    assert check_recipe_presence(recipe_name) == expected_result
+def test_check_recipe_presence(
+    recipe_name: str, recipes_database: str, expected_result
+):
+    assert (
+        check_recipe_presence(recipe_name, recipes_database) == expected_result
+    )
 
 
 @pytest.mark.parametrize(
@@ -154,12 +165,18 @@ def test_check_ingredient_presence(
 
 
 @pytest.mark.parametrize(
-    "ingredient_name, expected_result", data_get_json_ingredient
+    "ingredient_name, ingredient_database, expected_result",
+    data_get_json_ingredient,
 )
 def test_get_json_ingredient(
-    ingredient_name: str, expected_result: Dict[str, Any]
+    ingredient_name: str,
+    ingredient_database: str,
+    expected_result: Dict[str, Any],
 ):
     try:
-        assert get_json_ingredient(ingredient_name) == expected_result
+        assert (
+            get_json_ingredient(ingredient_name, ingredient_database)
+            == expected_result
+        )
     except IngredientNotFoundException:
         assert expected_result is None

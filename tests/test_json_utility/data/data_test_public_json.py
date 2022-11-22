@@ -201,6 +201,7 @@ data_add_recipe_to_json_file = [
 data_get_json_recipe = [
     (
         "pates pesto",
+        "tests/json_files/recipes.json",
         {
             "name": "pates pesto",
             "ingredients_list": [
@@ -214,6 +215,7 @@ data_get_json_recipe = [
     ),
     (
         "pates raclettes",
+        "tests/json_files/recipes.json",
         {
             "name": "pates raclettes",
             "ingredients_list": [
@@ -222,15 +224,15 @@ data_get_json_recipe = [
             ],
         },
     ),
-    ("fgdskfgdsklgf", None),
+    ("fgdskfgdsklgf", "tests/json_files/recipes.json", None),
 ]
 
 data_check_recipe_presence = [
-    ("Pates pesto", False),
-    ("pates pesto", True),
-    ("pates raclettes", True),
-    ("PATES RACLETTES", False),
-    ("Gratin dauphinois", False),
+    ("Pates pesto", "tests/json_files/recipes.json", False),
+    ("pates pesto", "tests/json_files/recipes.json", True),
+    ("pates raclettes", "tests/json_files/recipes.json", True),
+    ("PATES RACLETTES", "tests/json_files/recipes.json", False),
+    ("Gratin dauphinois", "tests/json_files/recipes.json", False),
 ]
 
 data_check_ingredient_presence = [
@@ -244,6 +246,7 @@ data_check_ingredient_presence = [
 data_get_json_ingredient = [
     (
         "eau",
+        "tests/json_files/ingredients.json",
         {
             "name": "eau",
             "shelf": "boissons",
@@ -254,6 +257,7 @@ data_get_json_ingredient = [
     ),
     (
         "pate",
+        "tests/json_files/ingredients.json",
         {
             "name": "pate",
             "shelf": "epicerie salee",
@@ -264,6 +268,7 @@ data_get_json_ingredient = [
     ),
     (
         "pesto",
+        "tests/json_files/ingredients.json",
         {
             "name": "pesto",
             "shelf": "epicerie salee",
@@ -272,5 +277,5 @@ data_get_json_ingredient = [
             "unite": "kg",
         },
     ),
-    ("fgdskgfslg", None),
+    ("fgdskgfslg", "tests/json_files/ingredients.json", None),
 ]

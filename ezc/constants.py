@@ -1,5 +1,3 @@
-INGREDIENTS_DATABASE_FILENAME = "tests/json_files/ingredients.json"
-
 RECIPE_DATABASE_FILENAME = "tests/json_files/recipes.json"
 
 SHELF_LIST = [
