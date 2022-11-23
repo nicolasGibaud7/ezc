@@ -1,4 +1,5 @@
 import json
+import unittest
 from configparser import ConfigParser
 from typing import Any
 
@@ -47,7 +48,7 @@ def compare_database_content(
 @pytest.mark.parametrize(
     "name, shelf, price, category, unite", data_func_add_ingredient
 )
-def test_add_ingredient(
+def _add_ingredient(
     name: str,
     shelf: str,
     price: str,
@@ -234,3 +235,86 @@ def test_add_ingredient(
     )
 
     backup_ingredients_database(configuration, original_database_content)
+
+
+class AddingIngredient(unittest.TestCase):
+    def setUp(self) -> None:
+        self.configuration = ConfigParser()
+        self.configuration.read(CONFIG_FILE)
+        self.original_database_content = get_ingredients_database_content(
+            self.configuration
+        )
+        self.runner = CliRunner()
+
+    def tearDown(self) -> None:
+        backup_ingredients_database(
+            self.configuration, self.original_database_content
+        )
+
+    def test_can_add_an_ingredient_and_find_it_later_in_the_database(self):
+        # Joe heard that there is a cool new app which permit to add store
+        # ingredients to build recipes with them
+
+        # Joe wants to add a first courgette ingredient but forget to add ingredient name
+        result = self.runner.invoke(
+            add_ingredient,
+            [
+                "--shelf",
+                "LEGUMES",
+                "--price",
+                "0.8",
+                "--category",
+                "market",
+                "--unite",
+                "kg",
+                "--config",
+                CONFIG_FILE,
+                "--log",
+                LOG_STATE,
+            ],
+        )
+        self.assertEqual(result.exit_code, 2)
+        self.assertTrue(compare_database_content(self.configuration, []))
+
+        # Joe learn from his mistake and run valid add_ingredient command
+        # to add his first ingredient to the database
+        result = self.runner.invoke(
+            add_ingredient,
+            [
+                "--name",
+                "courgette",
+                "--shelf",
+                "LEGUMES",
+                "--price",
+                "0.8",
+                "--category",
+                "market",
+                "--unite",
+                "kg",
+                "--config",
+                CONFIG_FILE,
+                "--log",
+                LOG_STATE,
+            ],
+        )
+        self.assertEqual(result.exit_code, 0)
+        self.assertTrue(
+            compare_database_content(
+                self.configuration,
+                [
+                    {
+                        "name": "courgette",
+                        "shelf": "legumes",
+                        "price": float("0.8"),
+                        "category": "market",
+                        "unite": "kg",
+                    }
+                ],
+            )
+        )
+
+        self.fail("Finish the test !")
+
+
+if __name__ == "__main__":
+    unittest.main()
