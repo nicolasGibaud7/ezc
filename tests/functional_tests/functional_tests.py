@@ -23,8 +23,16 @@ from data.data_adding_ingredients import (
     lower_price_carrot,
     lower_price_carrot_representation,
 )
+from openpyxl.styles import Alignment, Border, Font, Side
 
-from ezc.cli import add_ingredient, add_recipe
+from ezc.cli import add_ingredient, add_ingredients, add_recipe, create_table
+from ezc.constants import EXCEL_COLUMNS, INGREDIENT_TYPE, TITLE_CELL
+from ezc.excel_factory import ExcelFactory
+from tests.functional_tests.data.data_adding_multiple_ingredients_by_created_excel_files import (
+    columns_names,
+    ingredients_categories,
+    new_ingredients,
+)
 
 CONFIG_FILE = "tests/functional_tests/functional_tests_config.ini"
 LOG_STATE = "True"
@@ -253,6 +261,84 @@ class NewUser(unittest.TestCase):
                 risotto_representation(),
                 "RECIPES_DATABASE",
             )
+        )
+
+    def test_adding_multiple_ingredients_by_created_excel_files(self):
+        # Esteban is a lazy smart guy and wan't to add several ingredients to the database
+        # So he wan't to use excel tables to do it
+
+        # Esteban begins by generating dedicated "ingredients table"
+        self.runner.invoke(
+            create_table,
+            [
+                "--name",
+                "new_ingredients.xlsx",
+                "--table_type",
+                INGREDIENT_TYPE,
+                "--log",
+                LOG_STATE,
+            ],
+        )
+        excel_file = ExcelFactory("new_ingredients.xlsx")
+        self.assertEqual(
+            excel_file.current_sheet[TITLE_CELL].font,
+            Font(bold=True),
+        )
+        self.assertEqual(
+            excel_file.current_sheet[TITLE_CELL].border,
+            Border(
+                bottom=Side(border_style="thin"),
+                top=Side(border_style="thin"),
+                left=Side(border_style="thin"),
+                right=Side(border_style="thin"),
+            ),
+        )
+        self.assertEqual(
+            excel_file.current_sheet[TITLE_CELL].alignment,
+            Alignment(horizontal="center", vertical="center"),
+        )
+        self.assertEqual(
+            excel_file.current_sheet[TITLE_CELL].value, "New_ingredients"
+        )
+        for index, header_column in enumerate(EXCEL_COLUMNS[0:5]):
+            cell = excel_file.current_sheet[f"{header_column}3"]
+            self.assertEqual(cell.value, ingredients_categories[index])
+            self.assertEqual(cell.style, "Headline 2")
+
+        # Next, Esteban will manually add some ingredients to the "ingredients table"
+        for index, new_ingredient in enumerate(new_ingredients):
+            for col, col_name in columns_names:
+                excel_file.current_sheet[
+                    f"{col}{4+index}"
+                ].value = new_ingredient[col_name]
+
+        excel_file.workbook.save(excel_file.name)
+
+        # Finally, Esteban will add all "ingredients table" ingredients to the database
+        self.runner.invoke(
+            add_ingredients,
+            [
+                "new_ingredients.xlsx",
+                "--config",
+                CONFIG_FILE,
+                "--log" if LOG_STATE else "--no-log",
+            ],
+        )
+        self.assertIn(
+            courgette_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
+        )
+        self.assertIn(
+            round_rice_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
+        )
+        self.assertIn(
+            onion_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
+        )
+        self.assertIn(
+            parmesan_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
         )
 
 
