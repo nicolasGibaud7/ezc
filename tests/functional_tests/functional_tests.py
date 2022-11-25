@@ -1,4 +1,5 @@
 import json
+import os
 import unittest
 from configparser import ConfigParser
 from typing import Any
@@ -40,6 +41,7 @@ LOG_STATE = "True"
 
 class NewUser(unittest.TestCase):
     def setUp(self) -> None:
+        self.runner = CliRunner()
         self.configuration = ConfigParser()
         self.configuration.read(CONFIG_FILE)
         self.original_ingredient_database_content = self.get_database_content(
@@ -48,11 +50,14 @@ class NewUser(unittest.TestCase):
         self.original_recipe_database_content = self.get_database_content(
             "RECIPES_DATABASE"
         )
-        self.runner = CliRunner()
 
     def tearDown(self) -> None:
         self.backup_database("INGREDIENTS_DATABASE")
         self.backup_database("RECIPES_DATABASE")
+        try:
+            os.remove("new_ingredients.xlsx")
+        except FileNotFoundError:  # It's for tests which didn't create new_ingredients.xlsx file
+            pass
 
     def get_database_content(self, database_name: str) -> Any:
         with open(
