@@ -4,6 +4,25 @@ from configparser import ConfigParser
 from typing import Any
 
 from click.testing import CliRunner
+from data.data_add_ingredient_for_building_a_recipe import (
+    courgette,
+    courgette_representation,
+    onion,
+    onion_representation,
+    parmesan,
+    parmesan_representation,
+    risotto_representation,
+    round_rice,
+    round_rice_representation,
+)
+from data.data_adding_ingredients import (
+    carrot,
+    carrot_bad_category,
+    carrot_representation,
+    courgette_missing_name_param,
+    lower_price_carrot,
+    lower_price_carrot_representation,
+)
 
 from ezc.cli import add_ingredient, add_recipe
 
@@ -62,27 +81,14 @@ class NewUser(unittest.TestCase):
         ) as database_file:
             print(json.load(database_file))
 
-    def test_can_add_an_ingredient_and_find_it_in_the_database(self):
+    def test_adding_ingredients(self):
         # Joe heard that there is a cool new app which permit to add store
         # ingredients to build recipes with them
 
         # Joe wants to add a first courgette ingredient but forget to add ingredient name
         result = self.runner.invoke(
             add_ingredient,
-            [
-                "--shelf",
-                "LEGUMES",
-                "--price",
-                "0.8",
-                "--category",
-                "market",
-                "--unite",
-                "kg",
-                "--config",
-                CONFIG_FILE,
-                "--log",
-                LOG_STATE,
-            ],
+            courgette_missing_name_param(CONFIG_FILE, LOG_STATE),
         )
         self.assertEqual(
             result.exit_code, 2, f"\n - Output : \n\n{result.output}"
@@ -96,37 +102,14 @@ class NewUser(unittest.TestCase):
         # to add his first ingredient to the database
         result = self.runner.invoke(
             add_ingredient,
-            [
-                "--name",
-                "courgette",
-                "--shelf",
-                "LEGUMES",
-                "--price",
-                "0.8",
-                "--category",
-                "market",
-                "--unite",
-                "kg",
-                "--config",
-                CONFIG_FILE,
-                "--log",
-                LOG_STATE,
-            ],
+            courgette(CONFIG_FILE, LOG_STATE),
         )
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
         )
         self.assertTrue(
             self.compare_database_content(
-                [
-                    {
-                        "name": "courgette",
-                        "shelf": "legumes",
-                        "price": float("0.8"),
-                        "category": "market",
-                        "unite": "kg",
-                    }
-                ],
+                [courgette_representation()],
                 "INGREDIENTS_DATABASE",
             ),
             f"\n - Output : \n\n{result.output}",
@@ -134,38 +117,14 @@ class NewUser(unittest.TestCase):
 
         # Joe wan't now to add another ingredient to the database but enter a no existing category
         result = self.runner.invoke(
-            add_ingredient,
-            [
-                "--name",
-                "carotte",
-                "--shelf",
-                "LEGUMES",
-                "--price",
-                "1.21",
-                "--category",
-                "mrket",
-                "--unite",
-                "kg",
-                "--config",
-                CONFIG_FILE,
-                "--log",
-                LOG_STATE,
-            ],
+            add_ingredient, carrot_bad_category(CONFIG_FILE, LOG_STATE)
         )
         self.assertEqual(
             result.exit_code, 2, f"\n - Output : \n\n{result.output}"
         )
         self.assertTrue(
             self.compare_database_content(
-                [
-                    {
-                        "name": "courgette",
-                        "shelf": "legumes",
-                        "price": float("0.8"),
-                        "category": "market",
-                        "unite": "kg",
-                    }
-                ],
+                [courgette_representation()],
                 "INGREDIENTS_DATABASE",
             ),
             f"\n - Output : \n\n{result.output}",
@@ -173,45 +132,14 @@ class NewUser(unittest.TestCase):
 
         # Joe retry more carefully to a add a new ingredient to the database
         result = self.runner.invoke(
-            add_ingredient,
-            [
-                "--name",
-                "carotte",
-                "--shelf",
-                "LEGUMES",
-                "--price",
-                "1.21",
-                "--category",
-                "market",
-                "--unite",
-                "kg",
-                "--config",
-                CONFIG_FILE,
-                "--log",
-                LOG_STATE,
-            ],
+            add_ingredient, carrot(CONFIG_FILE, LOG_STATE)
         )
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
         )
         self.assertTrue(
             self.compare_database_content(
-                [
-                    {
-                        "name": "courgette",
-                        "shelf": "legumes",
-                        "price": 0.8,
-                        "category": "market",
-                        "unite": "kg",
-                    },
-                    {
-                        "name": "carotte",
-                        "shelf": "legumes",
-                        "price": 1.21,
-                        "category": "market",
-                        "unite": "kg",
-                    },
-                ],
+                [courgette_representation(), carrot_representation()],
                 "INGREDIENTS_DATABASE",
             ),
             f"\n - Output : \n\n{result.output}",
@@ -220,23 +148,7 @@ class NewUser(unittest.TestCase):
         # Joe see that carrot price drop down and wan't to modify
         # the carrot item in ingredient database
         result = self.runner.invoke(
-            add_ingredient,
-            [
-                "--name",
-                "carotte",
-                "--shelf",
-                "LEGUMES",
-                "--price",
-                "0.99",
-                "--category",
-                "market",
-                "--unite",
-                "kg",
-                "--config",
-                CONFIG_FILE,
-                "--log",
-                LOG_STATE,
-            ],
+            add_ingredient, lower_price_carrot(CONFIG_FILE, LOG_STATE)
         )
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
@@ -244,20 +156,8 @@ class NewUser(unittest.TestCase):
         self.assertTrue(
             self.compare_database_content(
                 [
-                    {
-                        "name": "courgette",
-                        "shelf": "legumes",
-                        "price": 0.8,
-                        "category": "market",
-                        "unite": "kg",
-                    },
-                    {
-                        "name": "carotte",
-                        "shelf": "legumes",
-                        "price": 0.99,
-                        "category": "market",
-                        "unite": "kg",
-                    },
+                    courgette_representation(),
+                    lower_price_carrot_representation(),
                 ],
                 "INGREDIENTS_DATABASE",
             ),
@@ -268,38 +168,14 @@ class NewUser(unittest.TestCase):
         # Martin want's to create risotto recipe
         # He begins by adding rice ingredient
         result = self.runner.invoke(
-            add_ingredient,
-            [
-                "--name",
-                "round rice",
-                "--shelf",
-                "EPICERIE_SALEE",
-                "--price",
-                "1",
-                "--category",
-                "supermarket",
-                "--unite",
-                "kg",
-                "--config",
-                CONFIG_FILE,
-                "--log",
-                LOG_STATE,
-            ],
+            add_ingredient, round_rice(CONFIG_FILE, LOG_STATE)
         )
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
         )
         self.assertTrue(
             self.compare_database_content(
-                [
-                    {
-                        "name": "round rice",
-                        "shelf": "epicerie_salee",
-                        "price": 1,
-                        "category": "supermarket",
-                        "unite": "kg",
-                    },
-                ],
+                [round_rice_representation()],
                 "INGREDIENTS_DATABASE",
             ),
             f"\n - Output : \n\n{result.output} \n - Database : {self.print_database_content()}",
@@ -307,45 +183,14 @@ class NewUser(unittest.TestCase):
 
         # Martin continue by adding courgette ingredient
         result = self.runner.invoke(
-            add_ingredient,
-            [
-                "--name",
-                "courgette",
-                "--shelf",
-                "LEGUMES",
-                "--price",
-                "0.8",
-                "--category",
-                "market",
-                "--unite",
-                "kg",
-                "--config",
-                CONFIG_FILE,
-                "--log",
-                LOG_STATE,
-            ],
+            add_ingredient, courgette(CONFIG_FILE, LOG_STATE)
         )
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
         )
         self.assertTrue(
             self.compare_database_content(
-                [
-                    {
-                        "name": "round rice",
-                        "shelf": "epicerie_salee",
-                        "price": 1,
-                        "category": "supermarket",
-                        "unite": "kg",
-                    },
-                    {
-                        "name": "courgette",
-                        "shelf": "legumes",
-                        "price": 0.8,
-                        "category": "market",
-                        "unite": "kg",
-                    },
-                ],
+                [round_rice_representation(), courgette_representation()],
                 "INGREDIENTS_DATABASE",
             ),
             f"\n - Output : \n\n{result.output}",
@@ -354,23 +199,7 @@ class NewUser(unittest.TestCase):
         # Martin follow by adding onions to the database
 
         result = self.runner.invoke(
-            add_ingredient,
-            [
-                "--name",
-                "onion",
-                "--shelf",
-                "LEGUMES",
-                "--price",
-                "0.95",
-                "--category",
-                "market",
-                "--unite",
-                "kg",
-                "--config",
-                CONFIG_FILE,
-                "--log",
-                LOG_STATE,
-            ],
+            add_ingredient, onion(CONFIG_FILE, LOG_STATE)
         )
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
@@ -378,27 +207,9 @@ class NewUser(unittest.TestCase):
         self.assertTrue(
             self.compare_database_content(
                 [
-                    {
-                        "name": "round rice",
-                        "shelf": "epicerie_salee",
-                        "price": 1,
-                        "category": "supermarket",
-                        "unite": "kg",
-                    },
-                    {
-                        "name": "courgette",
-                        "shelf": "legumes",
-                        "price": 0.8,
-                        "category": "market",
-                        "unite": "kg",
-                    },
-                    {
-                        "name": "onion",
-                        "shelf": "legumes",
-                        "price": 0.95,
-                        "category": "market",
-                        "unite": "kg",
-                    },
+                    round_rice_representation(),
+                    courgette_representation(),
+                    onion_representation(),
                 ],
                 "INGREDIENTS_DATABASE",
             ),
@@ -407,23 +218,7 @@ class NewUser(unittest.TestCase):
 
         # And Martin finish adding ingredient by putting parmesan ingredient in the database
         result = self.runner.invoke(
-            add_ingredient,
-            [
-                "--name",
-                "parmesan",
-                "--shelf",
-                "FRAIS",
-                "--price",
-                "10.28",
-                "--category",
-                "supermarket",
-                "--unite",
-                "kg",
-                "--config",
-                CONFIG_FILE,
-                "--log",
-                LOG_STATE,
-            ],
+            add_ingredient, parmesan(CONFIG_FILE, LOG_STATE)
         )
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
@@ -431,34 +226,10 @@ class NewUser(unittest.TestCase):
         self.assertTrue(
             self.compare_database_content(
                 [
-                    {
-                        "name": "round rice",
-                        "shelf": "epicerie_salee",
-                        "price": 1,
-                        "category": "supermarket",
-                        "unite": "kg",
-                    },
-                    {
-                        "name": "courgette",
-                        "shelf": "legumes",
-                        "price": 0.8,
-                        "category": "market",
-                        "unite": "kg",
-                    },
-                    {
-                        "name": "onion",
-                        "shelf": "legumes",
-                        "price": 0.95,
-                        "category": "market",
-                        "unite": "kg",
-                    },
-                    {
-                        "name": "parmesan",
-                        "shelf": "frais",
-                        "price": 10.28,
-                        "category": "supermarket",
-                        "unite": "kg",
-                    },
+                    round_rice_representation(),
+                    courgette_representation(),
+                    onion_representation(),
+                    parmesan_representation(),
                 ],
                 "INGREDIENTS_DATABASE",
             ),
@@ -479,17 +250,7 @@ class NewUser(unittest.TestCase):
         self.assertEqual(result.exit_code, 0)
         self.assertTrue(
             self.compare_database_content(
-                [
-                    {
-                        "name": "risotto_recipe",
-                        "ingredients_list": [
-                            {"ingredient_name": "round rice", "quantity": 1},
-                            {"ingredient_name": "courgette", "quantity": 1.5},
-                            {"ingredient_name": "onion", "quantity": 2},
-                            {"ingredient_name": "parmesan", "quantity": 0.1},
-                        ],
-                    }
-                ],
+                risotto_representation(),
                 "RECIPES_DATABASE",
             )
         )
