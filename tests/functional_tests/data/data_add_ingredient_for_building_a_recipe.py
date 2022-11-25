@@ -7,7 +7,7 @@ from data.utility import (
 )
 
 
-def risotto_representation() -> List[Dict[str, Any]]:
+def risotto_representation() -> Dict[str, Any]:
     return recipe_database_representation(
         "risotto",
         [

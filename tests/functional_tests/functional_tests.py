@@ -78,16 +78,6 @@ class NewUser(unittest.TestCase):
         ) as database_file:
             json.dump(content, database_file, indent=4)
 
-    def compare_database_content(
-        self,
-        compared_content: Any,
-        database_name: str,
-    ) -> bool:
-        with open(
-            self.configuration.get("CONFIG", database_name), "r"
-        ) as database_file:
-            return json.load(database_file) == compared_content
-
     def print_database_content(self):
         with open(
             self.configuration.get("CONFIG", "INGREDIENTS_DATABASE"), "r"
@@ -106,10 +96,7 @@ class NewUser(unittest.TestCase):
         self.assertEqual(
             result.exit_code, 2, f"\n - Output : \n\n{result.output}"
         )
-        self.assertTrue(
-            self.compare_database_content([], "INGREDIENTS_DATABASE"),
-            f"\n - Output : \n\n{result.output}",
-        )
+        self.assertEqual([], self.get_database_content("INGREDIENTS_DATABASE"))
 
         # Joe learn from his mistake and run valid add_ingredient command
         # to add his first ingredient to the database
@@ -120,12 +107,9 @@ class NewUser(unittest.TestCase):
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
         )
-        self.assertTrue(
-            self.compare_database_content(
-                [courgette_representation()],
-                "INGREDIENTS_DATABASE",
-            ),
-            f"\n - Output : \n\n{result.output}",
+        self.assertIn(
+            courgette_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
         )
 
         # Joe wan't now to add another ingredient to the database but enter a no existing category
@@ -135,12 +119,9 @@ class NewUser(unittest.TestCase):
         self.assertEqual(
             result.exit_code, 2, f"\n - Output : \n\n{result.output}"
         )
-        self.assertTrue(
-            self.compare_database_content(
-                [courgette_representation()],
-                "INGREDIENTS_DATABASE",
-            ),
-            f"\n - Output : \n\n{result.output}",
+        self.assertIn(
+            courgette_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
         )
 
         # Joe retry more carefully to a add a new ingredient to the database
@@ -150,12 +131,14 @@ class NewUser(unittest.TestCase):
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
         )
-        self.assertTrue(
-            self.compare_database_content(
-                [courgette_representation(), carrot_representation()],
-                "INGREDIENTS_DATABASE",
-            ),
-            f"\n - Output : \n\n{result.output}",
+
+        self.assertIn(
+            courgette_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
+        )
+        self.assertIn(
+            carrot_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
         )
 
         # Joe see that carrot price drop down and wan't to modify
@@ -166,15 +149,14 @@ class NewUser(unittest.TestCase):
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
         )
-        self.assertTrue(
-            self.compare_database_content(
-                [
-                    courgette_representation(),
-                    lower_price_carrot_representation(),
-                ],
-                "INGREDIENTS_DATABASE",
-            ),
-            f"\n - Output : \n\n{result.output}",
+
+        self.assertIn(
+            courgette_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
+        )
+        self.assertIn(
+            lower_price_carrot_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
         )
 
     def test_add_ingredient_for_building_a_recipe(self):
@@ -186,12 +168,10 @@ class NewUser(unittest.TestCase):
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
         )
-        self.assertTrue(
-            self.compare_database_content(
-                [round_rice_representation()],
-                "INGREDIENTS_DATABASE",
-            ),
-            f"\n - Output : \n\n{result.output} \n - Database : {self.print_database_content()}",
+
+        self.assertIn(
+            round_rice_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
         )
 
         # Martin continue by adding courgette ingredient
@@ -201,12 +181,14 @@ class NewUser(unittest.TestCase):
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
         )
-        self.assertTrue(
-            self.compare_database_content(
-                [round_rice_representation(), courgette_representation()],
-                "INGREDIENTS_DATABASE",
-            ),
-            f"\n - Output : \n\n{result.output}",
+
+        self.assertIn(
+            round_rice_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
+        )
+        self.assertIn(
+            courgette_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
         )
 
         # Martin follow by adding onions to the database
@@ -217,16 +199,17 @@ class NewUser(unittest.TestCase):
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
         )
-        self.assertTrue(
-            self.compare_database_content(
-                [
-                    round_rice_representation(),
-                    courgette_representation(),
-                    onion_representation(),
-                ],
-                "INGREDIENTS_DATABASE",
-            ),
-            f"\n - Output : \n\n{result.output}",
+        self.assertIn(
+            round_rice_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
+        )
+        self.assertIn(
+            courgette_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
+        )
+        self.assertIn(
+            onion_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
         )
 
         # And Martin finish adding ingredient by putting parmesan ingredient in the database
@@ -236,17 +219,22 @@ class NewUser(unittest.TestCase):
         self.assertEqual(
             result.exit_code, 0, f"\n - Output : \n\n{result.output}"
         )
-        self.assertTrue(
-            self.compare_database_content(
-                [
-                    round_rice_representation(),
-                    courgette_representation(),
-                    onion_representation(),
-                    parmesan_representation(),
-                ],
-                "INGREDIENTS_DATABASE",
-            ),
-            f"\n - Output : \n\n{result.output}",
+
+        self.assertIn(
+            round_rice_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
+        )
+        self.assertIn(
+            courgette_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
+        )
+        self.assertIn(
+            onion_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
+        )
+        self.assertIn(
+            parmesan_representation(),
+            self.get_database_content("INGREDIENTS_DATABASE"),
         )
 
         # Martin could finally create risotto recipe based on all added ingredients
@@ -261,11 +249,9 @@ class NewUser(unittest.TestCase):
             ],
         )
         self.assertEqual(result.exit_code, 0)
-        self.assertTrue(
-            self.compare_database_content(
-                risotto_representation(),
-                "RECIPES_DATABASE",
-            )
+        self.assertIn(
+            risotto_representation(),
+            self.get_database_content("RECIPES_DATABASE"),
         )
 
     def test_adding_multiple_ingredients_by_created_excel_files(self):

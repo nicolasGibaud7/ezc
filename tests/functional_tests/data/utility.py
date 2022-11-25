@@ -42,16 +42,14 @@ def ingredient_database_representation(
 
 def recipe_database_representation(
     name: str, ingredients: List[Dict[str, Any]]
-) -> List[Dict[str, Any]]:
-    return [
-        {
-            "name": name,
-            "ingredients_list": [
-                {
-                    "ingredient_name": ingredient["name"],
-                    "quantity": ingredient["quantity"],
-                }
-                for ingredient in ingredients
-            ],
-        }
-    ]
+) -> Dict[str, Any]:
+    return {
+        "name": name,
+        "ingredients_list": [
+            {
+                "ingredient_name": ingredient["name"],
+                "quantity": ingredient["quantity"],
+            }
+            for ingredient in ingredients
+        ],
+    }
