@@ -31,7 +31,7 @@ new_ingredients = [
     },
 ]
 
-columns_names = [
+ingredient_columns_names = [
     ("A", "nom"),
     ("B", "rayon"),
     ("C", "prix"),

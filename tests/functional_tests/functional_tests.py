@@ -16,6 +16,11 @@ from data.data_add_ingredient_for_building_a_recipe import (
     round_rice,
     round_rice_representation,
 )
+from data.data_add_recipe_by_created_excel_file import (
+    recipe_categories,
+    recipe_columns_names,
+    recipe_ingredients,
+)
 from data.data_adding_ingredients import (
     carrot,
     carrot_bad_category,
@@ -27,15 +32,23 @@ from data.data_adding_ingredients import (
 from openpyxl.styles import Alignment, Border, Font, Side
 
 from ezc.cli import add_ingredient, add_ingredients, add_recipe, create_table
-from ezc.constants import EXCEL_COLUMNS, INGREDIENT_TYPE, TITLE_CELL
+from ezc.constants import (
+    EXCEL_COLUMNS,
+    INGREDIENT_TYPE,
+    RECIPE_TYPE,
+    TITLE_CELL,
+)
 from ezc.excel_factory import ExcelFactory
 from tests.functional_tests.data.data_adding_multiple_ingredients_by_created_excel_files import (
-    columns_names,
+    ingredient_columns_names,
     ingredients_categories,
     new_ingredients,
 )
 
 CONFIG_FILE = "tests/functional_tests/functional_tests_config.ini"
+ADDING_RECIPE_BY_EXCEL_TABLE_CONFIG_FILE = (
+    "tests/functional_tests/adding_recipe_by_excel_table_config.ini"
+)
 LOG_STATE = "True"
 
 
@@ -298,7 +311,7 @@ class NewUser(unittest.TestCase):
 
         # Next, Esteban will manually add some ingredients to the "ingredients table"
         for index, new_ingredient in enumerate(new_ingredients):
-            for col, col_name in columns_names:
+            for col, col_name in ingredient_columns_names:
                 excel_file.current_sheet[
                     f"{col}{4+index}"
                 ].value = new_ingredient[col_name]
@@ -331,6 +344,81 @@ class NewUser(unittest.TestCase):
             parmesan_representation(),
             self.get_database_content("INGREDIENTS_DATABASE"),
         )
+
+    def test_add_recipe_by_created_excel_file(self):
+
+        # John wan't to add a new recipe and don't get an excel file with all ingredients
+        # So he must create it and add all recipe ingredients to add the recipe
+
+        # John generates dedicated adding recipe excel table
+        self.runner.invoke(
+            create_table,
+            [
+                "--name",
+                "risotto.xlsx",
+                "--table_type",
+                RECIPE_TYPE,
+                "--log",
+                LOG_STATE,
+            ],
+        )
+        excel_file = ExcelFactory("risotto.xlsx")
+        self.assertEqual(
+            excel_file.current_sheet[TITLE_CELL].font,
+            Font(bold=True),
+        )
+        self.assertEqual(
+            excel_file.current_sheet[TITLE_CELL].border,
+            Border(
+                bottom=Side(border_style="thin"),
+                top=Side(border_style="thin"),
+                left=Side(border_style="thin"),
+                right=Side(border_style="thin"),
+            ),
+        )
+        self.assertEqual(
+            excel_file.current_sheet[TITLE_CELL].alignment,
+            Alignment(horizontal="center", vertical="center"),
+        )
+        self.assertEqual(excel_file.current_sheet[TITLE_CELL].value, "Risotto")
+        for index, header_column in enumerate(EXCEL_COLUMNS[0:2]):
+            cell = excel_file.current_sheet[f"{header_column}3"]
+            self.assertEqual(cell.value, recipe_categories[index])
+            self.assertEqual(cell.style, "Headline 2")
+
+        # John manually add recipe ingredients to the excel table
+        for index, recipe_ingredient in enumerate(recipe_ingredients):
+            for i, col in enumerate(recipe_columns_names):
+                excel_file.current_sheet[
+                    f"{col}{4+index}"
+                ].value = recipe_ingredient[i]
+
+        excel_file.workbook.save(excel_file.name)
+
+        # John try to add the recipe to the database but one ingredient is missing
+        result = self.runner.invoke(
+            add_recipe,
+            [
+                "risotto.xlsx",
+                "--config",
+                ADDING_RECIPE_BY_EXCEL_TABLE_CONFIG_FILE,
+                "--log",
+                LOG_STATE,
+            ],
+        )
+
+        self.assertEqual(
+            result.exit_code, 0
+        )  # TODO Add the end of the scenario when recipe ingredients will be verified
+
+        self.assertIn(
+            risotto_representation(),
+            self.get_database_content("RECIPES_DATABASE"),
+        )
+
+        # John add missing ingredient to the database
+
+        # John try again to add the recipe to the database and success !
 
 
 if __name__ == "__main__":
