@@ -1,3 +1,4 @@
+import glob
 import json
 import os
 import unittest
@@ -29,9 +30,21 @@ from data.data_adding_ingredients import (
     lower_price_carrot,
     lower_price_carrot_representation,
 )
+from data.data_create_shopping_list import (
+    FROZEN_FOOD_SHOPPING_LIST_FILENAME,
+    MARKET_SHOPPING_LIST_FILENAME,
+    SUPERMARKET_SHOPPING_LIST_FILENAME,
+    get_associate_expected_result,
+)
 from openpyxl.styles import Alignment, Border, Font, Side
 
-from ezc.cli import add_ingredient, add_ingredients, add_recipe, create_table
+from ezc.cli import (
+    add_ingredient,
+    add_ingredients,
+    add_recipe,
+    create_list,
+    create_table,
+)
 from ezc.constants import (
     EXCEL_COLUMNS,
     INGREDIENT_TYPE,
@@ -48,6 +61,9 @@ from tests.functional_tests.data.data_adding_multiple_ingredients_by_created_exc
 CONFIG_FILE = "tests/functional_tests/functional_tests_config.ini"
 ADDING_RECIPE_BY_EXCEL_TABLE_CONFIG_FILE = (
     "tests/functional_tests/adding_recipe_by_excel_table_config.ini"
+)
+CREATE_SHOPPING_LIST_CONFIG = (
+    "tests/functional_tests/create_shopping_list_config.ini"
 )
 LOG_STATE = "True"
 
@@ -69,6 +85,13 @@ class NewUser(unittest.TestCase):
         self.backup_database("RECIPES_DATABASE")
         try:
             os.remove("new_ingredients.xlsx")
+        except FileNotFoundError:  # It's for tests which didn't create new_ingredients.xlsx file
+            pass
+        try:
+            os.remove(MARKET_SHOPPING_LIST_FILENAME)
+            os.remove(SUPERMARKET_SHOPPING_LIST_FILENAME)
+            os.remove(FROZEN_FOOD_SHOPPING_LIST_FILENAME)
+
         except FileNotFoundError:  # It's for tests which didn't create new_ingredients.xlsx file
             pass
 
@@ -419,6 +442,43 @@ class NewUser(unittest.TestCase):
         # John add missing ingredient to the database
 
         # John try again to add the recipe to the database and success !
+
+    def test_create_shopping_list(self):
+
+        # Anna want's to to create shopping list for the week
+        # She planned to make 2 recipes for this week
+        # She already registered recipes and associated ingredients in the database
+        configuration = ConfigParser()
+        configuration.read(CREATE_SHOPPING_LIST_CONFIG)
+
+        # Anna creates shopping list by telling on what recipes it will be built
+        result = self.runner.invoke(
+            create_list,
+            [
+                "risotto",
+                "pesto pasta",
+                "--config",
+                CREATE_SHOPPING_LIST_CONFIG,
+                "--log",
+                LOG_STATE,
+            ],
+        )
+        self.assertEqual(result.exit_code, 0)
+
+        # Check that all shopping lists are really created
+        shopping_lists = glob.glob("*_list.xlsx")
+        self.assertIn(FROZEN_FOOD_SHOPPING_LIST_FILENAME, shopping_lists)
+        self.assertIn(SUPERMARKET_SHOPPING_LIST_FILENAME, shopping_lists)
+        self.assertIn(MARKET_SHOPPING_LIST_FILENAME, shopping_lists)
+
+        # Check shopping lists content
+        for shopping_list in shopping_lists:
+            excel = ExcelFactory(shopping_list)
+
+            for exp_elem in get_associate_expected_result(shopping_list):
+                self.assertEqual(
+                    excel.current_sheet[exp_elem[0]].value, exp_elem[1]
+                )
 
 
 if __name__ == "__main__":
