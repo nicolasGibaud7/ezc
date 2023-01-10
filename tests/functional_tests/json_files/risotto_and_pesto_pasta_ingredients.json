@@ -1,0 +1,51 @@
+[
+    {
+        "name": "courgette",
+        "shelf": "LEGUMES",
+        "price": 0.8,
+        "category": "market",
+        "unite": "kg"
+    },
+    {
+        "name": "round rice",
+        "shelf": "EPICERIE_SALEE",
+        "price": 1,
+        "category": "supermarket",
+        "unite": "kg"
+    },
+    {
+        "name": "onion",
+        "shelf": "LEGUMES",
+        "price": 0.95,
+        "category": "market",
+        "unite": "kg"
+    },
+    {
+        "name": "parmesan",
+        "shelf": "FRAIS",
+        "price": 10.28,
+        "category": "supermarket",
+        "unite": "kg"
+    },
+    {
+        "name": "pesto",
+        "shelf": "EPICERIE_SALEE",
+        "price": 11.62,
+        "category": "supermarket",
+        "unite": "kg"
+    },
+    {
+        "name": "gruyere",
+        "shelf": "FRAIS",
+        "price": 8.95,
+        "category": "supermarket",
+        "unite": "kg"
+    },
+    {
+        "name": "pasta",
+        "shelf": "EPICERIE_SALEE",
+        "price": 2.4,
+        "category": "supermarket",
+        "unite": "kg"
+    }
+]
