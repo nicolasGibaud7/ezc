@@ -10,6 +10,7 @@ python = "^3.7"
 click = "8.1.2"
 openpyxl = "^3.0.10"
 django = "3.2"
+selenium = "^4.8.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "22.3.0"
