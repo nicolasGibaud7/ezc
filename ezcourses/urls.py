@@ -18,4 +18,8 @@ from django.contrib import admin
 
 from list_generation import views
 
-urlpatterns = [url(r"^admin/", admin.site.urls), url(r"^$", views.home_page)]
+urlpatterns = [
+    url(r"^admin/", admin.site.urls),
+    url(r"^$", views.home_page),
+    url("^recipes/$", views.recipes_page),
+]

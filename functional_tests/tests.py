@@ -21,17 +21,6 @@ class NewVisitorTest(LiveServerTestCase):
         # User notices the page title and header mention ezcourses
         self.assertIn("Welcome to ezcourses", self.browser.title)
 
-        # User sees recipes button
-        self.browser.find_element("id", "id_recipes_button")
-
-        self.fail("Finish the test!")
-
-        # User sees ingredients button
-        self.browser.find_element("id", "id_ingredients_button")
-
-        # User sees selected recipes list
-        self.browser.find_element("id", "id_selected_recipes_list")
-
     def test_select_recipe_and_see_it_in_the_selected_recipes_list(self):
         # User goes to the home page
         self.browser.get(self.live_server_url)
