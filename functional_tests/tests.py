@@ -3,6 +3,8 @@ import time
 from django.test import LiveServerTestCase
 from selenium import webdriver
 
+from list_generation.models import Ingredient
+
 
 class NewVisitorTest(LiveServerTestCase):
     def setUp(self):
@@ -65,6 +67,10 @@ class NewVisitorTest(LiveServerTestCase):
     #     self.fail("Finish the test!")
 
     def test_access_ingredients_page_and_see_ingredient_details(self):
+        # Adding Tomato ingredient to the database
+        element = Ingredient.objects.create(name="test_Tomato")
+        print(f"{element.id} {element.name}")
+
         # User goes to the home page
         self.browser.get(self.live_server_url)
 
@@ -83,14 +89,11 @@ class NewVisitorTest(LiveServerTestCase):
             "id", "id_ingredients_table"
         )
 
-        # User clicks on the first ingredient
-        first_ingredient = ingredients_table.find_element(
-            "id", "id_ingredient_0"
-        )
-        first_ingredient.click()  # TODO Modify id
+        # User clicks on the tomato ingredient
+        tomato_ingredient = ingredients_table.find_element("value", "Tomato")
 
         # User sees that he was redirected to the ingredient details page
-        self.assertIn(f"{first_ingredient.text}", self.browser.title)
+        self.assertIn(f"{tomato_ingredient.text}", self.browser.title)
 
         # User sees the ingredient details
         # TODO see How to test that there are ingredients details on the page

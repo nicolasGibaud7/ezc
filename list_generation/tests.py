@@ -41,21 +41,20 @@ class IngredientsPageTest(TestCase):
 
         self.assertTemplateUsed(response, "ingredients.html")
 
-    # def test_ingredients_are_displayed(self):
-    #     ingredients = ["Tomate", "Oignon", "Ail", "Piment"]
-    #     response = self.client.get("/ingredients/")
-    #     self.assertIn("Tomate", response.content.decode())
+    def test_ingredients_are_displayed(self):
+        ingredients = ["Tomate", "Oignon", "Ail", "Piment"]
+        for ingredient in ingredients:
+            Ingredient(name=ingredient).save()
+
+        response = self.client.get("/ingredients/")
+        for ingredient in ingredients:
+            self.assertIn(ingredient, response.content.decode())
 
 
 class IngredientsModelTest(TestCase):
     def test_saving_and_retrieving_ingredients(self):
-        tomate = Ingredient()
-        tomate.name = "Tomate"
-        tomate.save()
-
-        oignon = Ingredient()
-        oignon.name = "Oignon"
-        oignon.save()
+        Ingredient(name="Tomate").save()
+        Ingredient(name="Oignon").save()
 
         saved_ingredients = Ingredient.objects.all()
         self.assertEqual(saved_ingredients.count(), 2)
