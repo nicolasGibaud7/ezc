@@ -67,9 +67,6 @@ class NewVisitorTest(LiveServerTestCase):
     #     self.fail("Finish the test!")
 
     def test_access_ingredients_page_and_see_ingredient_details(self):
-        # Adding Tomato ingredient to the database
-        element = Ingredient.objects.create(name="test_Tomato")
-        print(f"{element.id} {element.name}")
 
         # User goes to the home page
         self.browser.get(self.live_server_url)
@@ -90,10 +87,19 @@ class NewVisitorTest(LiveServerTestCase):
         )
 
         # User clicks on the tomato ingredient
-        tomato_ingredient = ingredients_table.find_element("value", "Tomato")
+        tomato_ingredient_element = [
+            ingredient
+            for ingredient in ingredients_table.find_elements(
+                "css selector", "td"
+            )
+            if ingredient.text == "Tomato"
+        ][0]
+
+        self.assertEqual(tomato_ingredient_element.text, "Tomato")
+        self.fail("Finish the test!")
 
         # User sees that he was redirected to the ingredient details page
-        self.assertIn(f"{tomato_ingredient.text}", self.browser.title)
+        self.assertIn(f"{tomato_ingredient_element.text}", self.browser.title)
 
         # User sees the ingredient details
         # TODO see How to test that there are ingredients details on the page
