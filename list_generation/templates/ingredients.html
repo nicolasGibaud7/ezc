@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <title>Ingredients</title>
+    </head>
+    <body>
+        <h1>Ingredients</h1>
+        <table id="id_ingredients_table">
+            {% for ingredient in ingredients %}
+                <tr>
+                    <td>{{ingredient.name}} </td>
+                </tr>
+            {% endfor %}
+        </table> 
+    </body>
+</html>
