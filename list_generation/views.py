@@ -9,3 +9,7 @@ def home_page(request):
 
 def recipes_page(request):
     return render(request, "recipes.html")
+
+
+def ingredients_page(request):
+    return render(request, "ingredients.html")

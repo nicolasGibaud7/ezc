@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.urls import resolve
 
-from list_generation.views import home_page, recipes_page
+from list_generation.models import Ingredient
+from list_generation.views import home_page, ingredients_page, recipes_page
 
 
 # Create your tests here.
@@ -28,3 +29,38 @@ class RecipesPageTest(TestCase):
 
     def test_recipes_list_appears(self):
         pass
+
+
+class IngredientsPageTest(TestCase):
+    def test_ingredients_url_resolves_to_ingredients_page_view(self):
+        found = resolve("/ingredients/")
+        self.assertEqual(found.func, ingredients_page)
+
+    def test_ingredients_page_returns_correct_html(self):
+        response = self.client.get("/ingredients/")
+
+        self.assertTemplateUsed(response, "ingredients.html")
+
+    # def test_ingredients_are_displayed(self):
+    #     ingredients = ["Tomate", "Oignon", "Ail", "Piment"]
+    #     response = self.client.get("/ingredients/")
+    #     self.assertIn("Tomate", response.content.decode())
+
+
+class IngredientsModelTest(TestCase):
+    def test_saving_and_retrieving_ingredients(self):
+        tomate = Ingredient()
+        tomate.name = "Tomate"
+        tomate.save()
+
+        oignon = Ingredient()
+        oignon.name = "Oignon"
+        oignon.save()
+
+        saved_ingredients = Ingredient.objects.all()
+        self.assertEqual(saved_ingredients.count(), 2)
+
+        first_saved_ingredient = saved_ingredients[0]
+        second_saved_ingredient = saved_ingredients[1]
+        self.assertEqual(first_saved_ingredient.name, "Tomate")
+        self.assertEqual(second_saved_ingredient.name, "Oignon")

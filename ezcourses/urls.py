@@ -22,4 +22,5 @@ urlpatterns = [
     url(r"^admin/", admin.site.urls),
     url(r"^$", views.home_page),
     url("^recipes/$", views.recipes_page),
+    url("^ingredients/$", views.ingredients_page),
 ]
