@@ -47,35 +47,64 @@ class IngredientsPageTest(TestCase):
         self.assertTemplateUsed(response, "ingredients.html")
 
     def test_ingredients_are_displayed(self):
-        ingredients = ["Tomate", "Oignon", "Ail", "Piment"]
-        shelf = Shelf.objects.first()
-        category = Category.objects.first()
-        unit = Unit.objects.first()
-        for ingredient in ingredients:
-            Ingredient(
-                name=ingredient,
-                shelf=shelf,
-                category=category,
-                unit=unit,
-                price=1.3,
-            ).save()
+        ingredients_info = [
+            {
+                "name": "Tomate",
+                "shelf": Shelf.objects.first(),
+                "category": Category.objects.first(),
+                "unit": Unit.objects.first(),
+                "price": 1.3,
+            },
+            {
+                "name": "Oignon",
+                "shelf": Shelf.objects.first(),
+                "category": Category.objects.first(),
+                "unit": Unit.objects.first(),
+                "price": 1.3,
+            },
+            {
+                "name": "Ail",
+                "shelf": Shelf.objects.first(),
+                "category": Category.objects.first(),
+                "unit": Unit.objects.first(),
+                "price": 1.3,
+            },
+            {
+                "name": "Piment",
+                "shelf": Shelf.objects.first(),
+                "category": Category.objects.first(),
+                "unit": Unit.objects.first(),
+                "price": 1.3,
+            },
+        ]
+        for ingredient_info in ingredients_info:
+            Ingredient.objects.create(
+                name=ingredient_info["name"],
+                shelf=ingredient_info["shelf"],
+                category=ingredient_info["category"],
+                unit=ingredient_info["unit"],
+                price=ingredient_info["price"],
+            )
 
-        response = self.client.get("/ingredients/")
-        for ingredient in ingredients:
-            self.assertIn(ingredient, response.content.decode())
-            self.assertIn("Fruits and vegetables", response.content.decode())
-            self.assertIn("Market", response.content.decode())
-            self.assertIn("Kilogram (Kg)", response.content.decode())
-            self.assertIn("1.30 €", response.content.decode())
+        response = self.client.get("/ingredients/").content.decode()
+        for ingredient_info in ingredients_info:
+            self.assertIn(ingredient_info["name"], response)
+            self.assertIn(ingredient_info["shelf"].name, response)
+            self.assertIn(ingredient_info["category"].name, response)
+            self.assertIn(ingredient_info["unit"].name, response)
+            self.assertIn(str(ingredient_info["price"]), response)
 
 
 class ShelfModelTest(TestCase):
-    def test_saving_and_retrieving_shelfs(self):
-        Shelf(name="Fruits and vegetables").save()
-        Shelf(name="Dairy products").save()
+    def setUp(self):
+        Shelf.objects.create(name="Fruits and vegetables")
+        Shelf.objects.create(name="Dairy products")
 
+    def test_saving_shelfs(self):
+        self.assertEqual(Shelf.objects.count(), 2)
+
+    def test_retrieving_shelfs(self):
         saved_shelfs = Shelf.objects.all()
-        self.assertEqual(saved_shelfs.count(), 2)
 
         first_saved_shelf = saved_shelfs[0]
         second_saved_shelf = saved_shelfs[1]
@@ -84,12 +113,15 @@ class ShelfModelTest(TestCase):
 
 
 class UnitModelTest(TestCase):
-    def test_saving_and_retrieving_units(self):
-        Unit(name="Kilogram", abbreviation="Kg").save()
-        Unit(name="Gram", abbreviation="g").save()
+    def setUp(self) -> None:
+        Unit.objects.create(name="Kilogram", abbreviation="Kg")
+        Unit.objects.create(name="Gram", abbreviation="g")
 
+    def test_saving_units(self):
+        self.assertEqual(Unit.objects.count(), 2)
+
+    def test_retrieving_units(self):
         saved_units = Unit.objects.all()
-        self.assertEqual(saved_units.count(), 2)
 
         first_saved_unit = saved_units[0]
         second_saved_unit = saved_units[1]
@@ -100,12 +132,15 @@ class UnitModelTest(TestCase):
 
 
 class CategoryModelTest(TestCase):
-    def test_saving_and_retrieving_categories(self):
-        Category(name="Market").save()
-        Category(name="Frozen food").save()
+    def setUp(self) -> None:
+        Category.objects.create(name="Market")
+        Category.objects.create(name="Frozen food")
 
+    def test_saving_categories(self):
+        self.assertEqual(Category.objects.count(), 2)
+
+    def test_retrieving_categories(self):
         saved_categories = Category.objects.all()
-        self.assertEqual(saved_categories.count(), 2)
 
         first_saved_category = saved_categories[0]
         second_saved_category = saved_categories[1]
@@ -118,38 +153,32 @@ class IngredientsModelTest(TestCase):
         Category.objects.create(name="Market")
         Shelf.objects.create(name="Fruits and vegetables")
         Unit.objects.create(name="Kilogram", abbreviation="Kg")
-
-    def test_saving_and_retrieving_ingredients(self):
-
-        Ingredient(
+        Ingredient.objects.create(
             name="Tomate",
             shelf=Shelf.objects.first(),
             category=Category.objects.first(),
             unit=Unit.objects.first(),
-        ).save()
-        Ingredient(
-            name="Oignon",
+            price=1.30,
+        )
+        Ingredient.objects.create(
+            name="Onion",
             shelf=Shelf.objects.first(),
             category=Category.objects.first(),
             unit=Unit.objects.first(),
-        ).save()
+        )
 
+    def test_saving_ingredients(self):
+        self.assertEqual(Ingredient.objects.count(), 2)
+
+    def test_retrieving_ingredients(self):
         saved_ingredients = Ingredient.objects.all()
-        self.assertEqual(saved_ingredients.count(), 2)
 
         first_saved_ingredient = saved_ingredients[0]
         second_saved_ingredient = saved_ingredients[1]
         self.assertEqual(first_saved_ingredient.name, "Tomate")
-        self.assertEqual(second_saved_ingredient.name, "Oignon")
+        self.assertEqual(second_saved_ingredient.name, "Onion")
 
     def test_ingredients_have_shelf_attributes(self):
-        Ingredient(
-            name="Tomato",
-            shelf=Shelf.objects.first(),
-            category=Category.objects.first(),
-            unit=Unit.objects.first(),
-        ).save()
-
         saved_ingredients = Ingredient.objects.all()
 
         first_saved_ingredient = saved_ingredients[0]
@@ -158,50 +187,22 @@ class IngredientsModelTest(TestCase):
         )
 
     def test_ingredients_have_category_attributes(self):
-        Ingredient(
-            name="Tomato",
-            shelf=Shelf.objects.first(),
-            category=Category.objects.first(),
-            unit=Unit.objects.first(),
-        ).save()
-
         saved_ingredients = Ingredient.objects.all()
 
         first_saved_ingredient = saved_ingredients[0]
         self.assertEqual(first_saved_ingredient.category.name, "Market")
 
     def test_ingredient_have_unit_attributes(self):
-        Ingredient(
-            name="Tomato",
-            shelf=Shelf.objects.first(),
-            category=Category.objects.first(),
-            unit=Unit.objects.first(),
-        ).save()
-
         saved_ingredients = Ingredient.objects.all()
 
         first_saved_ingredient = saved_ingredients[0]
         self.assertEqual(first_saved_ingredient.unit.name, "Kilogram")
 
     def test_ingredient_have_price_attributes(self):
-        Ingredient(
-            name="Tomato",
-            shelf=Shelf.objects.first(),
-            category=Category.objects.first(),
-            unit=Unit.objects.first(),
-            price=1.5,
-        ).save()
-        Ingredient(
-            name="Tomato",
-            shelf=Shelf.objects.first(),
-            category=Category.objects.first(),
-            unit=Unit.objects.first(),
-        ).save()
-
         saved_ingredients = Ingredient.objects.all()
 
         first_saved_ingredient = saved_ingredients[0]
-        self.assertEqual(first_saved_ingredient.price, 1.5)
+        self.assertEqual(str(first_saved_ingredient.price), "1.30")
 
         second_saved_ingredient = saved_ingredients[1]
         self.assertIsNone(second_saved_ingredient.price)

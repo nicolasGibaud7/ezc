@@ -66,7 +66,7 @@ class NewVisitorTest(LiveServerTestCase):
 
     #     self.fail("Finish the test!")
 
-    def test_access_ingredients_page_and_see_ingredient_details(self):
+    def test_access_ingredients_page_and_see_ingredients_information(self):
 
         # User goes to the home page
         self.browser.get(self.live_server_url)
@@ -125,3 +125,15 @@ class NewVisitorTest(LiveServerTestCase):
 
         # User sees the ingredient details
         # TODO see How to test that there are ingredients details on the page
+
+    def test_access_ingredients_details(self):
+
+        # User goes to the ingredients page
+        self.browser.get(self.live_server_url + "/ingredients/")
+
+        # User clicks on the tomato ingredient
+        self.fail("Finish the test!")
+
+        # User sees that he was redirected to the ingredient details page
+
+        # User check the ingredients details
