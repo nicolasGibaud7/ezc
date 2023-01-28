@@ -8,6 +8,10 @@
             {% for ingredient in ingredients %}
                 <tr>
                     <td>{{ingredient.name}} </td>
+                    <td>{{ingredient.shelf.name}} </td>
+                    <td>{{ingredient.category.name}} </td>
+                    <td>{{ingredient.unit.name}} ({{ingredient.unit.abbreviation}})</td>
+                    <td>{{ingredient.price}} €</td>
                 </tr>
             {% endfor %}
         </table> 

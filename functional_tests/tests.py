@@ -85,17 +85,39 @@ class NewVisitorTest(LiveServerTestCase):
         ingredients_table = self.browser.find_element(
             "id", "id_ingredients_table"
         )
+        self.assertNotEqual(
+            ingredients_table.find_elements("css selector", "tr"),
+            [],
+            "The ingredients table is empty",
+        )
 
         # User clicks on the tomato ingredient
         tomato_ingredient_element = [
             ingredient
             for ingredient in ingredients_table.find_elements(
-                "css selector", "td"
+                "css selector", "tr"
             )
-            if ingredient.text == "Tomato"
+            if "Tomato" in ingredient.text
         ][0]
 
-        self.assertEqual(tomato_ingredient_element.text, "Tomato")
+        self.assertIn(
+            "Tomato",
+            tomato_ingredient_element.text,
+        )
+        self.assertIn(
+            "Fruits and vegetables",
+            tomato_ingredient_element.text,
+        )
+        self.assertIn(
+            "Market",
+            tomato_ingredient_element.text,
+        )
+        self.assertIn(
+            "Kilogram (Kg)",
+            tomato_ingredient_element.text,
+        )
+        self.assertIn("1.30 €", tomato_ingredient_element.text)
+
         self.fail("Finish the test!")
 
         # User sees that he was redirected to the ingredient details page
