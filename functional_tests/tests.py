@@ -2,8 +2,9 @@ import time
 
 from django.test import LiveServerTestCase
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 
-from list_generation.models import Ingredient
+MAX_WAIT = 10
 
 
 class NewVisitorTest(LiveServerTestCase):
@@ -14,14 +15,23 @@ class NewVisitorTest(LiveServerTestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def wait_for_page(self, expected_title: str):
+        start_time = time.time()
+        while True:
+            try:
+                self.assertIn(expected_title, self.browser.title)
+                return
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
+
     def test_access_home_page_and_access_several_elements(self):
         # User goes to the home page
         self.browser.get(self.live_server_url)
 
-        time.sleep(1)
-
         # User notices the page title and header mention ezcourses
-        self.assertIn("Welcome to ezcourses", self.browser.title)
+        self.wait_for_page("Welcome to ezcourses")
 
     # def test_select_recipe_and_see_it_in_the_selected_recipes_list(self):
     #     # User goes to the home page
@@ -71,15 +81,13 @@ class NewVisitorTest(LiveServerTestCase):
         # User goes to the home page
         self.browser.get(self.live_server_url)
 
-        time.sleep(1)
+        self.wait_for_page("Welcome to ezcourses")
 
         # User clicks on the ingredients button
         self.browser.find_element("id", "id_ingredients_button").click()
 
-        time.sleep(1)
-
         # User sees that he was redirected to the ingredients page
-        self.assertIn("Ingredients", self.browser.title)
+        self.wait_for_page("Ingredients")
 
         # User sees ingredients table
         ingredients_table = self.browser.find_element(
@@ -91,7 +99,7 @@ class NewVisitorTest(LiveServerTestCase):
             "The ingredients table is empty",
         )
 
-        # User clicks on the tomato ingredient
+        # User sees tomato ingredient
         tomato_ingredient_element = [
             ingredient
             for ingredient in ingredients_table.find_elements(
@@ -118,22 +126,47 @@ class NewVisitorTest(LiveServerTestCase):
         )
         self.assertIn("1.30 €", tomato_ingredient_element.text)
 
-        self.fail("Finish the test!")
-
-        # User sees that he was redirected to the ingredient details page
-        self.assertIn(f"{tomato_ingredient_element.text}", self.browser.title)
-
-        # User sees the ingredient details
-        # TODO see How to test that there are ingredients details on the page
-
     def test_access_ingredients_details(self):
 
         # User goes to the ingredients page
         self.browser.get(self.live_server_url + "/ingredients/")
 
+        self.wait_for_page("Ingredients")
+
+        # User sees ingredients table
+        ingredients_table = self.browser.find_element(
+            "id", "id_ingredients_table"
+        )
+
         # User clicks on the tomato ingredient
-        self.fail("Finish the test!")
+        tomato_ingredient_element = [
+            ingredient
+            for ingredient in ingredients_table.find_elements(
+                "css selector", "tr"
+            )
+            if "Tomato" in ingredient.text
+        ][0]
+        tomato_ingredient_element.click()
 
         # User sees that he was redirected to the ingredient details page
+        self.wait_for_page("Ingredient details")
 
         # User check the ingredients details
+        self.assertIn(
+            "Tomato", self.browser.find_element("id", "id_name").text
+        )
+        self.assertIn(
+            "Fruits and vegetables",
+            self.browser.find_element("id", "id_shelf").text,
+        )
+        self.assertIn(
+            "Market", self.browser.find_element("id", "id_category").text
+        )
+        self.assertIn(
+            "Kilogram (Kg)", self.browser.find_element("id", "id_unit").text
+        )
+        self.assertIn(
+            "1.30 €", self.browser.find_element("id", "id_price").text
+        )
+
+        self.fail("Finish the test!")
