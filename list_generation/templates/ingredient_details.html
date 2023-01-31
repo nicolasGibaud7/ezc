@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>Ingredient details</title>
+    </head>
+    <body>
+        <div id="id_ingredient_name">
+            <h1>{{ingredient.name}}</h1>
+        </div>
+        <div id="id_ingredient_shelf">
+            <h2>Shelf</h2>
+            <p>{{ingredient.shelf.name}}</p>
+        </div>
+        <div id="id_ingredient_category">
+            <h2>Category</h2>
+            <p>{{ingredient.category.name}}</p>
+        </div>
+        <div id="id_ingredient_unit">
+            <h2>Unit</h2>
+            <p>{{ingredient.unit.name}} ({{ingredient.unit.abbreviation}})</p>
+        </div>
+        <div id="id_ingredient_price">
+            <h2>Price</h2>
+            <p>{{ingredient.price}}</p>
+        </div>
+    </body>
+</html>
