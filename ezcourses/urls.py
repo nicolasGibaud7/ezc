@@ -23,4 +23,8 @@ urlpatterns = [
     url(r"^$", views.home_page),
     url("^recipes/$", views.recipes_page),
     url("^ingredients/$", views.ingredients_page),
+    url(
+        "^ingredients/(\d+)/$",
+        views.ingredient_details_page,
+    ),
 ]

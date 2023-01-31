@@ -16,3 +16,10 @@ def recipes_page(request):
 def ingredients_page(request):
     ingredients_ = Ingredient.objects.all()
     return render(request, "ingredients.html", {"ingredients": ingredients_})
+
+
+def ingredient_details_page(request, ingredient_id):
+    ingredient = Ingredient.objects.get(id=ingredient_id)
+    return render(
+        request, "ingredient_details.html", {"ingredient": ingredient}
+    )

@@ -12,6 +12,11 @@
                     <td>{{ingredient.category.name}} </td>
                     <td>{{ingredient.unit.name}} ({{ingredient.unit.abbreviation}})</td>
                     <td>{{ingredient.price}} €</td>
+                    <td>
+                        <button id="id_details_button_{{ingredient.id}}">
+                            <a href="/ingredients/{{ingredient.id}}/">Details</a>
+                        </button>
+                    </td>
                 </tr>
             {% endfor %}
         </table> 

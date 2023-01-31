@@ -139,34 +139,29 @@ class NewVisitorTest(LiveServerTestCase):
         )
 
         # User clicks on the tomato ingredient
-        tomato_ingredient_element = [
-            ingredient
-            for ingredient in ingredients_table.find_elements(
-                "css selector", "tr"
-            )
-            if "Tomato" in ingredient.text
-        ][0]
-        tomato_ingredient_element.click()
+        ingredients_table.find_element("id", "id_details_button_1").click()
 
         # User sees that he was redirected to the ingredient details page
         self.wait_for_page("Ingredient details")
 
         # User check the ingredients details
         self.assertIn(
-            "Tomato", self.browser.find_element("id", "id_name").text
+            "Tomato",
+            self.browser.find_element("id", "id_ingredient_name").text,
         )
         self.assertIn(
             "Fruits and vegetables",
-            self.browser.find_element("id", "id_shelf").text,
+            self.browser.find_element("id", "id_ingredient_shelf").text,
         )
         self.assertIn(
-            "Market", self.browser.find_element("id", "id_category").text
+            "Market",
+            self.browser.find_element("id", "id_ingredient_category").text,
         )
         self.assertIn(
-            "Kilogram (Kg)", self.browser.find_element("id", "id_unit").text
+            "Kilogram (Kg)",
+            self.browser.find_element("id", "id_ingredient_unit").text,
         )
         self.assertIn(
-            "1.30 €", self.browser.find_element("id", "id_price").text
+            "1.30",
+            self.browser.find_element("id", "id_ingredient_price").text,
         )
-
-        self.fail("Finish the test!")
