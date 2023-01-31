@@ -194,6 +194,12 @@ class IngredientDetailPageTest(TestCase):
             response,
         )
 
+    def test_access_to_an_unknown_ingredient_details(self):
+        response = self.client.get("/ingredients/999/")
+        self.assertInHTML(
+            "<title>Ingredients</title>", response.content.decode()
+        )
+
 
 class ShelfModelTest(TestCase):
     def setUp(self):

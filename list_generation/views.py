@@ -19,7 +19,11 @@ def ingredients_page(request):
 
 
 def ingredient_details_page(request, ingredient_id):
-    ingredient = Ingredient.objects.get(id=ingredient_id)
+    try:
+        ingredient = Ingredient.objects.get(id=ingredient_id)
+    except Ingredient.DoesNotExist:
+        return ingredients_page(request)
+
     return render(
         request, "ingredient_details.html", {"ingredient": ingredient}
     )

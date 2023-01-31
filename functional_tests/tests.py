@@ -165,3 +165,11 @@ class NewVisitorTest(LiveServerTestCase):
             "1.30",
             self.browser.find_element("id", "id_ingredient_price").text,
         )
+
+    def test_access_unknown_ingredient_details(self):
+
+        # User tries to access manually to the ingredients details page of an unknown ingredient
+        self.browser.get(self.live_server_url + "/ingredients/999/")
+
+        # User sees that he was redirected to the ingredients page
+        self.wait_for_page("Ingredients")
