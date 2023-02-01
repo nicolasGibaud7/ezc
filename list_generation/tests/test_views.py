@@ -116,6 +116,10 @@ class RecipeDetailsPageTest(TestCase):
         response = self.client.get("/recipes/1/")
         self.assertTemplateUsed(response, "recipe_details.html")
 
+    def test_recipe_details_page_returns_404_if_recipe_does_not_exist(self):
+        response = self.client.get("/recipes/999/")
+        self.assertEqual(response.status_code, 404)
+
     def test_recipe_details_page_returns_recipe(self):
         recipe = Recipe.objects.create(name="Tomato soup")
 

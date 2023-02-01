@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponseNotFound
 from django.shortcuts import render
 
 from list_generation.models import Ingredient, Recipe
@@ -30,8 +30,12 @@ def ingredient_details_page(request, ingredient_id):
 
 
 def recipe_details_page(request, recipe_id):
+    try:
+        recipe = Recipe.objects.get(id=recipe_id)
+    except Recipe.DoesNotExist:
+        return HttpResponseNotFound("<h1>Recipe not found</h1>")
     return render(
         request,
         "recipe_details.html",
-        {"recipe": Recipe.objects.get(id=recipe_id)},
+        {"recipe": recipe},
     )
