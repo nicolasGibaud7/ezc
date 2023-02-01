@@ -34,6 +34,11 @@ class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.DecimalField(max_digits=5, decimal_places=2)
 
+    def get_price(self):
+        if not self.ingredient.price:
+            return None
+        return self.ingredient.price * self.quantity
+
     def __str__(self):
         return f"{self.ingredient.name} - {self.quantity}"
 

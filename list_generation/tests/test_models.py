@@ -143,6 +143,16 @@ class RecipeIngredientsModelTest(TestCase):
         )
         self.assertEqual(RecipeIngredient.objects.count(), 1)
 
+    def test_get_price(self):
+        recipe_ingredient = RecipeIngredient.objects.create(
+            ingredient=Ingredient.objects.first(),
+            quantity=2,
+        )
+        try:
+            self.assertEqual(float(recipe_ingredient.get_price()), 2.60)
+        except TypeError:
+            raise TypeError("Ingredient price is not set")
+
 
 class RecipeModelTest(TestCase):
     def setUp(self) -> None:

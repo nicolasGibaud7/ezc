@@ -1,5 +1,3 @@
-from list_generation.models import Recipe
-
 from .base import FunctionalTest
 
 
@@ -59,5 +57,24 @@ class RecipeAccessTest(FunctionalTest):
         self.wait_for_page("Recipe details")
 
         # User check recipe details on the page
+        self.assertIn(
+            "Tomato soup",
+            self.browser.find_element("id", "id_recipe_name").text,
+        )
 
-        self.fail("Finish the test !")
+        self.assertIn(
+            "Tomato",
+            self.browser.find_element("id", "id_ingredient_name").text,
+        )
+        self.assertIn(
+            "3.00",
+            self.browser.find_element("id", "id_ingredient_quantity").text,
+        )
+        self.assertIn(
+            "Kilogram (Kg)",
+            self.browser.find_element("id", "id_ingredient_unit").text,
+        )
+        self.assertIn(
+            "3.90",
+            self.browser.find_element("id", "id_ingredient_price").text,
+        )

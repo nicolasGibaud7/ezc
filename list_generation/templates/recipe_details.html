@@ -2,4 +2,30 @@
     <head>
         <title>Recipe details</title>
     </head>
+
+    <body>
+        <h1>Recipe details</h1>
+        <div id="id_recipe_name">
+            <h2>{{ recipe.name }}</h2>
+        </div>
+        <table id="id_recipe_ingredients_table">
+            <tr>
+                {% for recipe_ingredient in recipe.ingredients.all %}
+                    <td>
+                        <div id="id_ingredient_name"> {{ recipe_ingredient.ingredient.name }} </div>
+                    </td>
+                    <td>
+                        <div id="id_ingredient_quantity"> {{ recipe_ingredient.quantity }} </div>
+                    </td>
+                    <td>
+                        <div id="id_ingredient_unit"> {{ recipe_ingredient.ingredient.unit.name }} ({{recipe_ingredient.ingredient.unit.abbreviation}}) </div>
+                    </td>
+                    <td>
+                        <div id="id_ingredient_price"> {{ recipe_ingredient.get_price }} </div>
+                    </td>
+                {% endfor %}
+            </tr>
+        </table>
+
+    </body>
 </html>

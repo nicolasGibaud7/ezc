@@ -94,6 +94,16 @@ class RecipesPageTest(TestCase):
 
 class RecipeDetailsPageTest(TestCase):
     def setUp(self) -> None:
+        Category.objects.create(name="Market")
+        Shelf.objects.create(name="Fruits and vegetables")
+        Unit.objects.create(name="Kilogram", abbreviation="Kg")
+        Ingredient.objects.create(
+            name="Tomato",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=1.30,
+        )
         Recipe.objects.create(name="Tomato soup")
 
     def test_recipe_details_url_resolves_to_recipe_details_page_view(
@@ -111,6 +121,27 @@ class RecipeDetailsPageTest(TestCase):
 
         response = self.client.get(f"/recipes/{recipe.id}/")
         self.assertEqual(response.context["recipe"], recipe)
+
+    def test_display_ingredients_of_a_recipe(self):
+        tomato_soup = Recipe.objects.first()
+        tomato_soup.add_ingredient(Ingredient.objects.first(), 1)
+
+        response = self.client.get(
+            f"/recipes/{tomato_soup.id}/"
+        ).content.decode()
+        self.assertIn("Tomato", response)
+        self.assertIn("1.00", response)
+        self.assertIn("Kilogram (Kg)", response)
+        self.assertIn("1.30", response)
+
+    def test_display_ingredient_price(self):
+        tomato_soup = Recipe.objects.first()
+        tomato_soup.add_ingredient(Ingredient.objects.first(), 2)
+
+        response = self.client.get(
+            f"/recipes/{tomato_soup.id}/"
+        ).content.decode()
+        self.assertIn("2.60", response)
 
 
 class IngredientsPageTest(TestCase):
