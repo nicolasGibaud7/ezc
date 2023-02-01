@@ -55,7 +55,7 @@ class RecipesPageTest(TestCase):
         for recipe in recipes:
             self.assertIn(recipe, response)
 
-    def test_display_ingredients_of_a_recipe(self):
+    def test_display_ingredients_count_of_a_recipe(self):
 
         Category.objects.create(name="Market")
         Shelf.objects.create(name="Fruits and vegetables")
@@ -72,8 +72,7 @@ class RecipesPageTest(TestCase):
         tomato_soup.add_ingredient(Ingredient.objects.first(), 1)
 
         response = self.client.get("/recipes/").content.decode()
-        self.assertIn("Tomato", response)
-        self.assertIn("1.00 Kg", response)
+        self.assertIn("Ingredients count: 1", response)
 
     def test_recipe_button_presence(self):
         """
@@ -109,11 +108,11 @@ class RecipeDetailsPageTest(TestCase):
     def test_recipe_details_url_resolves_to_recipe_details_page_view(
         self,
     ):
-        found = resolve("/recipes/1/")
+        found = resolve(f"/recipes/{Recipe.objects.first().id}/")
         self.assertEqual(found.func, recipe_details_page)
 
     def test_recipe_details_page_returns_correct_html(self):
-        response = self.client.get("/recipes/1/")
+        response = self.client.get(f"/recipes/{Recipe.objects.first().id}/")
         self.assertTemplateUsed(response, "recipe_details.html")
 
     def test_recipe_details_page_returns_404_if_recipe_does_not_exist(self):

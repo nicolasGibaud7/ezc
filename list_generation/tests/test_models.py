@@ -201,3 +201,11 @@ class RecipeModelTest(TestCase):
         self.assertEqual(
             onion_recipe.ingredients.first().ingredient.name, "Onion"
         )
+
+    def test_ingredients_count(self):
+        tomato_recipe = Recipe.objects.first()
+        tomato_recipe.add_ingredient(Ingredient.objects.first(), 1)
+        self.assertEqual(tomato_recipe.ingredients_count(), 1)
+
+        tomato_recipe.add_ingredient(Ingredient.objects.last(), 1)
+        self.assertEqual(tomato_recipe.ingredients_count(), 2)

@@ -33,8 +33,7 @@ class RecipeAccessTest(FunctionalTest):
             if "Tomato soup" in recipe.text
         ][0]
 
-        self.assertIn("Tomato", tomato_soup_recipe_element.text)
-        self.assertIn("3.00 Kg", tomato_soup_recipe_element.text)
+        self.assertIn("Ingredients count: 1", tomato_soup_recipe_element.text)
 
     def test_access_recipe_details(self):
 

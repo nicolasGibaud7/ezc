@@ -54,5 +54,8 @@ class Recipe(models.Model):
             )
         )
 
+    def ingredients_count(self):
+        return self.ingredients.count()
+
     def __str__(self):
         return self.name
