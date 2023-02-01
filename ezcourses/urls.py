@@ -27,4 +27,5 @@ urlpatterns = [
         "^ingredients/(\d+)/$",
         views.ingredient_details_page,
     ),
+    url("^recipes/(\d+)/$", views.recipe_details_page),
 ]

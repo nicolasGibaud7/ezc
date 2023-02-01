@@ -27,3 +27,11 @@ def ingredient_details_page(request, ingredient_id):
     return render(
         request, "ingredient_details.html", {"ingredient": ingredient}
     )
+
+
+def recipe_details_page(request, recipe_id):
+    return render(
+        request,
+        "recipe_details.html",
+        {"recipe": Recipe.objects.get(id=recipe_id)},
+    )

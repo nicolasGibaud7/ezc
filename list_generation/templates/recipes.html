@@ -17,6 +17,12 @@
                             {% endfor %}
                         </table>
                     </td>
+                    <td>
+                        <button id="id_details_button_{{recipe.id}}">
+                            <a href="/recipes/{{recipe.id}}/">Details</a>
+                        </button>
+                    </td>
+
                 </tr>
             {% endfor %}
         </table>

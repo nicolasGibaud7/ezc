@@ -8,6 +8,7 @@ from list_generation.views import (
     home_page,
     ingredient_details_page,
     ingredients_page,
+    recipe_details_page,
     recipes_page,
 )
 
@@ -73,6 +74,43 @@ class RecipesPageTest(TestCase):
         response = self.client.get("/recipes/").content.decode()
         self.assertIn("Tomato", response)
         self.assertIn("1.00 Kg", response)
+
+    def test_recipe_button_presence(self):
+        """
+        Check recipe detail button presence.
+        """
+        recipes = ["Tomato soup", "Onion soup"]
+
+        for recipe in recipes:
+            Recipe.objects.create(name=recipe)
+
+        response = self.client.get("/recipes/").content.decode()
+        for recipe in recipes:
+            self.assertIn(
+                f'<a href="/recipes/{Recipe.objects.get(name=recipe).id}/"',
+                response,
+            )
+
+
+class RecipeDetailsPageTest(TestCase):
+    def setUp(self) -> None:
+        Recipe.objects.create(name="Tomato soup")
+
+    def test_recipe_details_url_resolves_to_recipe_details_page_view(
+        self,
+    ):
+        found = resolve("/recipes/1/")
+        self.assertEqual(found.func, recipe_details_page)
+
+    def test_recipe_details_page_returns_correct_html(self):
+        response = self.client.get("/recipes/1/")
+        self.assertTemplateUsed(response, "recipe_details.html")
+
+    def test_recipe_details_page_returns_recipe(self):
+        recipe = Recipe.objects.create(name="Tomato soup")
+
+        response = self.client.get(f"/recipes/{recipe.id}/")
+        self.assertEqual(response.context["recipe"], recipe)
 
 
 class IngredientsPageTest(TestCase):

@@ -37,3 +37,27 @@ class RecipeAccessTest(FunctionalTest):
 
         self.assertIn("Tomato", tomato_soup_recipe_element.text)
         self.assertIn("3.00 Kg", tomato_soup_recipe_element.text)
+
+    def test_access_recipe_details(self):
+
+        # User goes to the recipes page
+        self.browser.get(self.live_server_url + "/recipes/")
+        self.wait_for_page("Recipes")
+
+        # User see recipes table
+        recipes_table = self.browser.find_element("id", "id_recipes_table")
+        self.assertNotEqual(
+            recipes_table.find_elements("css selector", "tr"),
+            [],
+            "The recipes table is empty",
+        )
+
+        # User clicks on the tomato soup recipe
+        recipes_table.find_element("id", "id_details_button_1").click()
+
+        # User sees that he was redirected to the recipe details page
+        self.wait_for_page("Recipe details")
+
+        # User check recipe details on the page
+
+        self.fail("Finish the test !")
