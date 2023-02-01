@@ -30,9 +30,24 @@ class Ingredient(models.Model):
         return self.name
 
 
+class RecipeIngredient(models.Model):
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    quantity = models.DecimalField(max_digits=5, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.ingredient.name} - {self.quantity}"
+
+
 class Recipe(models.Model):
     name = models.CharField(max_length=100)
-    # ingredients = models.ManyToManyField(Ingredient)
+    ingredients = models.ManyToManyField(RecipeIngredient)
+
+    def add_ingredient(self, ingredient, quantity):
+        self.ingredients.add(
+            RecipeIngredient.objects.create(
+                ingredient=ingredient, quantity=quantity
+            )
+        )
 
     def __str__(self):
         return self.name

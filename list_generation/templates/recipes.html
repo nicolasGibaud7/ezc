@@ -4,10 +4,21 @@
     </head>
     <body>
         <h1>Recipes</h1>
-        {% for recipe in recipes %}
+        <table id="id_recipes_table">
+            {% for recipe in recipes %}
                 <tr>
-                    <td>{{recipe.name}} </td>
+                    <td>{{recipe.name}}
+                        <table id="id_recipe_{{recipe.id}}_ingredients_table">
+                            {% for recipe_ingredient in recipe.ingredients.all %}
+                                <tr>
+                                    <td>{{recipe_ingredient.ingredient.name}}</td>
+                                    <td>{{recipe_ingredient.quantity}} {{recipe_ingredient.ingredient.unit.abbreviation}}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </td>
                 </tr>
-        {% endfor %}
+            {% endfor %}
+        </table>
     </body>
 </html>

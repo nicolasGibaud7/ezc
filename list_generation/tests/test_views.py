@@ -1,3 +1,5 @@
+from unittest import skip
+
 from django.test import TestCase
 from django.urls import resolve
 
@@ -51,6 +53,26 @@ class RecipesPageTest(TestCase):
         response = self.client.get("/recipes/").content.decode()
         for recipe in recipes:
             self.assertIn(recipe, response)
+
+    def test_display_ingredients_of_a_recipe(self):
+
+        Category.objects.create(name="Market")
+        Shelf.objects.create(name="Fruits and vegetables")
+        Unit.objects.create(name="Kilogram", abbreviation="Kg")
+        Ingredient.objects.create(
+            name="Tomato",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=1.30,
+        )
+
+        tomato_soup = Recipe.objects.create(name="Tomato soup")
+        tomato_soup.add_ingredient(Ingredient.objects.first(), 1)
+
+        response = self.client.get("/recipes/").content.decode()
+        self.assertIn("Tomato", response)
+        self.assertIn("1.00 Kg", response)
 
 
 class IngredientsPageTest(TestCase):

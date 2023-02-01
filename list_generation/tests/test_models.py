@@ -1,6 +1,13 @@
 from django.test import TestCase
 
-from list_generation.models import Category, Ingredient, Recipe, Shelf, Unit
+from list_generation.models import (
+    Category,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    Shelf,
+    Unit,
+)
 
 
 class ShelfModelTest(TestCase):
@@ -116,8 +123,46 @@ class IngredientsModelTest(TestCase):
         self.assertIsNone(second_saved_ingredient.price)
 
 
+class RecipeIngredientsModelTest(TestCase):
+    def setUp(self) -> None:
+        Category.objects.create(name="Market")
+        Shelf.objects.create(name="Fruits and vegetables")
+        Unit.objects.create(name="Kilogram", abbreviation="Kg")
+        Ingredient.objects.create(
+            name="Tomate",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=1.30,
+        )
+
+    def test_saving_recipe_ingredients(self):
+        RecipeIngredient.objects.create(
+            ingredient=Ingredient.objects.first(),
+            quantity=1,
+        )
+        self.assertEqual(RecipeIngredient.objects.count(), 1)
+
+
 class RecipeModelTest(TestCase):
     def setUp(self) -> None:
+        Category.objects.create(name="Market")
+        Shelf.objects.create(name="Fruits and vegetables")
+        Unit.objects.create(name="Kilogram", abbreviation="Kg")
+        Ingredient.objects.create(
+            name="Tomate",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=1.30,
+        )
+        Ingredient.objects.create(
+            name="Onion",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=3.30,
+        )
         Recipe.objects.create(name="Tomate soup")
         Recipe.objects.create(name="Onion soup")
 
@@ -131,3 +176,18 @@ class RecipeModelTest(TestCase):
         second_saved_recipe = saved_recipes[1]
         self.assertEqual(first_saved_recipe.name, "Tomate soup")
         self.assertEqual(second_saved_recipe.name, "Onion soup")
+
+    def test_adding_ingredients_to_recipe(self):
+        tomato_recipe = Recipe.objects.first()
+        tomato_recipe.add_ingredient(Ingredient.objects.first(), 1)
+        self.assertEqual(tomato_recipe.ingredients.count(), 1)
+        self.assertEqual(
+            tomato_recipe.ingredients.first().ingredient.name, "Tomate"
+        )
+
+        onion_recipe = Recipe.objects.last()
+        onion_recipe.add_ingredient(Ingredient.objects.last(), 2)
+        self.assertEqual(onion_recipe.ingredients.count(), 1)
+        self.assertEqual(
+            onion_recipe.ingredients.first().ingredient.name, "Onion"
+        )
