@@ -1,7 +1,5 @@
 from .base import FunctionalTest
 
-MAX_WAIT = 10
-
 
 class IngredientAccessTest(FunctionalTest):
     def test_access_ingredients_page_and_see_ingredients_information(self):

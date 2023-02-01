@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import resolve
 
-from list_generation.models import Category, Ingredient, Shelf, Unit
+from list_generation.models import Category, Ingredient, Recipe, Shelf, Unit
 from list_generation.views import (
     home_page,
     ingredient_details_page,
@@ -30,6 +30,27 @@ class RecipesPageTest(TestCase):
         response = self.client.get("/recipes/")
 
         self.assertTemplateUsed(response, "recipes.html")
+
+    def test_recipes_page_returns_recipes_list(self):
+        recipes = ["Tomato soup", "Onion soup"]
+
+        for recipe in recipes:
+            Recipe.objects.create(name=recipe)
+
+        response = self.client.get("/recipes/")
+        self.assertEqual(
+            list(response.context["recipes"]), list(Recipe.objects.all())
+        )
+
+    def test_display_all_recipes(self):
+        recipes = ["Tomato soup", "Onion soup"]
+
+        for recipe in recipes:
+            Recipe.objects.create(name=recipe)
+
+        response = self.client.get("/recipes/").content.decode()
+        for recipe in recipes:
+            self.assertIn(recipe, response)
 
 
 class IngredientsPageTest(TestCase):

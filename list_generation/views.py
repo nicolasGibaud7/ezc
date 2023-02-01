@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from list_generation.models import Ingredient
+from list_generation.models import Ingredient, Recipe
 
 
 # Create your views here.
@@ -10,7 +10,7 @@ def home_page(request):
 
 
 def recipes_page(request):
-    return render(request, "recipes.html")
+    return render(request, "recipes.html", {"recipes": Recipe.objects.all()})
 
 
 def ingredients_page(request):

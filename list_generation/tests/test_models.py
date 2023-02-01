@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from list_generation.models import Category, Ingredient, Shelf, Unit
+from list_generation.models import Category, Ingredient, Recipe, Shelf, Unit
 
 
 class ShelfModelTest(TestCase):
@@ -114,3 +114,20 @@ class IngredientsModelTest(TestCase):
 
         second_saved_ingredient = saved_ingredients[1]
         self.assertIsNone(second_saved_ingredient.price)
+
+
+class RecipeModelTest(TestCase):
+    def setUp(self) -> None:
+        Recipe.objects.create(name="Tomate soup")
+        Recipe.objects.create(name="Onion soup")
+
+    def test_saving_recipes(self):
+        self.assertEqual(Recipe.objects.count(), 2)
+
+    def test_retrieving_recipes(self):
+        saved_recipes = Recipe.objects.all()
+
+        first_saved_recipe = saved_recipes[0]
+        second_saved_recipe = saved_recipes[1]
+        self.assertEqual(first_saved_recipe.name, "Tomate soup")
+        self.assertEqual(second_saved_recipe.name, "Onion soup")

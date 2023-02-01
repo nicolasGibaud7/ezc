@@ -4,5 +4,10 @@
     </head>
     <body>
         <h1>Recipes</h1>
+        {% for recipe in recipes %}
+                <tr>
+                    <td>{{recipe.name}} </td>
+                </tr>
+        {% endfor %}
     </body>
 </html>
