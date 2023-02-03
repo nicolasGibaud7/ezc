@@ -56,6 +56,7 @@ class IngredientAccessTest(FunctionalTest):
 
         # User goes to the ingredients page
         self.browser.get(self.live_server_url + "/ingredients/")
+        self.wait_for_page("Welcome to ezcourses")
 
         self.wait_for_page("Ingredients")
 

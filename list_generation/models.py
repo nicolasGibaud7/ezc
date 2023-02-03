@@ -59,3 +59,10 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ShoppingList(models.Model):
+    recipes = models.ManyToManyField(Recipe)
+
+    def add_recipe(self, recipe):
+        self.recipes.add(recipe)

@@ -10,5 +10,13 @@
         <button id="id_ingredients_button">
             <a href="/ingredients">Ingredients</a>
         </button>
+        <table id="id_selected_recipes_table">
+            {% for selected_recipe in shopping_list.recipes.all %}
+                <tr>
+                    <td>{{ selected_recipe.name }}</td>
+                    <td>{{ selected_recipe.ingredients_count }}</td>
+                </tr>
+            {% endfor %}
+        </table>
     </body>
 </html>

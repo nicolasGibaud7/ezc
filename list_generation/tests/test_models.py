@@ -6,6 +6,7 @@ from list_generation.models import (
     Recipe,
     RecipeIngredient,
     Shelf,
+    ShoppingList,
     Unit,
 )
 
@@ -209,3 +210,31 @@ class RecipeModelTest(TestCase):
 
         tomato_recipe.add_ingredient(Ingredient.objects.last(), 1)
         self.assertEqual(tomato_recipe.ingredients_count(), 2)
+
+
+class ShoppingListModelTest(TestCase):
+    def setUp(self) -> None:
+        Category.objects.create(name="Market")
+        Shelf.objects.create(name="Fruits and vegetables")
+        Unit.objects.create(name="Kilogram", abbreviation="Kg")
+        Ingredient.objects.create(
+            name="Tomate",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=1.30,
+        )
+        Recipe.objects.create(name="Tomate soup").add_ingredient(
+            Ingredient.objects.first(), 1
+        )
+        ShoppingList.objects.create()
+
+    def test_saving_shopping_list(self):
+        self.assertEqual(ShoppingList.objects.count(), 1)
+
+    def test_adding_recipe_to_shopping_list(self):
+        ShoppingList.objects.first().add_recipe(Recipe.objects.first())
+        self.assertEqual(ShoppingList.objects.first().recipes.count(), 1)
+        self.assertEqual(
+            ShoppingList.objects.first().recipes.first().name, "Tomate soup"
+        )
