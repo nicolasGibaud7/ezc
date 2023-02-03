@@ -19,14 +19,15 @@ from django.contrib import admin
 from list_generation import views
 
 urlpatterns = [
-    url(r"^admin/", admin.site.urls),
-    url(r"^$", views.home_page),
-    url("^recipes/$", views.recipes_page),
-    url("^ingredients/$", views.ingredients_page),
+    url(r"^admin/", admin.site.urls, name="admin"),
+    url(r"^$", views.home_page, name="home"),
+    url("^recipes/$", views.recipes_page, name="recipes"),
+    url("^ingredients/$", views.ingredients_page, name="ingredients"),
     url(
         "^ingredients/(\d+)/$",
         views.ingredient_details_page,
+        name="ingredient_details",
     ),
-    url("^recipes/(\d+)/$", views.recipe_details_page),
-    url("^add_recipe/(\d+)/$", views.add_recipe_page),
+    url("^recipes/(\d+)/$", views.recipe_details_page, name="recipe_details"),
+    url("^add_recipe/(\d+)/$", views.add_recipe_page, name="add_recipe"),
 ]

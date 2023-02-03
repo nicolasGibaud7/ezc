@@ -1,5 +1,5 @@
 from django.http import HttpResponseNotFound
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from list_generation.models import Ingredient, Recipe, ShoppingList
 
@@ -23,7 +23,7 @@ def ingredient_details_page(request, ingredient_id):
     try:
         ingredient = Ingredient.objects.get(id=ingredient_id)
     except Ingredient.DoesNotExist:
-        return ingredients_page(request)
+        return redirect("ingredients")
 
     return render(
         request, "ingredient_details.html", {"ingredient": ingredient}
@@ -52,4 +52,4 @@ def add_recipe_page(request, recipe_id):
     except AttributeError:
         ShoppingList.objects.create().add_recipe(recipe)
 
-    return recipes_page(request)
+    return redirect("recipes")

@@ -359,9 +359,7 @@ class IngredientDetailPageTest(TestCase):
 
     def test_access_to_an_unknown_ingredient_details(self):
         response = self.client.get("/ingredients/999/")
-        self.assertInHTML(
-            "<title>Ingredients</title>", response.content.decode()
-        )
+        self.assertRedirects(response, "/ingredients/")
 
 
 class AddRecipePageTest(TestCase):
@@ -391,7 +389,7 @@ class AddRecipePageTest(TestCase):
 
     def test_redirect_to_recipes_page(self):
         response = self.client.get("/add_recipe/1/")
-        self.assertTemplateUsed(response, "recipes.html")
+        self.assertRedirects(response, "/recipes/")
 
     def test_returns_404_if_recipe_does_not_exist(self):
         response = self.client.get("/add_recipe/999/")
