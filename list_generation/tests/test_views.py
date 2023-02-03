@@ -12,12 +12,12 @@ from list_generation.models import (
     Unit,
 )
 from list_generation.views import (
-    add_recipe_page,
     home_page,
     ingredient_details_page,
     ingredients_page,
     recipe_details_page,
     recipes_page,
+    select_recipe,
 )
 
 
@@ -315,22 +315,22 @@ class AddRecipePageTest(TestCase):
         ShoppingList.objects.create()
 
     def test_add_recipe_url_resolves_to_add_recipe_page_view(self):
-        found = resolve("/add_recipe/1/")
-        self.assertEqual(found.func, add_recipe_page)
+        found = resolve("/recipes/1/select/")
+        self.assertEqual(found.func, select_recipe)
 
     def test_add_recipe_to_the_shopping_list(self):
-        self.client.get("/add_recipe/1/")
+        self.client.get("/recipes/1/select/")
         self.assertEqual(ShoppingList.objects.first().recipes.count(), 1)
 
     def test_redirect_to_recipes_page(self):
-        response = self.client.get("/add_recipe/1/")
+        response = self.client.get("/recipes/1/select/")
         self.assertRedirects(response, "/recipes/")
 
     def test_returns_404_if_recipe_does_not_exist(self):
-        response = self.client.get("/add_recipe/999/")
+        response = self.client.get("/recipes/999/select/")
         self.assertEqual(response.status_code, 404)
 
     def test_create_shopping_list_if_it_does_not_exist(self):
         ShoppingList.objects.all().delete()
-        self.client.get("/add_recipe/1/")
+        self.client.get("/recipes/1/select/")
         self.assertEqual(ShoppingList.objects.count(), 1)

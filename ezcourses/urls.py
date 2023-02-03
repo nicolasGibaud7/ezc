@@ -29,5 +29,5 @@ urlpatterns = [
         name="ingredient_details",
     ),
     url("^recipes/(\d+)/$", views.recipe_details_page, name="recipe_details"),
-    url("^add_recipe/(\d+)/$", views.add_recipe_page, name="add_recipe"),
+    url("^recipes/(\d+)/select/$", views.select_recipe, name="select_recipe"),
 ]

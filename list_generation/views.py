@@ -42,7 +42,7 @@ def recipe_details_page(request, recipe_id):
     )
 
 
-def add_recipe_page(request, recipe_id):
+def select_recipe(request, recipe_id):
     try:
         recipe = Recipe.objects.get(id=recipe_id)
     except Recipe.DoesNotExist:
