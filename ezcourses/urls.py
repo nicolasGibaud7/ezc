@@ -30,4 +30,9 @@ urlpatterns = [
     ),
     url("^recipes/(\d+)/$", views.recipe_details_page, name="recipe_details"),
     url("^recipes/(\d+)/select/$", views.select_recipe, name="select_recipe"),
+    url(
+        "^shopping_list_generation/$",
+        views.shopping_list_generation,
+        name="shopping_list_generation",
+    ),
 ]

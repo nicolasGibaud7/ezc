@@ -53,3 +53,10 @@ def select_recipe(request, recipe_id):
         ShoppingList.objects.create().add_recipe(recipe)
 
     return redirect("recipes")
+
+
+def shopping_list_generation(request):
+    return render(
+        request,
+        "shopping_list_generation.html",
+    )

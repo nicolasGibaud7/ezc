@@ -18,6 +18,7 @@ from list_generation.views import (
     recipe_details_page,
     recipes_page,
     select_recipe,
+    shopping_list_generation,
 )
 
 
@@ -51,6 +52,18 @@ class HomePageTest(TestCase):
 
         for recipe in recipes:
             self.assertIn(recipe, response)
+
+    def test_display_shopping_list_generation_button(self):
+        response = self.client.get("/").content.decode()
+        self.assertIn(
+            '<button id="id_shopping_list_generation_button">', response
+        )
+
+    def test_shopping_list_generation_button_redirects_to_shopping_list_page(
+        self,
+    ):
+        response = self.client.get("/").content.decode()
+        self.assertIn('<a href="/shopping_list_generation/"', response)
 
 
 class RecipesPageTest(TestCase):
@@ -334,3 +347,15 @@ class AddRecipePageTest(TestCase):
         ShoppingList.objects.all().delete()
         self.client.get("/recipes/1/select/")
         self.assertEqual(ShoppingList.objects.count(), 1)
+
+
+class ShoppingListGenerationPageTest(TestCase):
+    def test_shopping_list_generation_url_resolves_to_shopping_list_generation_page_view(
+        self,
+    ):
+        found = resolve("/shopping_list_generation/")
+        self.assertEqual(found.func, shopping_list_generation)
+
+    def test_shopping_list_generation_page_returns_correct_html(self):
+        response = self.client.get("/shopping_list_generation/")
+        self.assertTemplateUsed(response, "shopping_list_generation.html")
