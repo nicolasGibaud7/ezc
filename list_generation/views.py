@@ -1,6 +1,7 @@
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render
 
+from list_generation.forms import ShoppingListGenerationForm
 from list_generation.models import Ingredient, Recipe, ShoppingList
 
 
@@ -56,7 +57,5 @@ def select_recipe(request, recipe_id):
 
 
 def shopping_list_generation(request):
-    return render(
-        request,
-        "shopping_list_generation.html",
-    )
+    form = ShoppingListGenerationForm()
+    return render(request, "shopping_list_generation.html", {"form": form})

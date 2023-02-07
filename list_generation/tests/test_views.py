@@ -3,6 +3,7 @@ from unittest import skip
 from django.test import TestCase
 from django.urls import resolve
 
+from list_generation.forms import ShoppingListGenerationForm
 from list_generation.models import (
     Category,
     Ingredient,
@@ -350,12 +351,22 @@ class AddRecipePageTest(TestCase):
 
 
 class ShoppingListGenerationPageTest(TestCase):
-    def test_shopping_list_generation_url_resolves_to_shopping_list_generation_page_view(
+    def test_url_resolves_to_shopping_list_generation_page_view(
         self,
     ):
         found = resolve("/shopping_list_generation/")
         self.assertEqual(found.func, shopping_list_generation)
 
-    def test_shopping_list_generation_page_returns_correct_html(self):
+    def test_page_returns_correct_html(self):
         response = self.client.get("/shopping_list_generation/")
         self.assertTemplateUsed(response, "shopping_list_generation.html")
+
+    def test_shopping_list_generation_page_contains_a_form(self):
+        response = self.client.get("/shopping_list_generation/")
+        self.assertIsInstance(
+            response.context["form"], ShoppingListGenerationForm
+        )
+
+    def test_display_a_form_with_a_mail_field(self):
+        response = self.client.get("/shopping_list_generation/")
+        self.assertIn("Mail", response.content.decode())
