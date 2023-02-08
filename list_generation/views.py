@@ -2,7 +2,12 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render
 
 from list_generation.forms import ShoppingListGenerationForm
-from list_generation.models import Ingredient, Recipe, ShoppingList
+from list_generation.models import (
+    Ingredient,
+    Recipe,
+    ShoppingList,
+    ShoppingListGeneration,
+)
 
 NO_RECIPES_SELECTED_ERRROR = "No recipes selected"
 
@@ -62,6 +67,28 @@ def select_recipe(request, recipe_id):
 
 
 def shopping_list_generation(request):
+    if request.method == "POST":
+        form = ShoppingListGenerationForm(request.POST)
+
+        if form.is_valid():
+            shopping_list_generation = form.save(commit=False)
+            shopping_list_generation.shopping_list = (
+                ShoppingList.objects.first()
+            )
+            shopping_list_generation.save()
+
+            return redirect("home")
+        else:
+            return render(
+                request,
+                "shopping_list_generation.html",
+                {
+                    "form": form,
+                    "shopping_list": ShoppingList.objects.first(),
+                    "errors": form.errors,
+                },
+            )
+
     shopping_list = ShoppingList.objects.first()
     if not shopping_list:
         shopping_list = ShoppingList.objects.create()

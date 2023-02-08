@@ -86,12 +86,22 @@ class ShoppingListGeneration(FunctionalTest):
         self.wait_for_page("Shopping list generation")
 
         # User sees the form fields
+        self.browser.find_element("id", "id_form")
 
-        # User fill the format form field with "txt"
+        # User keeps the default sending method "email"
 
-        # User fill the sending method form field with "email"
+        # User keeps the default format "txt"
 
         # User fill the email form field with nicolas.gibaud7@gmail.com
-        self.fail("Finish the test!")
+        self.browser.find_element("id", "id_email").send_keys(
+            "nicolas.gibaud7@gmail.com"
+        )
+
+        # User clicks on the generation button
+        self.browser.find_element("id", "id_generation_button").click()
+
+        # User sees that he was redirected to the home page
+        self.wait_for_page("Welcome to ezcourses")
 
         # User checks he has received the mail with the shopping list
+        self.fail("Finish the test!")

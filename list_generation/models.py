@@ -1,5 +1,8 @@
 from django.db import models
 
+SENDING_METHODS = [("email", "email"), ("download", "download")]
+FORMAT_CHOICES = [("txt", "txt"), ("pdf", "pdf")]
+
 
 # Create your models here.
 class Shelf(models.Model):
@@ -66,3 +69,15 @@ class ShoppingList(models.Model):
 
     def add_recipe(self, recipe):
         self.recipes.add(recipe)
+
+
+class ShoppingListGeneration(models.Model):
+
+    shopping_list = models.ForeignKey(ShoppingList, on_delete=models.CASCADE)
+    mail = models.EmailField()
+    sending_method = models.CharField(
+        choices=SENDING_METHODS, max_length=10, default="email"
+    )
+    format_choice = models.CharField(
+        choices=FORMAT_CHOICES, max_length=3, default="txt"
+    )

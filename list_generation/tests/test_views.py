@@ -10,6 +10,7 @@ from list_generation.models import (
     Recipe,
     Shelf,
     ShoppingList,
+    ShoppingListGeneration,
     Unit,
 )
 from list_generation.views import (
@@ -392,7 +393,7 @@ class ShoppingListGenerationPageTest(TestCase):
         self.assertEqual(found.func, shopping_list_generation)
 
     def test_page_returns_correct_html(self):
-        response = self.client.post(
+        response = self.client.get(
             "/shopping_list_generation/",
         )
         self.assertTemplateUsed(response, "shopping_list_generation.html")
@@ -427,3 +428,38 @@ class ShoppingListGenerationPageTest(TestCase):
         )
         self.assertIn("Welcome to ezcourses", response.content.decode())
         self.assertIn("No recipes selected", response.content.decode())
+
+    def test_display_generation_button(self):
+        response = self.client.get(
+            "/shopping_list_generation/",
+        )
+        self.assertIn(
+            '<button id="id_generation_button" type="submit"',
+            response.content.decode(),
+        )
+
+    def test_receive_POST_request_information(self):
+        self.assertIsNone(ShoppingListGeneration.objects.first())
+        response = self.client.post(
+            "/shopping_list_generation/",
+            {
+                "mail": "nicolas.gibaud7@gmail.com",
+                "format_choice": "pdf",
+                "sending_method": "email",
+            },
+        )
+        # ShoppingList.objects.first().refresh_from_db() Not sure that it's necessary
+        self.assertIsNotNone(ShoppingListGeneration.objects.first())
+
+    def test_display_error_message_if_mail_is_incorrect(self):
+        response = self.client.post(
+            "/shopping_list_generation/",
+            {
+                "mail": "nicolas",
+                "format_choice": "pdf",
+                "sending_method": "email",
+            },
+        )
+        self.assertIn(
+            "Please enter a valid email address", response.content.decode()
+        )

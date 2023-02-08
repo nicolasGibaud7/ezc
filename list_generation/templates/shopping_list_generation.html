@@ -4,8 +4,10 @@
     </head>
     <body>
         <h1>Shopping list generation</h1>
-        {{ form.mail.label }} {{ form.mail }}<br>
-        <br>{{ form.format_choice.label }} {{ form.format_choice }}<br>
-        <br>{{ form.sending_method.label }} {{ form.sending_method }}<br>
+        <form id="id_form" method="post" action="{% url 'shopping_list_generation' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button id="id_generation_button" type="submit"> Generate <button/>
+        </form>
     </body>
 </html>

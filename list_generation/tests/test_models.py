@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from list_generation.models import (
@@ -7,6 +8,7 @@ from list_generation.models import (
     RecipeIngredient,
     Shelf,
     ShoppingList,
+    ShoppingListGeneration,
     Unit,
 )
 
@@ -238,3 +240,41 @@ class ShoppingListModelTest(TestCase):
         self.assertEqual(
             ShoppingList.objects.first().recipes.first().name, "Tomate soup"
         )
+
+
+class ShoppingListGenerationModelTest(TestCase):
+    def setUp(self) -> None:
+        Category.objects.create(name="Market")
+        Shelf.objects.create(name="Fruits and vegetables")
+        Unit.objects.create(name="Kilogram", abbreviation="Kg")
+        Ingredient.objects.create(
+            name="Tomate",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=1.30,
+        )
+        Ingredient.objects.create(
+            name="Onion",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=3.30,
+        )
+        Recipe.objects.create(name="Tomate soup").add_ingredient(
+            Ingredient.objects.first(), 1
+        )
+        Recipe.objects.create(name="Onion soup").add_ingredient(
+            Ingredient.objects.last(), 2
+        )
+        ShoppingList.objects.create().add_recipe(Recipe.objects.first())
+        ShoppingList.objects.first().add_recipe(Recipe.objects.last())
+
+    def test_creating_shopping_list_generation(self):
+        ShoppingListGeneration.objects.create(
+            shopping_list=ShoppingList.objects.first(),
+            mail="nicolas.gibaud7@gmail.com",
+            sending_method="email",
+            format_choice="pdf",
+        )
+        self.assertEqual(ShoppingListGeneration.objects.count(), 1)
