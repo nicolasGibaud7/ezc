@@ -63,8 +63,26 @@ class HomePageTest(TestCase):
     def test_shopping_list_generation_button_redirects_to_shopping_list_page(
         self,
     ):
-        response = self.client.get("/").content.decode()
-        self.assertIn('<a href="/shopping_list_generation/"', response)
+        Shelf.objects.create(name="Fruits and vegetables")
+        Category.objects.create(name="Market")
+        Unit.objects.create(name="Kilogram", abbreviation="Kg")
+        Ingredient.objects.create(
+            name="Tomato",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=1.3,
+        )
+        Recipe.objects.create(name="Tomato soup").add_ingredient(
+            Ingredient.objects.first(), 1
+        )
+        ShoppingList.objects.create().add_recipe(Recipe.objects.first())
+
+        response = self.client.get(
+            "/shopping_list_generation/",
+        )
+
+        self.assertIn("Shopping list generation", response.content.decode())
 
 
 class RecipesPageTest(TestCase):
@@ -351,6 +369,22 @@ class AddRecipePageTest(TestCase):
 
 
 class ShoppingListGenerationPageTest(TestCase):
+    def setUp(self):
+        Shelf.objects.create(name="Fruits and vegetables")
+        Category.objects.create(name="Market")
+        Unit.objects.create(name="Kilogram", abbreviation="Kg")
+        Ingredient.objects.create(
+            name="Tomato",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=1.3,
+        )
+        Recipe.objects.create(name="Tomato soup").add_ingredient(
+            Ingredient.objects.first(), 1
+        )
+        ShoppingList.objects.create().add_recipe(Recipe.objects.first())
+
     def test_url_resolves_to_shopping_list_generation_page_view(
         self,
     ):
@@ -358,15 +392,38 @@ class ShoppingListGenerationPageTest(TestCase):
         self.assertEqual(found.func, shopping_list_generation)
 
     def test_page_returns_correct_html(self):
-        response = self.client.get("/shopping_list_generation/")
+        response = self.client.post(
+            "/shopping_list_generation/",
+        )
         self.assertTemplateUsed(response, "shopping_list_generation.html")
 
     def test_shopping_list_generation_page_contains_a_form(self):
-        response = self.client.get("/shopping_list_generation/")
+        response = self.client.get(
+            "/shopping_list_generation/",
+        )
         self.assertIsInstance(
             response.context["form"], ShoppingListGenerationForm
         )
 
     def test_display_a_form_with_a_mail_field(self):
-        response = self.client.get("/shopping_list_generation/")
+        response = self.client.get(
+            "/shopping_list_generation/",
+        )
         self.assertIn("Mail", response.content.decode())
+
+    def test_no_crash_when_no_shopping_list_are_created(self):
+        ShoppingList.objects.all().delete()
+        response = self.client.get(
+            "/shopping_list_generation/",
+        )
+        self.assertIn("Welcome to ezcourses", response.content.decode())
+
+    def test_redirect_to_home_page_if_no_recipes_are_selected_and_display_error_message(
+        self,
+    ):
+        ShoppingList.objects.first().recipes.clear()
+        response = self.client.get(
+            "/shopping_list_generation/",
+        )
+        self.assertIn("Welcome to ezcourses", response.content.decode())
+        self.assertIn("No recipes selected", response.content.decode())

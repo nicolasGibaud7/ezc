@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from list_generation.forms import ShoppingListGenerationForm
+from list_generation.models import ShoppingList
 
 
 class ShoppingListGenerationFormTest(TestCase):

@@ -4,11 +4,16 @@ from django.shortcuts import redirect, render
 from list_generation.forms import ShoppingListGenerationForm
 from list_generation.models import Ingredient, Recipe, ShoppingList
 
+NO_RECIPES_SELECTED_ERRROR = "No recipes selected"
 
 # Create your views here.
-def home_page(request):
+def home_page(request, errors=None):
     shopping_list = ShoppingList.objects.first()
-    return render(request, "home.html", {"shopping_list": shopping_list})
+    return render(
+        request,
+        "home.html",
+        {"shopping_list": shopping_list, "errors": errors},
+    )
 
 
 def recipes_page(request):
@@ -57,5 +62,16 @@ def select_recipe(request, recipe_id):
 
 
 def shopping_list_generation(request):
+    shopping_list = ShoppingList.objects.first()
+    if not shopping_list:
+        shopping_list = ShoppingList.objects.create()
+
+    if not shopping_list.recipes.all():
+        return render(request, "home.html", {"error": "No recipes selected"})
+
     form = ShoppingListGenerationForm()
-    return render(request, "shopping_list_generation.html", {"form": form})
+    return render(
+        request,
+        "shopping_list_generation.html",
+        {"form": form, "shopping_list": shopping_list},
+    )

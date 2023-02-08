@@ -19,7 +19,12 @@
             {% endfor %}
         </table>
         <button id="id_shopping_list_generation_button">
-            <a href="/shopping_list_generation/">Generate Shopping List</a>
+            <a href={% url "shopping_list_generation" %}>Generate shopping list</a>
         </button>
+        {% if error %}
+            <div id="id_error_message">
+                <p>{{ error }}</p>
+            </div>
+        {% endif %}
     </body>
 </html>

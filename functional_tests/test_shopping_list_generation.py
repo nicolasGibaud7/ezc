@@ -52,6 +52,19 @@ class ShoppingListGeneration(FunctionalTest):
         )
         self.assertIn("Tomato soup", selected_recipes_table.text)
 
+    def test_cant_access_shopping_list_generation_page_if_no_recipes_selected(
+        self,
+    ):
+        # User goes to the shopping list generation page
+        self.browser.get(self.live_server_url + "/shopping_list_generation/")
+
+        # User sees that he was redirected to the home page
+        self.wait_for_page("Welcome to ezcourses")
+
+        # User sees the error message
+        error_message = self.browser.find_element("id", "id_error_message")
+        self.assertIn("No recipes selected", error_message.text)
+
     def test_access_shopping_list_generation_page(self):
         # User goes to the recipes page
         self.browser.get(self.live_server_url + "/recipes/")
@@ -72,7 +85,7 @@ class ShoppingListGeneration(FunctionalTest):
         # User sees that he was redirected to the shopping list generation page
         self.wait_for_page("Shopping list generation")
 
-        # User sees the form
+        # User sees the form fields
 
         # User fill the format form field with "txt"
 
