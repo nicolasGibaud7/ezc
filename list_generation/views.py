@@ -75,6 +75,7 @@ def shopping_list_generation(request):
             shopping_list_generation.shopping_list = (
                 ShoppingList.objects.first()
             )
+            shopping_list_generation.generate_shopping_list()
             shopping_list_generation.save()
 
             return redirect("home")

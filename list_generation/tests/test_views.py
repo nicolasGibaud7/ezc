@@ -448,7 +448,6 @@ class ShoppingListGenerationPageTest(TestCase):
                 "sending_method": "email",
             },
         )
-        # ShoppingList.objects.first().refresh_from_db() Not sure that it's necessary
         self.assertIsNotNone(ShoppingListGeneration.objects.first())
 
     def test_display_error_message_if_mail_is_incorrect(self):
@@ -462,4 +461,38 @@ class ShoppingListGenerationPageTest(TestCase):
         )
         self.assertIn(
             "Please enter a valid email address", response.content.decode()
+        )
+
+    def test_retrieve_shopping_list_ingredients_quantities(self):
+        Ingredient.objects.create(
+            name="Onion",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=3.30,
+        )
+        Recipe.objects.create(name="Onion soup").add_ingredient(
+            Ingredient.objects.last(), 2
+        )
+        ShoppingList.objects.first().add_recipe(Recipe.objects.last())
+
+        response = self.client.post(
+            "/shopping_list_generation/",
+            {
+                "mail": "nicolas.gibaud7@gmail.co",
+                "format_choice": "pdf",
+                "sending_method": "email",
+            },
+        )
+        self.assertEqual(
+            ShoppingList.objects.first().shopping_ingredients.count(),
+            2,
+        )
+        self.assertEqual(
+            ShoppingList.objects.first().shopping_ingredients.first().quantity,
+            1,
+        )
+        self.assertEqual(
+            ShoppingList.objects.first().shopping_ingredients.last().quantity,
+            2,
         )
