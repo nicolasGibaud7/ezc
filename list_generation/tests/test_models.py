@@ -7,6 +7,7 @@ from list_generation.models import (
     Recipe,
     RecipeIngredient,
     Shelf,
+    ShoppingIngredient,
     ShoppingList,
     ShoppingListGeneration,
     Unit,
@@ -241,6 +242,78 @@ class ShoppingListModelTest(TestCase):
             ShoppingList.objects.first().recipes.first().name, "Tomate soup"
         )
 
+    def test_adding_ingredients_to_shopping_list_generation(self):
+        shopping_list = ShoppingList.objects.first()
+        shopping_list._add_shopping_ingredient(Ingredient.objects.first(), 1)
+        self.assertEqual(shopping_list.shopping_ingredients.count(), 1)
+
+    def test_updating_ingredients_to_shopping_list_generation(self):
+        shopping_list = ShoppingList.objects.first()
+        shopping_list._add_shopping_ingredient(Ingredient.objects.first(), 1)
+        self.assertEqual(
+            shopping_list.shopping_ingredients.first().quantity,
+            1,
+        )
+
+        shopping_list._update_shopping_ingredient(
+            Ingredient.objects.first(), 1
+        )
+        self.assertEqual(
+            shopping_list.shopping_ingredients.first().quantity,
+            2,
+        )
+
+    def test_calculate_ingredients_quantities(self):
+        Ingredient.objects.create(
+            name="Onion",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=3.30,
+        )
+        Recipe.objects.create(name="Onion soup").add_ingredient(
+            Ingredient.objects.last(), 2
+        )
+        ShoppingList.objects.first().add_recipe(Recipe.objects.first())
+        ShoppingList.objects.first().add_recipe(Recipe.objects.last())
+
+        shopping_list = ShoppingList.objects.first()
+        shopping_list.calculate_ingredients_quantities()
+        self.assertEqual(shopping_list.shopping_ingredients.count(), 2)
+        self.assertEqual(
+            shopping_list.shopping_ingredients.get(
+                ingredient=Ingredient.objects.first()
+            ).quantity,
+            1,
+        )
+        self.assertEqual(
+            shopping_list.shopping_ingredients.get(
+                ingredient=Ingredient.objects.last()
+            ).quantity,
+            2,
+        )
+
+
+class ShoppingIngredientsModelTest(TestCase):
+    def setUp(self) -> None:
+        Category.objects.create(name="Market")
+        Shelf.objects.create(name="Fruits and vegetables")
+        Unit.objects.create(name="Kilogram", abbreviation="Kg")
+        Ingredient.objects.create(
+            name="Tomate",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=1.30,
+        )
+
+    def test_saving(self):
+        ShoppingIngredient.objects.create(
+            ingredient=Ingredient.objects.first(),
+            quantity=1,
+        )
+        self.assertEqual(ShoppingIngredient.objects.count(), 1)
+
 
 class ShoppingListGenerationModelTest(TestCase):
     def setUp(self) -> None:
@@ -269,12 +342,32 @@ class ShoppingListGenerationModelTest(TestCase):
         )
         ShoppingList.objects.create().add_recipe(Recipe.objects.first())
         ShoppingList.objects.first().add_recipe(Recipe.objects.last())
-
-    def test_creating_shopping_list_generation(self):
         ShoppingListGeneration.objects.create(
             shopping_list=ShoppingList.objects.first(),
             mail="nicolas.gibaud7@gmail.com",
             sending_method="email",
             format_choice="pdf",
         )
+
+    def test_creating_shopping_list_generation(self):
         self.assertEqual(ShoppingListGeneration.objects.count(), 1)
+
+    def test_generate_shopping_list(self):
+        shopping_list_generation = ShoppingListGeneration.objects.first()
+        shopping_list_generation.generate_shopping_list()
+        self.assertEqual(
+            shopping_list_generation.shopping_list.shopping_ingredients.count(),
+            2,
+        )
+        self.assertEqual(
+            shopping_list_generation.shopping_list.shopping_ingredients.get(
+                ingredient=Ingredient.objects.first()
+            ).quantity,
+            1,
+        )
+        self.assertEqual(
+            shopping_list_generation.shopping_list.shopping_ingredients.get(
+                ingredient=Ingredient.objects.last()
+            ).quantity,
+            2,
+        )

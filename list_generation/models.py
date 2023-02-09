@@ -64,11 +64,45 @@ class Recipe(models.Model):
         return self.name
 
 
+class ShoppingIngredient(models.Model):
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    quantity = models.DecimalField(max_digits=5, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.ingredient.name} - {self.quantity}"
+
+
 class ShoppingList(models.Model):
     recipes = models.ManyToManyField(Recipe)
+    shopping_ingredients = models.ManyToManyField(ShoppingIngredient)
 
     def add_recipe(self, recipe):
         self.recipes.add(recipe)
+
+    def calculate_ingredients_quantities(self):
+        for recipe in self.recipes.all():
+            for recipe_ingredient in recipe.ingredients.all():
+                ingredient = recipe_ingredient.ingredient
+                quantity = recipe_ingredient.quantity
+                if self.shopping_ingredients.filter(
+                    ingredient=ingredient
+                ).exists():
+                    self._update_shopping_ingredient(ingredient, quantity)
+                else:
+                    self._add_shopping_ingredient(ingredient, quantity)
+
+    def _add_shopping_ingredient(self, ingredient, quantity):
+        shopping_ingredient = ShoppingIngredient.objects.create(
+            ingredient=ingredient, quantity=quantity
+        )
+        self.shopping_ingredients.add(shopping_ingredient)
+
+    def _update_shopping_ingredient(self, ingredient, quantity):
+        shopping_ingredient = self.shopping_ingredients.get(
+            ingredient=ingredient
+        )
+        shopping_ingredient.quantity += quantity
+        shopping_ingredient.save()
 
 
 class ShoppingListGeneration(models.Model):
@@ -81,3 +115,6 @@ class ShoppingListGeneration(models.Model):
     format_choice = models.CharField(
         choices=FORMAT_CHOICES, max_length=3, default="txt"
     )
+
+    def generate_shopping_list(self):
+        self.shopping_list.calculate_ingredients_quantities()
