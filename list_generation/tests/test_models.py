@@ -293,6 +293,26 @@ class ShoppingListModelTest(TestCase):
             2,
         )
 
+    def test_conversion_to_text_format(self):
+        Ingredient.objects.create(
+            name="Onion",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=3.30,
+        )
+        Recipe.objects.create(name="Onion soup").add_ingredient(
+            Ingredient.objects.last(), 2
+        )
+        ShoppingList.objects.first().add_recipe(Recipe.objects.first())
+        ShoppingList.objects.first().add_recipe(Recipe.objects.last())
+
+        shopping_list = ShoppingList.objects.first()
+        shopping_list.calculate_ingredients_quantities()
+        shopping_list_text_representation = shopping_list.to_text()
+        self.assertIn("Tomate - 1.00 Kg\n", shopping_list_text_representation)
+        self.assertIn("Onion - 2.00 Kg", shopping_list_text_representation)
+
 
 class ShoppingIngredientsModelTest(TestCase):
     def setUp(self) -> None:
@@ -313,6 +333,16 @@ class ShoppingIngredientsModelTest(TestCase):
             quantity=1,
         )
         self.assertEqual(ShoppingIngredient.objects.count(), 1)
+
+    def test_string_representation(self):
+        shopping_ingredient = ShoppingIngredient.objects.create(
+            ingredient=Ingredient.objects.first(),
+            quantity=1,
+        )
+        self.assertEqual(
+            str(shopping_ingredient),
+            "Tomate - 1 Kg",
+        )
 
 
 class ShoppingListGenerationModelTest(TestCase):

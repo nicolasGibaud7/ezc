@@ -69,7 +69,7 @@ class ShoppingIngredient(models.Model):
     quantity = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
-        return f"{self.ingredient.name} - {self.quantity}"
+        return f"{self.ingredient.name} - {self.quantity} {self.ingredient.unit.abbreviation}"
 
 
 class ShoppingList(models.Model):
@@ -90,6 +90,16 @@ class ShoppingList(models.Model):
                     self._update_shopping_ingredient(ingredient, quantity)
                 else:
                     self._add_shopping_ingredient(ingredient, quantity)
+
+    def to_text(self) -> str:
+        return "\n".join(
+            [str(ingredient) for ingredient in self.shopping_ingredients.all()]
+        )
+
+    def convert_to_text_format(self):
+        text = ""
+        for shopping_ingredient in self.shopping_ingredients.all():
+            text += f"{shopping_ingredient.ingredient.name} - {shopping_ingredient.quantity} {shopping_ingredient.ingredient.unit.abbreviation}"
 
     def _add_shopping_ingredient(self, ingredient, quantity):
         shopping_ingredient = ShoppingIngredient.objects.create(
