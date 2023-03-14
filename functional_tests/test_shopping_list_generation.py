@@ -24,7 +24,7 @@ class ShoppingListGeneration(FunctionalTest):
         )
 
         # User goes to the recipes page
-        self.browser.find_element("id", "id_recipes_button").click()
+        self.browser.find_element("id", "id_recipes_link").click()
         self.wait_for_page("Recipes")
 
         # User see not empty recipes table

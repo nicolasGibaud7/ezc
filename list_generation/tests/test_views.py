@@ -55,12 +55,6 @@ class HomePageTest(TestCase):
         for recipe in recipes:
             self.assertIn(recipe, response)
 
-    def test_display_shopping_list_generation_button(self):
-        response = self.client.get("/").content.decode()
-        self.assertIn(
-            '<button id="id_shopping_list_generation_button">', response
-        )
-
     def test_shopping_list_generation_button_redirects_to_shopping_list_page(
         self,
     ):

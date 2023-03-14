@@ -10,7 +10,7 @@ class IngredientAccessTest(FunctionalTest):
         self.wait_for_page("Welcome to ezcourses")
 
         # User clicks on the ingredients button
-        self.browser.find_element("id", "id_ingredients_button").click()
+        self.browser.find_element("id", "id_ingredients_link").click()
 
         # User sees that he was redirected to the ingredients page
         self.wait_for_page("Ingredients")

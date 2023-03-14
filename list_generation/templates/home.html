@@ -1,30 +1,70 @@
-<html>
-    <head>
+<!DOCTYPE html>
+<html lang="en">
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
         <title>Welcome to ezcourses</title>
     </head>
     <body>
-        <h1>EZC</h1>
-        <button id="id_recipes_button">
-            <a href="/recipes">Recipes</a>
-        </button>
-        <button id="id_ingredients_button">
-            <a href="/ingredients">Ingredients</a>
-        </button>
-        <table id="id_selected_recipes_table">
-            {% for selected_recipe in shopping_list.recipes.all %}
-                <tr>
-                    <td>{{ selected_recipe.name }}</td>
-                    <td>{{ selected_recipe.ingredients_count }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-        <button id="id_shopping_list_generation_button">
-            <a href={% url "shopping_list_generation" %}>Generate shopping list</a>
-        </button>
-        {% if error %}
-            <div id="id_error_message">
-                <p>{{ error }}</p>
+        <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+            <div class="container-fluid ">
+                <a class="navbar-brand" href="#">EZC</a>
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="/">Accueil</a>
+                    <a id="id_recipes_link" class="nav-item nav-link" href="/recipes">Recipes</a>
+                    <a id="id_ingredients_link" class="nav-item nav-link" href="/ingredients">Ingredients</a>
+                </div>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a role="button" class="btn btn-secondary me-2 mb-2" href="#">Create account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a role="button" class="btn btn-danger" href="#">Login</a>
+                    </li>
+                </ul>
             </div>
-        {% endif %}
+        </nav>
+
+        {% if error %}
+        <div id="id_error_message" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <h4 class="alert-heading">Error</h4>
+            <p>{{ error }}</p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endif %}
+
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="h2 text-center">Selected recipes</h2>
+                </div>
+            </div>
+            <div id="id_selected_recipes_table" class="row overflow-auto center d-flex justify-content-around pt-3" style="max-height: 600px;max-width: 800px;margin-left: auto; margin-right: auto;">
+                {% for selected_recipe in shopping_list.recipes.all %}
+                    <div class="col-4 pb-3">
+                        <div class="card">
+                            <img class="card-img" style="filter: brightness(60%);" src="/static/img/lasagnes_vege.png">
+                            <div class="card-img-overlay text-white">
+                                <h4 class="card-title h4">{{selected_recipe.name}}</h4>
+                                <h6 class="card-subtitle mb-2 h6">{{selected_recipe.ingredients_count}} ingredients</h6>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col d-flex justify-content-center">
+                <a id="id_shopping_list_generation_button" role="button" class="btn btn-secondary mt-3" href={% url "shopping_list_generation" %}><div class="h4">Generate shopping list</div></a>
+            </div>
+        </div>
+
     </body>
 </html>
