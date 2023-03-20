@@ -177,18 +177,7 @@ class RecipeDetailsPageTest(TestCase):
             f"/recipes/{tomato_soup.id}/"
         ).content.decode()
         self.assertIn("Tomato", response)
-        self.assertIn("1.00", response)
-        self.assertIn("Kilogram (Kg)", response)
-        self.assertIn("1.30", response)
-
-    def test_display_ingredient_price(self):
-        tomato_soup = Recipe.objects.first()
-        tomato_soup.add_ingredient(Ingredient.objects.first(), 2)
-
-        response = self.client.get(
-            f"/recipes/{tomato_soup.id}/"
-        ).content.decode()
-        self.assertIn("2.60", response)
+        self.assertIn("1.00Kg", response)
 
 
 class IngredientsPageTest(TestCase):

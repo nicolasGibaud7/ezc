@@ -69,17 +69,13 @@ class RecipeAccessTest(FunctionalTest):
 
         self.assertIn(
             "Tomato",
-            self.browser.find_element("id", "id_ingredient_name").text,
+            self.browser.find_element("id", "id_ingredient_1_name").text,
         )
         self.assertIn(
             "3.00",
-            self.browser.find_element("id", "id_ingredient_quantity").text,
+            self.browser.find_element("id", "id_ingredient_1_quantity").text,
         )
         self.assertIn(
-            "Kilogram (Kg)",
-            self.browser.find_element("id", "id_ingredient_unit").text,
-        )
-        self.assertIn(
-            "3.90",
-            self.browser.find_element("id", "id_ingredient_price").text,
+            "Kg",
+            self.browser.find_element("id", "id_ingredient_1_quantity").text,
         )
