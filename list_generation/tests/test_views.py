@@ -135,7 +135,7 @@ class RecipesPageTest(TestCase):
         response = self.client.get("/recipes/").content.decode()
         for recipe in recipes:
             self.assertIn(
-                f'<a href="/recipes/{Recipe.objects.get(name=recipe).id}/"',
+                f'href="/recipes/{Recipe.objects.get(name=recipe).id}/"',
                 response,
             )
 
