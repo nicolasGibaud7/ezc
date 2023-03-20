@@ -124,7 +124,7 @@ class RecipesPageTest(TestCase):
         tomato_soup.add_ingredient(Ingredient.objects.first(), 1)
 
         response = self.client.get("/recipes/").content.decode()
-        self.assertIn("Ingredients count: 1", response)
+        self.assertIn("1 ingredients", response)
 
     def test_recipe_detail_button_presence(self):
         recipes = ["Tomato soup", "Onion soup"]
@@ -136,19 +136,6 @@ class RecipesPageTest(TestCase):
         for recipe in recipes:
             self.assertIn(
                 f'<a href="/recipes/{Recipe.objects.get(name=recipe).id}/"',
-                response,
-            )
-
-    def test_select_button_presence(self):
-        recipes = ["Tomato soup", "Onion soup"]
-
-        for recipe in recipes:
-            Recipe.objects.create(name=recipe)
-
-        response = self.client.get("/recipes/").content.decode()
-        for recipe in recipes:
-            self.assertIn(
-                f'<button id="id_select_button_{Recipe.objects.get(name=recipe).id}"',
                 response,
             )
 

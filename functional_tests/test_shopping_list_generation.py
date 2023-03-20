@@ -18,7 +18,7 @@ class ShoppingListGeneration(FunctionalTest):
             raise AssertionError("No selected recipes table found.")
 
         self.assertEqual(
-            selected_recipes_table.find_elements("css selector", "tr"),
+            selected_recipes_table.find_elements("css selector", "div"),
             [],
             "The selected recipes table must be empty",
         )
@@ -30,7 +30,7 @@ class ShoppingListGeneration(FunctionalTest):
         # User see not empty recipes table
         recipes_table = self.browser.find_element("id", "id_recipes_table")
         self.assertNotEqual(
-            recipes_table.find_elements("css selector", "tr"),
+            recipes_table.find_elements("css selector", "div"),
             [],
             "The recipes table is empty",
         )
@@ -46,9 +46,9 @@ class ShoppingListGeneration(FunctionalTest):
             "id", "id_selected_recipes_table"
         )
         self.assertNotEqual(
-            selected_recipes_table.find_elements("css selector", "tr"),
+            selected_recipes_table.find_elements("css selector", "div"),
             [],
-            "The recipes table is empty",
+            "The selected recipes table is empty",
         )
         self.assertIn("Tomato soup", selected_recipes_table.text)
 

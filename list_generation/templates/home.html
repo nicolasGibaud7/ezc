@@ -15,9 +15,9 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-warning">
             <div class="container-fluid ">
-                <a class="navbar-brand" href="#">EZC</a>
+                <a class="navbar-brand" href="/">EZC</a>
                 <div class="navbar-nav">
-                    <a class="nav-item nav-link" href="/">Accueil</a>
+                    <a class="nav-item nav-link" href="/">Home</a>
                     <a id="id_recipes_link" class="nav-item nav-link" href="/recipes">Recipes</a>
                     <a id="id_ingredients_link" class="nav-item nav-link" href="/ingredients">Ingredients</a>
                 </div>
@@ -32,7 +32,7 @@
             </div>
         </nav>
 
-        {% if error %}
+    {% if error %}
         <div id="id_error_message" class="alert alert-danger alert-dismissible fade show" role="alert">
             <h4 class="alert-heading">Error</h4>
             <p>{{ error }}</p>

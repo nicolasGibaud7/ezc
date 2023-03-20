@@ -18,7 +18,7 @@ class RecipeAccessTest(FunctionalTest):
         # User sees recipes table
         recipes_table = self.browser.find_element("id", "id_recipes_table")
         self.assertNotEqual(
-            recipes_table.find_elements("css selector", "tr"),
+            recipes_table.find_elements("css selector", "div"),
             [],
             "The recipes table is empty",
         )
@@ -29,11 +29,17 @@ class RecipeAccessTest(FunctionalTest):
         # User check if the recipe contains the ingredients and their quantities
         tomato_soup_recipe_element = [
             recipe
-            for recipe in recipes_table.find_elements("css selector", "tr")
+            for recipe in recipes_table.find_elements(
+                "xpath", '//div[@class="card"]'
+            )
             if "Tomato soup" in recipe.text
         ][0]
 
-        self.assertIn("Ingredients count: 1", tomato_soup_recipe_element.text)
+        self.assertIn(
+            "1 ingredients",
+            tomato_soup_recipe_element.text,
+            tomato_soup_recipe_element.text,
+        )
 
     def test_access_recipe_details(self):
 
@@ -44,7 +50,7 @@ class RecipeAccessTest(FunctionalTest):
         # User see recipes table
         recipes_table = self.browser.find_element("id", "id_recipes_table")
         self.assertNotEqual(
-            recipes_table.find_elements("css selector", "tr"),
+            recipes_table.find_elements("css selector", "div"),
             [],
             "The recipes table is empty",
         )
