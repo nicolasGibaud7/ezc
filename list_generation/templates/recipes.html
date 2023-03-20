@@ -43,11 +43,13 @@
                     <div class="col-4 pb-3">
                         <div class="card">
                             <img class="card-img" style="filter: brightness(60%);" src="/static/img/lasagnes_vege.png">
+
                             <div class="card-img-overlay text-white">
                                 <h4 class="card-title h4">{{recipe.name}}</h4>
                                 <h6 class="card-subtitle mb-2 h6">{{recipe.ingredients_count}} ingredients</h6>
+                                <a href="/recipes/{{recipe.id}}/" id="id_details_button_{{recipe.id}}"  class="card-link btn btn-light ">Details</a>
+                                <a href="/recipes/{{recipe.id}}/select" id="id_select_button_{{recipe.id}}" class="card-link btn btn-dark">Select</a>
                             </div>
-                            <a id="id_details_button_{{recipe.id}}" href="/recipes/{{recipe.id}}/" class="card-link btn btn-light stretched-link">Details</a>
                         </div>
                     </div>
                 {% endfor %}
