@@ -235,8 +235,6 @@ class IngredientsPageTest(TestCase):
             self.assertIn(ingredient_info["name"], response)
             self.assertIn(ingredient_info["shelf"].name, response)
             self.assertIn(ingredient_info["category"].name, response)
-            self.assertIn(ingredient_info["unit"].name, response)
-            self.assertIn(str(ingredient_info["price"]), response)
 
     def test_ingredient_button_redirect_to_ingredient_details_page(self):
         """

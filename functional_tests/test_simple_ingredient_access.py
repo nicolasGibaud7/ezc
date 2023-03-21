@@ -20,7 +20,7 @@ class IngredientAccessTest(FunctionalTest):
             "id", "id_ingredients_table"
         )
         self.assertNotEqual(
-            ingredients_table.find_elements("css selector", "tr"),
+            ingredients_table.find_elements("css selector", "div"),
             [],
             "The ingredients table is empty",
         )
@@ -29,7 +29,7 @@ class IngredientAccessTest(FunctionalTest):
         tomato_ingredient_element = [
             ingredient
             for ingredient in ingredients_table.find_elements(
-                "css selector", "tr"
+                "xpath", '//div[@class="card overflow-auto shadow"]'
             )
             if "Tomato" in ingredient.text
         ][0]
@@ -46,11 +46,6 @@ class IngredientAccessTest(FunctionalTest):
             "Market",
             tomato_ingredient_element.text,
         )
-        self.assertIn(
-            "Kilogram (Kg)",
-            tomato_ingredient_element.text,
-        )
-        self.assertIn("1.30 €", tomato_ingredient_element.text)
 
     def test_access_ingredients_details(self):
 

@@ -1,24 +1,60 @@
-<html>
-    <head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
         <title>Ingredients</title>
     </head>
     <body>
-        <h1>Ingredients</h1>
-        <table id="id_ingredients_table">
+        <!-- Option 1: Bootstrap Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+            <div class="container-fluid ">
+                <a class="navbar-brand" href="/">EZC</a>
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="/">Home</a>
+                    <a id="id_recipes_link" class="nav-item nav-link" href="/recipes">Recipes</a>
+                    <a id="id_ingredients_link" class="nav-item nav-link" href="/ingredients">Ingredients</a>
+                </div>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a role="button" class="btn btn-secondary me-2 mb-2" href="#">Create account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a role="button" class="btn btn-danger" href="#">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="h2 text-center">Ingredients</h2>
+                </div>
+            </div>
+            <div id="id_ingredients_table" class="row center d-flex justify-content-around pt-3" style="max-width: 800px;margin-left: auto; margin-right: auto;">
             {% for ingredient in ingredients %}
-                <tr>
-                    <td>{{ingredient.name}} </td>
-                    <td>{{ingredient.shelf.name}} </td>
-                    <td>{{ingredient.category.name}} </td>
-                    <td>{{ingredient.unit.name}} ({{ingredient.unit.abbreviation}})</td>
-                    <td>{{ingredient.price}} €</td>
-                    <td>
-                        <button id="id_details_button_{{ingredient.id}}">
-                            <a href="/ingredients/{{ingredient.id}}/">Details</a>
-                        </button>
-                    </td>
-                </tr>
+                <div class="col-4 pb-3">
+                    <div class="card overflow-auto shadow" style="width: 13rem;">
+                        <img class="card-img overflow-hidden" src="/static/img/oignons.jpg">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ingredient.name}}</h4>
+                            <ul class="card-text list-group list-group-flush">
+                                <li class="list-group-item">Category: {{ingredient.category.name}}</li>
+                                <li class="list-group-item">Shelf: {{ingredient.shelf.name}}</li>
+                            </ul>
+                        </div>
+                        <a id="id_details_button_{{ingredient.id}}"href="/ingredients/{{ingredient.id}}/" class=" card-link btn btn-secondary stretched-link ">Details</a>
+                    </div>
+                </div>
             {% endfor %}
-        </table> 
+            </div>
+        </div>
     </body>
 </html>
