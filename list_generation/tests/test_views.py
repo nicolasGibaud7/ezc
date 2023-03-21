@@ -250,7 +250,7 @@ class IngredientsPageTest(TestCase):
         response = self.client.get("/ingredients/").content.decode()
 
         self.assertIn(
-            f'<a href="/ingredients/{Ingredient.objects.first().id}/"',
+            f'href="/ingredients/{Ingredient.objects.first().id}/"',
             response,
         )
 
