@@ -402,7 +402,7 @@ class ShoppingListGenerationPageTest(TestCase):
             "/shopping_list_generation/",
         )
         self.assertIn(
-            '<button id="id_generation_button" type="submit"',
+            '<button id="id_generation_button"',
             response.content.decode(),
         )
 

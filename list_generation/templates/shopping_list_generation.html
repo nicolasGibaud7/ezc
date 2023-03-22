@@ -1,13 +1,58 @@
-<html>
-    <head>
+<!DOCTYPE html>
+<html lang="en">
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
         <title>Shopping list generation</title>
     </head>
     <body>
-        <h1>Shopping list generation</h1>
-        <form id="id_form" method="post" action="{% url 'shopping_list_generation' %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button id="id_generation_button" type="submit"> Generate <button/>
-        </form>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+            <div class="container-fluid ">
+                <a class="navbar-brand" href="/">EZC</a>
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="/">Home</a>
+                    <a id="id_recipes_link" class="nav-item nav-link" href="/recipes">Recipes</a>
+                    <a id="id_ingredients_link" class="nav-item nav-link" href="/ingredients">Ingredients</a>
+                </div>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a role="button" class="btn btn-secondary me-2 mb-2" href="#">Create account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a role="button" class="btn btn-danger" href="#">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="h2 text-center">Shopping list generation</h2>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center ">
+                <div class="col-6">
+                    <form class="h4 pt-3" id="id_form" method="post" action="{% url 'shopping_list_generation' %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="row fixed-bottom">
+                            <div class="col-12 d-flex justify-content-center fixed-bottom">
+                                <button id="id_generation_button" class="btn btn-secondary mt-4 mb-5 px-3 py-2" type="submit"> <span class="h4">Generate shopping list</span> </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

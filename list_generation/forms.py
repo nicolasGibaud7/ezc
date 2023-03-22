@@ -6,8 +6,26 @@ from list_generation.models import ShoppingListGeneration
 class ShoppingListGenerationForm(forms.ModelForm):
     class Meta:
         model = ShoppingListGeneration
-        fields = ("mail", "format_choice", "sending_method")
-        widgets = {"mail": forms.EmailInput(attrs={"id": "id_email"})}
+        fields = (
+            "format_choice",
+            "sending_method",
+            "mail",
+        )
+        widgets = {
+            "mail": forms.EmailInput(
+                attrs={
+                    "id": "id_email",
+                    "placeholder": "Email address",
+                    "class": "form-control input-lg mt-2",
+                }
+            ),
+            "format_choice": forms.Select(
+                attrs={"class": "form-select form-select-lg mt-2"}
+            ),
+            "sending_method": forms.Select(
+                attrs={"class": "form-select form-select-lg mt-2"}
+            ),
+        }
         error_messages = {
             "mail": {
                 "required": "Please enter your email address",
