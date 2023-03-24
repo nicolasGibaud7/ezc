@@ -1,4 +1,7 @@
+import time
+
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.ui import Select
 
 from .base import FunctionalTest
 
@@ -65,12 +68,53 @@ class ShoppingListGeneration(FunctionalTest):
         error_message = self.browser.find_element("id", "id_error_message")
         self.assertIn("No recipes selected", error_message.text)
 
-    def test_access_shopping_list_generation_page(self):
+    def test_generate_pdf_shopping_list(self):
         # User goes to the recipes page
         self.browser.get(self.live_server_url + "/recipes/")
         self.wait_for_page("Recipes")
 
         # User select tomato oup recipe
+        self.browser.find_element("id", "id_select_button_1").click()
+
+        # User go back to the home page
+        self.browser.get(self.live_server_url)
+        self.wait_for_page("Welcome to ezcourses")
+
+        # User clicks on the shopping list generation button
+        self.browser.find_element(
+            "id", "id_shopping_list_generation_button"
+        ).click()
+
+        # User sees that he was redirected to the shopping list generation page
+        self.wait_for_page("Shopping list generation")
+
+        # User sees the form fields
+        self.browser.find_element("id", "id_form")
+
+        # User change the sending method to "download"
+        sending_method_select = Select(
+            self.browser.find_element("id", "id_sending_method")
+        )
+        sending_method_select.select_by_value("download")
+
+        # User change the format to "pdf"
+        format_select = Select(
+            self.browser.find_element("id", "id_format_choice")
+        )
+        format_select.select_by_value("pdf")
+
+        # User fill the email form field with
+        self.browser.find_element("id", "id_email").send_keys(
+            "nicolas.gibaud7@gmail.com"
+        )
+        time.sleep(3)
+
+    def test_access_shopping_list_generation_page(self):
+        # User goes to the recipes page
+        self.browser.get(self.live_server_url + "/recipes/")
+        self.wait_for_page("Recipes")
+
+        # User select tomato soup recipe
         self.browser.find_element("id", "id_select_button_1").click()
 
         # User go back to the home page

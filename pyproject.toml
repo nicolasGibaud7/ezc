@@ -11,6 +11,9 @@ click = "8.1.2"
 openpyxl = "^3.0.10"
 django = "3.2"
 selenium = "^4.8.0"
+pypdf2 = "^3.0.1"
+reportlab = "^3.6.12"
+bpython = "^0.24"
 
 [tool.poetry.group.dev.dependencies]
 black = "22.3.0"
