@@ -448,7 +448,7 @@ class ShoppingListGenerationPageTest(TestCase):
             "/shopping_list_generation/",
             {
                 "mail": "nicolas.gibaud7@gmail.co",
-                "format_choice": "pdf",
+                "format_choice": "txt",
                 "sending_method": "email",
             },
         )

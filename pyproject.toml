@@ -24,6 +24,7 @@ pytest-cov = "4.0.0"
 tox = "3.26.0"
 flake8-bugbear = "^22.10.27"
 mypy = "^0.982"
+pypdf2 = "^3.0.1"
 
 [tool.pytest.ini_options]
 addopts = "--cov=ezc"

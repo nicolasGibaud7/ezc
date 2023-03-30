@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.styles import getSampleStyleSheet
@@ -9,14 +11,23 @@ class PdfFactory:
         self.doc = SimpleDocTemplate(filename)
         self.elements = []
 
-    def add_title(self, title: str) -> None:
+    def generate_shopping_list(self, ingredients: List[Tuple[str]]) -> None:
+        self._add_title("Shopping list")
+        categories = ("Name", "Category", "Shelf", "Quantity", "Unit Price")
+        # Insert categories at the beginning of the ingredients list
+
+        data = [categories] + ingredients
+        self._add_table(data)
+        self._generate()
+
+    def _add_title(self, title: str) -> None:
         title_style = getSampleStyleSheet()["Heading1"]
         title_style.alignment = TA_CENTER
         title_style.spaceAfter = 40
         title_style.fontSize = 25
         self.elements.append(Paragraph(title, title_style))
 
-    def add_table(self, table_data: list) -> None:
+    def _add_table(self, table_data: list) -> None:
         table_style = TableStyle(
             [
                 ("GRID", (0, 0), (-1, -1), 1, colors.black),
@@ -31,5 +42,5 @@ class PdfFactory:
         table.setStyle(table_style)
         self.elements.append(table)
 
-    def generate(self) -> None:
+    def _generate(self) -> None:
         self.doc.build(self.elements)

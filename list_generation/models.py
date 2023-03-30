@@ -1,4 +1,12 @@
+import os
+import tempfile
+from io import BytesIO
+
+from django.core.files import File
 from django.db import models
+from PyPDF2 import PdfReader, PdfWriter
+
+from ezc.pdf_factory import PdfFactory
 
 SENDING_METHODS = [("email", "email"), ("download", "download")]
 FORMAT_CHOICES = [("txt", "txt"), ("pdf", "pdf")]
@@ -96,6 +104,29 @@ class ShoppingList(models.Model):
             [str(ingredient) for ingredient in self.shopping_ingredients.all()]
         )
 
+    def to_pdf(self) -> bytes:
+
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            pdf_factory = PdfFactory(
+                os.path.join(tmpdirname, "temp_shopping_list.pdf")
+            )
+            ingredients = [
+                (
+                    ingredient.ingredient.name,
+                    ingredient.ingredient.category.name,
+                    ingredient.ingredient.shelf.name,
+                    f"{ingredient.quantity} {ingredient.ingredient.unit.abbreviation}",
+                    f"{ingredient.ingredient.price} €",
+                )
+                for ingredient in self.shopping_ingredients.all()
+            ]
+            pdf_factory.generate_shopping_list(ingredients)
+            pdf_content = ""
+            with open(pdf_factory.doc.filename, "rb") as pdf_file:
+                pdf_content = pdf_file.read()
+
+        return pdf_content
+
     def convert_to_text_format(self):
         text = ""
         for shopping_ingredient in self.shopping_ingredients.all():
@@ -125,6 +156,11 @@ class ShoppingListGeneration(models.Model):
     format_choice = models.CharField(
         choices=FORMAT_CHOICES, max_length=3, default="txt"
     )
+    pdf_file = None
 
     def generate_shopping_list(self):
         self.shopping_list.calculate_ingredients_quantities()
+
+    def generate_pdf(self):
+        shopping_list_pdf_content = self.shopping_list.to_pdf()
+        self.pdf_file = File(BytesIO(shopping_list_pdf_content))

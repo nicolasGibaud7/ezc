@@ -1,5 +1,10 @@
+import tempfile
+from unittest import skip
+
 from django.core.exceptions import ValidationError
+from django.core.files import File
 from django.test import TestCase
+from PyPDF2 import PdfReader
 
 from list_generation.models import (
     Category,
@@ -313,6 +318,55 @@ class ShoppingListModelTest(TestCase):
         self.assertIn("Tomate - 1.00 Kg\n", shopping_list_text_representation)
         self.assertIn("Onion - 2.00 Kg", shopping_list_text_representation)
 
+    def test_conversion_to_pdf_format(self):
+        Ingredient.objects.create(
+            name="Onion",
+            shelf=Shelf.objects.first(),
+            category=Category.objects.first(),
+            unit=Unit.objects.first(),
+            price=3.30,
+        )
+        Recipe.objects.create(name="Onion soup").add_ingredient(
+            Ingredient.objects.last(), 2
+        )
+        ShoppingList.objects.first().add_recipe(Recipe.objects.first())
+        ShoppingList.objects.first().add_recipe(Recipe.objects.last())
+
+        shopping_list = ShoppingList.objects.first()
+        shopping_list.calculate_ingredients_quantities()
+        shopping_list_pdf_content = shopping_list.to_pdf()
+
+        # Check pdf format
+        self.assertEqual(shopping_list_pdf_content[:4], b"%PDF")
+
+        # Check pdf content
+        with tempfile.NamedTemporaryFile(suffix=".pdf") as pdf_file:
+            pdf_file.write(shopping_list_pdf_content)
+            pdf_file.flush()
+            shopping_list_pdf = PdfReader(pdf_file.name)
+            self.assertEqual(len(shopping_list_pdf.pages), 1)
+            page_content = shopping_list_pdf.pages[0].extract_text()
+
+            # Check categories
+            for category in [
+                "Name",
+                "Category",
+                "Shelf",
+                "Unit Price",
+                "Quantity",
+            ]:
+                self.assertIn(category, page_content)
+
+            # Check ingredient information
+            for ingredient_info in [
+                "Tomate",
+                "Market",
+                "Fruits and vegetables",
+                "1.00 Kg",
+                "1.30 €",
+            ]:
+                self.assertIn(ingredient_info, page_content)
+
 
 class ShoppingIngredientsModelTest(TestCase):
     def setUp(self) -> None:
@@ -401,3 +455,12 @@ class ShoppingListGenerationModelTest(TestCase):
             ).quantity,
             2,
         )
+
+    def test_pdf_generation(self):
+        shopping_list_generation = ShoppingListGeneration.objects.first()
+        shopping_list_generation.generate_shopping_list()
+
+        self.assertIsNone(shopping_list_generation.pdf_file)
+
+        shopping_list_generation.generate_pdf()
+        self.assertIsInstance(shopping_list_generation.pdf_file, File)
