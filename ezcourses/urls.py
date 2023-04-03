@@ -16,6 +16,23 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from list_generation import views
+
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r"^admin/", admin.site.urls, name="admin"),
+    url(r"^$", views.home_page, name="home"),
+    url("^recipes/$", views.recipes_page, name="recipes"),
+    url("^ingredients/$", views.ingredients_page, name="ingredients"),
+    url(
+        "^ingredients/(\d+)/$",
+        views.ingredient_details_page,
+        name="ingredient_details",
+    ),
+    url("^recipes/(\d+)/$", views.recipe_details_page, name="recipe_details"),
+    url("^recipes/(\d+)/select/$", views.select_recipe, name="select_recipe"),
+    url(
+        "^shopping_list_generation/$",
+        views.shopping_list_generation,
+        name="shopping_list_generation",
+    ),
 ]
