@@ -1,7 +1,5 @@
 import tempfile
-from unittest import skip
 
-from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.test import TestCase
 from PyPDF2 import PdfReader
@@ -428,7 +426,7 @@ class ShoppingListGenerationModelTest(TestCase):
         ShoppingList.objects.first().add_recipe(Recipe.objects.last())
         ShoppingListGeneration.objects.create(
             shopping_list=ShoppingList.objects.first(),
-            mail="nicolas.gibaud7@gmail.com",
+            mail="ez.courses.dev@gmail.com",
             sending_method="email",
             format_choice="pdf",
         )
@@ -464,3 +462,12 @@ class ShoppingListGenerationModelTest(TestCase):
 
         shopping_list_generation.generate_pdf()
         self.assertIsInstance(shopping_list_generation.pdf_file, File)
+
+    def test_email_sending(self):
+        shopping_list_generation = ShoppingListGeneration.objects.first()
+        shopping_list_generation.generate_shopping_list()
+
+        result = shopping_list_generation.send_by_mail(
+            "ez.courses.dev@gmail.com"
+        )
+        self.assertTrue(result)

@@ -4,8 +4,8 @@ from io import BytesIO
 
 from django.core.files import File
 from django.db import models
-from PyPDF2 import PdfReader, PdfWriter
 
+from ezc.mail_utility import get_mail_credentials, send_mail_with_attachment
 from ezc.pdf_factory import PdfFactory
 
 SENDING_METHODS = [("email", "email"), ("download", "download")]
@@ -164,3 +164,21 @@ class ShoppingListGeneration(models.Model):
     def generate_pdf(self):
         shopping_list_pdf_content = self.shopping_list.to_pdf()
         self.pdf_file = File(BytesIO(shopping_list_pdf_content))
+
+    def send_by_mail(self, receiver: str = "") -> bool:
+        self.generate_pdf()
+
+        if not receiver:
+            receiver = self.mail
+
+        sender, password = get_mail_credentials()
+        body = "You can find your shopping list attached to this email."
+
+        return send_mail_with_attachment(
+            sender,
+            password,
+            receiver,
+            "Shopping List",
+            body,
+            self.pdf_file,
+        )

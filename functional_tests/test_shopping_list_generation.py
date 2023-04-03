@@ -1,7 +1,12 @@
+import os
+import tempfile
 import time
 
+from PyPDF2 import PdfReader
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import Select
+
+from ezc.mail_utility import get_last_mail_content, get_mail_credentials
 
 from .base import FunctionalTest
 
@@ -68,7 +73,7 @@ class ShoppingListGeneration(FunctionalTest):
         error_message = self.browser.find_element("id", "id_error_message")
         self.assertIn("No recipes selected", error_message.text)
 
-    def test_generate_pdf_shopping_list(self):
+    def test_get_pdf_shopping_list_by_email(self):
         # User goes to the recipes page
         self.browser.get(self.live_server_url + "/recipes/")
         self.wait_for_page("Recipes")
@@ -91,11 +96,11 @@ class ShoppingListGeneration(FunctionalTest):
         # User sees the form fields
         self.browser.find_element("id", "id_form")
 
-        # User change the sending method to "download"
+        # User change the sending method to "email"
         sending_method_select = Select(
             self.browser.find_element("id", "id_sending_method")
         )
-        sending_method_select.select_by_value("download")
+        sending_method_select.select_by_value("email")
 
         # User change the format to "pdf"
         format_select = Select(
@@ -105,9 +110,52 @@ class ShoppingListGeneration(FunctionalTest):
 
         # User fill the email form field with
         self.browser.find_element("id", "id_email").send_keys(
-            "nicolas.gibaud7@gmail.com"
+            "ez.courses.dev@gmail.com"
         )
-        time.sleep(3)
+        time.sleep(1)
+
+        # User click on generate button
+        self.browser.find_element("id", "id_generation_button").click()
+        time.sleep(5)
+
+        # User checks that he received the mail with the shopping list
+
+        #   Credentials
+        username, password = get_mail_credentials()
+
+        last_mail_content = get_last_mail_content(username, password)
+
+        #   Check that the subject is correct
+        self.assertEqual("Shopping List", last_mail_content["subject"])
+
+        #  Check that the body is correct
+        self.assertIn(
+            "You can find your shopping list attached to this email.",
+            last_mail_content["body"],
+        )
+
+        #  Check that the attachment is correct
+        try:
+            last_mail_content["attachment"]
+        except KeyError:
+            self.fail("No attachments found in the email.")
+
+        self.assertEqual(
+            last_mail_content["attachment"]["filename"], "shopping_list.pdf"
+        )
+        # Create temporary file, write the attachment and read it with PdfReader to check the content
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_file = os.path.join(
+                tmp_dir, last_mail_content["attachment"]["filename"]
+            )
+            with open(tmp_file, "wb") as f:
+                f.write(last_mail_content["attachment"]["content"])
+            pdf = PdfReader(tmp_file)
+            self.assertIn(
+                "Tomato",
+                pdf.pages[0].extract_text(),
+            )
+            self.assertNotIn("Banana", pdf.pages[0].extract_text())
 
     def test_access_shopping_list_generation_page(self):
         # User goes to the recipes page

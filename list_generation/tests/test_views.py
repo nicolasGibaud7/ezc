@@ -447,7 +447,7 @@ class ShoppingListGenerationPageTest(TestCase):
         response = self.client.post(
             "/shopping_list_generation/",
             {
-                "mail": "nicolas.gibaud7@gmail.co",
+                "mail": "ez.courses.dev@gmail.com",
                 "format_choice": "txt",
                 "sending_method": "email",
             },

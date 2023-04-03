@@ -77,6 +77,7 @@ def shopping_list_generation(request):
             )
             shopping_list_generation.generate_shopping_list()
             shopping_list_generation.save()
+            shopping_list_generation.send_by_mail()
 
             return redirect("home")
         else:
